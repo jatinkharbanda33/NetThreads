@@ -24,7 +24,6 @@ const HomePage = () => {
           console.log(response.error);
           return;
         }
-        console.log(response[0]['feedPosts']);
         dispatch(changePost(response[0]['feedPosts']));
         
       } catch (err) {

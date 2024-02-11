@@ -6,7 +6,7 @@ const router=express.Router();
 
 router.post("/signup",signupUser);
 router.post("/login",loginUser);
-router.get("/profile/:id",getUserProfile);
+router.get("/profile/:id",protectRoute,getUserProfile);
 router.post("/logout",protectRoute,logoutUser);
 router.post("/follow/:id",protectRoute,followUnfollowUser); 
 export default router;

@@ -64,7 +64,6 @@ const getFeedPosts = async (req, res) => {
         },
       },
     ];
-    
 
     const feedPosts =
       (await followingCollection.aggregate(pipeline).toArray()) || [];
@@ -82,7 +81,7 @@ const createPost = async (req, res) => {
     const postCollection = await Posts();
     const postsMisCollection = await PostsMIS();
     const currentDate = new Date().setHours(0, 0, 0, 0);
-    const result = await postsMisCollection.updateOne(
+     await postsMisCollection.updateOne(
       { date: currentDate },
       {
         $inc: { postCount: 1 },
@@ -147,9 +146,6 @@ const likePost = async (req, res) => {
     return res.status(500).json({ err: err.message });
   }
 };
-const isLiked=async()=>{
-
-};
 const replyToPost = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
@@ -195,7 +191,7 @@ const deletePost = async (req, res) => {
 };
 const getUserPosts = async (req, res) => {
   try {
-    const currentUserId = req.user._id;
+    const currentUserId = req.params.id;
     const skip = req.query.skip || 0;
     const limit = req.query.skip || 9;
     const postCollection = await Posts();
@@ -236,21 +232,9 @@ const getLikes = async (req, res) => {
 const getReplies = async (req, res) => {
   try {
     const currentUserId = req.user._id;
-    3;
     const postId = new ObjectId(String(req.params.id));
     const skip = req.query.skip || 0;
     const limit = req.query.skip || 12;
-    const postCollection = await Posts();
-    const post = await postCollection.findOne({ _id: postId });
-    const postOwner = post.postedBy;
-    const followingCollection = await Following();
-    const isFollowing = await followingCollection.findOne({
-      userId: currentUserId,
-      following: postOwner,
-    });
-    if (!isFollowing) {
-      return res.status(400).json({ message: "Access Denied" });
-    }
     const repliesCollection = await Replies();
     const pipeline = [
       { $match: { postId: postId } },
@@ -260,6 +244,20 @@ const getReplies = async (req, res) => {
     ];
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();
     return res.status(200).json(postReplies);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+const isLiked = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const postId = new ObjectId(String(req.params.id));
+    const likesCollection = await Likes();
+    const result=await likesCollection.findOne({postId:postId,userId:currentUserId});
+    if(result) return res.status(200).json({answer:true});
+    else{
+      return res.status(200).json({answer:false});
+    }
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -275,4 +273,5 @@ export {
   getUserPosts,
   getLikes,
   getReplies,
+  isLiked,
 };

@@ -1,4 +1,4 @@
-import { Users,Followers,Following } from "../ConnectDB/getData.js";
+import { Users, Followers, Following } from "../ConnectDB/getData.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import { ObjectId } from "mongodb";
@@ -20,8 +20,10 @@ const signupUser = async (req, res) => {
       email: email,
       username: username,
       password: hashedpassword,
-      profilepicture:null,
-      bio:null,
+      profilepicture: null,
+      bio: null,
+      follower_count: 0,
+      following_count: 0,
     });
     if (newUser) {
       res.status(201).json({
@@ -55,9 +57,11 @@ const loginUser = async (req, res) => {
       name: user.name,
       email: user.email,
       username: user.username,
-      profilepicture:user.profilepicture,
-      bio:user.bio,
+      profilepicture: user.profilepicture,
+      bio: user.bio,
       token: authtoken,
+      follower_count: user.follower_count,
+      following_count: user.following_count,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -77,53 +81,86 @@ const logoutUser = async (req, res) => {
 };
 const getUserProfile = async (req, res) => {
   try {
-    const id = String(req.params.id);
-    console.log(id);
+    const userId = req.user._id;
+    const id = new ObjectId(String(req.params.id));
+    
     const userCollection = await Users();
     const user = await userCollection.findOne(
-      { _id: new ObjectId(id) },
+      { _id: id },
       { projection: { password: 0, token: 0 } }
     );
     if (!user) return res.status(400).json({ error: "user Not Found" });
-    res.status(200).json(user);
+    const followingCollection=await Following();
+    const isfollowedbyuser=await followingCollection.findOne({userId:userId,following:id})
+    res.status(200).json({...user,isfollowing:isfollowedbyuser?1:0});
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
 const followUnfollowUser = async (req, res) => {
-    try {
-      const targetUserId = new ObjectId(String(req.params.id));
-      const currentUserId= req.user._id;
-      const userCollection = await Users();
+  try {
+    const targetUserId = new ObjectId(String(req.params.id));
+    const currentUserId = req.user._id;
+    const userCollection = await Users();
 
-      const userToModify = await userCollection.findOne({ _id: targetUserId });
-      const currentUser = await userCollection.findOne({ _id: currentUserId });
-  
-      if (!userToModify || !currentUser)
-        return res.status(400).json({ error: "User Not Found" });
-      const followingCollection=await Following();
-      const followersCollection=await Followers();
-      const isFollowingAlready=await followingCollection.findOne({userId:currentUserId,following:targetUserId});
-      if(isFollowingAlready){
-        await followingCollection.deleteOne({_id:isFollowingAlready._id});
-        await followersCollection.deleteOne({userId:targetUserId,follower:currentUserId});
-        return res.status(201).json({
-          message:"User Unfollowed Successfully"
-        });
-      }
-      else{
-        await followingCollection.insertOne({userId:currentUserId,following:targetUserId});
-        await followersCollection.insertOne({userId:targetUserId,follower:currentUserId});
-        return res.status(201).json({
-          message:"User Followed Successfully"
-        });
+    const userToModify = await userCollection.findOne({ _id: targetUserId });
+    const currentUser = await userCollection.findOne({ _id: currentUserId });
 
-
-      }
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+    if (!userToModify || !currentUser)
+      return res.status(400).json({ error: "User Not Found" });
+    const followingCollection = await Following();
+    const followersCollection = await Followers();
+    const isFollowingAlready = await followingCollection.findOne({
+      userId: currentUserId,
+      following: targetUserId,
+    });
+    if (isFollowingAlready) {
+      await followingCollection.deleteOne({ _id: isFollowingAlready._id });
+      await userCollection.updateOne(
+        { _id: currentUser },
+        { $inc: { following_count: -1 } }
+      );
+      await userCollection.updateOne(
+        { _id: targetUserId },
+        { $inc: { follower_count: -1 } }
+      );
+      await followersCollection.deleteOne({
+        userId: targetUserId,
+        follower: currentUserId,
+      });
+      return res.status(201).json({
+        message: "User Unfollowed Successfully",
+      });
+    } else {
+      await userCollection.updateOne(
+        { _id: currentUser },
+        { $inc: { following_count: 1 } }
+      );
+      await userCollection.updateOne(
+        { _id: targetUserId },
+        { $inc: { follower_count: 1 } }
+      );
+      await followingCollection.insertOne({
+        userId: currentUserId,
+        following: targetUserId,
+      });
+      await followersCollection.insertOne({
+        userId: targetUserId,
+        follower: currentUserId,
+      });
+      return res.status(201).json({
+        message: "User Followed Successfully",
+      });
     }
-  };
-  
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-export { signupUser, loginUser, logoutUser, getUserProfile ,followUnfollowUser};
+export {
+  signupUser,
+  loginUser,
+  logoutUser,
+  getUserProfile,
+  followUnfollowUser,
+};
