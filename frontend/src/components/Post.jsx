@@ -70,7 +70,7 @@ const Post = ({ post }) => {
             <HStack gap="2">
               <Avatar size="xs" src="https://bit.ly/broken-link" />
               <Text fontSize={"sm"} fontWeight={"bold"} onClick={() => {}}>
-                {post?.postedByUserName}
+                {post?.username}
               </Text>
               <Image src="/verified.png" w={4} h={4} ml={1} />
             </HStack>

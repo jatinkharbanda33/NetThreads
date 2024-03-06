@@ -44,15 +44,16 @@ const loginUser = async (req, res) => {
     const { username, password } = req.body;
     const userCollection = await Users();
     const user = await userCollection.findOne({ username: username });
-    if (!user) return res.status(400).json({ error: "Invalid Username" });
+    if (!user) return res.status(400).json({status:false, error: "Invalid Username" });
     const verifypassword = await bcrypt.compare(password, user.password);
-    if (!verifypassword) res.status(400).json({ error: "Wrong Password" });
+    if (!verifypassword) res.status(400).json({status:false, error: "Wrong Password" });
     const authtoken = generateToken(user._id);
     await userCollection.updateOne(
       { _id: user._id },
       { $set: { token: authtoken } }
     );
     res.status(200).json({
+      status:true,
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -64,7 +65,7 @@ const loginUser = async (req, res) => {
       following_count: user.following_count,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({status:false, error: err.message });
   }
 };
 const logoutUser = async (req, res) => {
@@ -156,6 +157,15 @@ const followUnfollowUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const getUserByToken=async(req,res)=>{
+  try{
+    const currentuser=req.user;
+    return res.status(200).json(currentuser);
+  }
+  catch(err){
+    res.status(500).json({error:err.message});
+  }
+}
 
 export {
   signupUser,
@@ -163,4 +173,5 @@ export {
   logoutUser,
   getUserProfile,
   followUnfollowUser,
+  getUserByToken
 };

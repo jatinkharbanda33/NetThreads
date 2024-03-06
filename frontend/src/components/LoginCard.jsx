@@ -14,13 +14,16 @@ import {
   Text,
   useColorModeValue,
   Link,
+  FormErrorMessage
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { changeAuth } from "../redux/slices/authSlice";
 import { changeUser } from "../redux/slices/userSlice";
+
 const LoginCard = () => {
   const dispatch = useDispatch();
+  const [isError,setIsError]=useState(false);
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -36,22 +39,22 @@ const LoginCard = () => {
             body:JSON.stringify(inputs),
         });
         const response=await request.json();
-        if(response.error){
-            console.log(response.error);
-            return ;
+        if(!response.status){
+          setIsError(true);
+          return;
         }
+        setIsError(false);
         console.log(response);
         localStorage.setItem("authToken",response["token"]);
-        dispatch(changeUser(response["token"]));
+        dispatch(changeUser(response));
     }
     catch(err){
         console.log(err);
-
     }
   }
   return (
     <Flex align={"center"} justify={"center"}>
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={16} px={6}>
         <Heading fontSize={"4xl"} textAlign={"center"}>
           Login
         </Heading>
@@ -67,10 +70,14 @@ const LoginCard = () => {
           }}
         >
           <Stack spacing={4}>
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={isError}>
               <FormLabel>Username</FormLabel>
               <Input
                 type="text"
+                variant = "filled"
+                focusBorderColor="grey"
+                size="lg"
+
                 value={inputs.username}
                 onChange={(e) =>
                   setInputs((inputs) => ({
@@ -78,7 +85,9 @@ const LoginCard = () => {
                     username: e.target.value,
                   }))
                 }
+                
               />
+              
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
@@ -86,6 +95,9 @@ const LoginCard = () => {
                 <Input
                   type={showPassword ? "text" : "password"}
                   value={inputs.password}
+                  variant = "filled"
+                focusBorderColor="grey"
+                size="lg"
                   onChange={(e) =>
                     setInputs((inputs) => ({
                       ...inputs,
@@ -105,6 +117,9 @@ const LoginCard = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
+            {isError && <Stack>
+              <Text align={'center'}>Invalid Credentials</Text>
+              </Stack>}
             <Stack spacing={10} pt={2}>
               <Button
                 size="lg"
@@ -118,6 +133,7 @@ const LoginCard = () => {
                 Login
               </Button>
             </Stack>
+            
             <Stack pt={6}>
               <Text align={"center"}>
                 Don&apos;t have an account?{" "}

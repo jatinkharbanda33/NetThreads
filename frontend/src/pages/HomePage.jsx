@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changePost } from "../redux/slices/postSlice";
 import Post from "../components/Post";
+import { changeUser } from "../redux/slices/userSlice";
+import NewPost from "../components/NewPost";
 const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const posts = useSelector((state) => state.post);
   const dispatch=useDispatch();
+  let currentuser=useSelector((state)=>state.user);
   useEffect(() => {
     const getFeedPosts = async () => {
       setLoading(true);
@@ -24,7 +27,7 @@ const HomePage = () => {
           console.log(response.error);
           return;
         }
-        dispatch(changePost(response[0]['feedPosts']));
+        dispatch(changePost(response));
         
       } catch (err) {
         console.log(err);
@@ -37,6 +40,7 @@ const HomePage = () => {
   return (
     <Flex gap="10" alignItems={"flex-start"} >
       <Box flex={70}>
+        <NewPost />
         {!loading && posts.length === 0 && (
           <Flex justifyContent={"center"}>
             Follow Some users to see the feed

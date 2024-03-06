@@ -21,52 +21,41 @@ const getPost = async (req, res) => {
 };
 const getFeedPosts = async (req, res) => {
   try {
-    const currentUserId = req.user._id;
-    const skip = req.query.skip || 0;
-    const limit = req.query.limit || 10;
-    const followingCollection = await Following();
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const postsCollection = await Posts();
     const pipeline = [
-      { $match: { userId: currentUserId } },
-      { $skip: 0 },
-      { $limit: 10 },
       {
-        $lookup: {
-          from: "Posts",
-          localField: "following",
-          foreignField: "postedBy",
-          as: "feedPosts",
-        },
-      },
-      { $unwind: "$feedPosts" },
-      {
-        $lookup: {
-          from: "Users",
-          localField: "feedPosts.postedBy",
-          foreignField: "_id",
-          as: "postedByUser",
-        },
-      },
-      {
-        $addFields: {
-          "feedPosts.postedByUserName": {
-            $arrayElemAt: ["$postedByUser.username", 0],
+            $sort: {
+              _id: -1,
+            },
           },
-        },
-      },
-      { $group: { _id: "$_id", feedPosts: { $push: "$feedPosts" } } },
-      { $sort: { "feedPosts.timestamps": 1 } },
-      { $skip: parseInt(skip) },
-      { $limit: parseInt(limit) },
-      {
-        $project: {
-          _id: 0,
-          feedPosts: 1,
-        },
-      },
+          { $skip: skip },
+          { $limit: limit},
+          {$lookup:{
+            from:"Users",
+            localField:"postedBy",
+            foreignField:"_id",
+            as:"result"
+    
+          }},
+      {$unwind:{
+        path:"$result"
+      }},
+      {$project:{
+        _id:1,
+        text:1,
+        image:1,
+        likesCount:1,
+        timestamps:1,
+        repliesCount:1,
+        postedBy:1,
+        username:"$result.username"
+        
+      }}
     ];
 
-    const feedPosts =
-      (await followingCollection.aggregate(pipeline).toArray()) || [];
+    const feedPosts = await postsCollection.aggregate(pipeline).toArray();
     res.status(200).json(feedPosts);
   } catch (err) {
     res.status(500).json({ error: err.message });
