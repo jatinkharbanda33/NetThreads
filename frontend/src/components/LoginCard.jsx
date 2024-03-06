@@ -44,7 +44,6 @@ const LoginCard = () => {
           return;
         }
         setIsError(false);
-        console.log(response);
         localStorage.setItem("authToken",response["token"]);
         dispatch(changeUser(response));
     }

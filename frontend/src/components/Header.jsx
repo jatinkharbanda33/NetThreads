@@ -45,7 +45,7 @@ const Header = () => {
   };
   const user = useSelector((state) => state.user);
   return (
-    <Flex justifyContent={"space-between"} mt={6} mb={12}>
+    <Flex justifyContent={"space-between"} mt={6} mb={6}>
       {user && (
         <Link as={RouterLink} to="/">
           <AiFillHome size={24} />

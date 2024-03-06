@@ -198,21 +198,11 @@ const getUserPosts = async (req, res) => {
 };
 const getLikes = async (req, res) => {
   try {
-    const currentUserId = req.user._id;
-    3;
     const postId = new ObjectId(String(req.params.id));
     const skip = req.query.skip || 0;
     const limit = req.query.skip || 40;
-    const postCollection = await Posts();
-    const post = await postCollection.findOne({ _id: postId });
     const likesCollection = await Likes();
-    const pipeline = [
-      { $match: { postId: postId } },
-      { $skip: parseInt(skip) },
-      { $limit: parseInt(limit) },
-      { $project: { userId: 1 } },
-    ];
-    const postLikes = await likesCollection.aggregate(pipeline).toArray();
+    const postLikes = await likesCollection.find({postId: postId}, {usedId: 1}).skip(skip).limit(limit).toArray();
     return res.status(200).json(postLikes);
   } catch (err) {
     return res.status(500).json({ error: err.message });
