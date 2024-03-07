@@ -202,7 +202,31 @@ const getLikes = async (req, res) => {
     const skip = req.query.skip || 0;
     const limit = req.query.skip || 40;
     const likesCollection = await Likes();
-    const postLikes = await likesCollection.find({postId: postId}, {usedId: 1}).skip(skip).limit(limit).toArray();
+    const pipeline=[
+      {$match:{
+        postId:postId,
+      }},
+      {$skip:skip},
+      {$limit:limit},
+      {
+        $lookup:{
+          from:"Users",
+          localField:"userId",
+          foreignField:"_id",
+          as:"result"
+        }
+      },
+      {$unwind:{
+        path:"$result"
+      }},
+      {$project:{
+        __id:1,
+        username:"$result.username",
+        profile_picture:"$result.profilepicture",
+        name:"result.name"
+      }}
+    ]
+    const postLikes = await likesCollection.aggregate(pipeline).toArray();
     return res.status(200).json(postLikes);
   } catch (err) {
     return res.status(500).json({ error: err.message });

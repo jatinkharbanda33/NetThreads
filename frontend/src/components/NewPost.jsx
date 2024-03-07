@@ -57,7 +57,7 @@ const NewPost = () => {
 
   return (
     <Box
-      p={5}
+      p={3}
       rounded={"lg"}
       w={{
         base: "full",
@@ -65,7 +65,7 @@ const NewPost = () => {
       }}
     >
       <Flex direction={"row"}>
-        <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+        <Avatar name={currentuser?.name} src="https://bit.ly/dan-abramov" />
         <Flex direction={"column"}>
           <Text px={4}>{currentuser?.username}</Text>
           <Input

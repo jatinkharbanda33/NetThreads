@@ -10,7 +10,7 @@ router.post("/likepost/:query",protectRoute,likePost);
 router.post("/replytopost/:id",protectRoute,replyToPost);
 router.post("/deletepost/:id",protectRoute,deletePost);
 router.get("/getuserposts/:id",protectRoute,getUserPosts);
-router.get("/getlikes/:id",protectRoute,getLikes);
+router.post("/getlikes/:id",protectRoute,getLikes);
 router.get("/getreplies/:id",protectRoute,getReplies);
 router.post("/isliked/:id",protectRoute,isLiked);
 

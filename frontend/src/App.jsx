@@ -47,12 +47,7 @@ function App() {
         <Routes>
           <Route path='/' element={isUser || localStorage.getItem("authToken") ? <HomePage /> :<Navigate to="/auth" />} />
           <Route path='/auth' element={!isUser ? <AuthPage />: <Navigate to="/" />} />
-          <Route path='/post/likes' element={isUser || localStorage.getItem("authToken") ? <LikePage />:<Navigate to="/auth" />}></Route>
-          <Route path='/:userId'
-          element={
-            <UserPage />
-          }
-          />
+          <Route path='/post/likes/:id' element={isUser || localStorage.getItem("authToken") ? <LikePage />:<Navigate to="/auth" />}></Route>
         </Routes>
         </Container>
     </Box>
