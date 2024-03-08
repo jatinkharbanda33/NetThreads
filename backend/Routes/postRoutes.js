@@ -3,15 +3,15 @@ import protectRoute from "../Middlewares/protectRoute.js";
 import {createPost, getFeedPosts,getPost, likePost, replyToPost ,deletePost,getUserPosts,getLikes,getReplies, isLiked, deleteReply} from "../Controllers/postController.js";
 const router=express.Router();
 
-router.get("/getpost/:query",protectRoute,getPost);
+router.post("/getpost/:id",protectRoute,getPost);
 router.post("/feedposts",protectRoute,getFeedPosts);
 router.post("/createpost",protectRoute,createPost);
 router.post("/likepost/:query",protectRoute,likePost);
 router.post("/replytopost/:id",protectRoute,replyToPost);
 router.post("/deletepost/:id",protectRoute,deletePost);
-router.get("/getuserposts/:id",protectRoute,getUserPosts);
+router.post("/getuserposts/:id",protectRoute,getUserPosts);
 router.post("/getlikes/:id",protectRoute,getLikes);
-router.get("/getreplies/:id",protectRoute,getReplies);
+router.post("/getreplies/:id",protectRoute,getReplies);
 router.post("/isliked/:id",protectRoute,isLiked);
 router.post("/deleteReply",protectRoute,deleteReply);
 

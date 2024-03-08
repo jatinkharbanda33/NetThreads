@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Spinner,Text } from "@chakra-ui/react";
+import { Box, Flex, Spinner,Text,Button } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 const LikePage = () => {
   const { id } = useParams();
@@ -54,7 +54,15 @@ const LikePage = () => {
           </Flex>
         )}
         {!loading && likesArray.map((item)=>(
-          <Text key={item._id}>{item.username}</Text>
+          <Flex justify={"between"} w={"full"} key = {item._id + "div"}>
+            <Box>
+            <Text key={item._id}>{item.username}</Text>
+            {/* <Text key={item._id+"name"}>{item.name}</Text> */}
+            </Box>
+            <Button>Follow</Button>
+            <hr />
+          </Flex>
+          
         ))}
 
       </Box>

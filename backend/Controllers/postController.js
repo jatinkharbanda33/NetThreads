@@ -10,7 +10,7 @@ import { ObjectId } from "mongodb";
 const getPost = async (req, res) => {
   try {
     const currentUserId=req.user._id;
-    const postId = new ObjectId(String(req.params.query));
+    const postId = new ObjectId(String(req.params.id));
     const postCollection = await Posts();
     const pipeline=[
       {$match:{
@@ -46,6 +46,7 @@ const getPost = async (req, res) => {
       }}
     ];
     const result=await postCollection.aggregate(pipeline).toArray();
+    console.log(result);
     if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
     return res.status(200).json({status:false,result:result[0]});
   } catch (err) {
@@ -302,12 +303,13 @@ const getReplies = async (req, res) => {
         name:"result.name",
         text:1,
         image:1,
+        inserted_at:1,
       }}
     ]
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();
-    return res.status(200).json(postReplies);
+    return res.status(200).json({status:true,result:postReplies});
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({status:false, error: err.message });
   }
 };
 const isLiked = async (req, res) => {
