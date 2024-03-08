@@ -3,7 +3,7 @@ import protectRoute from "../Middlewares/protectRoute.js";
 import {createPost, getFeedPosts,getPost, likePost, replyToPost ,deletePost,getUserPosts,getLikes,getReplies, isLiked, deleteReply} from "../Controllers/postController.js";
 const router=express.Router();
 
-router.get("/getpost/:query",getPost);
+router.get("/getpost/:query",protectRoute,getPost);
 router.post("/feedposts",protectRoute,getFeedPosts);
 router.post("/createpost",protectRoute,createPost);
 router.post("/likepost/:query",protectRoute,likePost);

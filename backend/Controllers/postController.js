@@ -9,14 +9,47 @@ import { ObjectId } from "mongodb";
 
 const getPost = async (req, res) => {
   try {
+    const currentUserId=req.user._id;
     const postId = new ObjectId(String(req.params.query));
     const postCollection = await Posts();
-    const post = await postCollection.findOne({ _id: postId });
-    if (!post) return res.status(400).json({ error: "Invalid Post Id" });
-
-    res.status(200).json(post);
+    const pipeline=[
+      {$match:{
+        _id:postId,
+      }},
+      {$lookup:{
+        from:"Likes",
+        pipeline:[
+          {$match:{
+            postId:postId,
+            userId:currentUserId
+          }}
+        ],
+        as:"result"
+      }},
+      {$lookup:{
+        from:"Users",
+        localField:"postedBy",
+        foreignField:"_id",
+        as:"postedByUser"
+      }},
+      {$unwind:{
+        path:"$postedByUser"
+      }},
+      {$project:{
+        text:1,
+        image:1,
+        _id:1,
+        result:1,
+        name:"$postedByUser.name",
+        username:"$postedByUser.username",
+        profilepicture:"$postedByUser.profilepicture"
+      }}
+    ];
+    const result=await postCollection.aggregate(pipeline).toArray();
+    if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
+    return res.status(200).json({status:false,result:result[0]});
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ status:false,error: err.message });
   }
 };
 const getFeedPosts = async (req, res) => {
