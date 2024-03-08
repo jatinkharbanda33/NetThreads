@@ -11,14 +11,10 @@ import {
   Icon,
   IconButton,
 } from "@chakra-ui/react";
-import { MdSettings } from "react-icons/md";
-import { ImImages } from "react-icons/im";
-import { PiGifFill } from "react-icons/pi";
-import { FaHashtag } from "react-icons/fa6";
+import { MdAttachment } from "react-icons/md";
 
 const NewPost = () => {
   let file;
-  const [selectedFile, setSelectedFile] = useState();
   const handlePost = async () => {
     try {
       const token = localStorage.getItem("authToken");
@@ -67,7 +63,7 @@ const NewPost = () => {
       <Flex direction={"row"}>
         <Avatar name={currentuser?.name} src="https://bit.ly/dan-abramov" />
         <Flex direction={"column"}>
-          <Text px={4}>{currentuser?.username}</Text>
+          <Text px={4} fontSize={"md"} fontWeight={"bold"}>{currentuser?.username}</Text>
           <Input
             type="text"
             variant="unstyled"
@@ -84,18 +80,15 @@ const NewPost = () => {
               style={{ display: "none" }}
             />
             <Icon
-              as={ImImages}
+              as={MdAttachment}
               boxSize={5}
               onClick={handleIconClick}
               style={{ cursor: 'pointer', border: 'none', padding: 0 }}
             />
-            <Icon as={PiGifFill} boxSize={5} />
-            <Icon as={FaHashtag} boxSize={5} />
-            <Icon as={MdSettings} boxSize={5} />
           </Flex>
         </Flex>
       </Flex>
-      <Flex justify={"space-between"} py={6} textColor={"gray"}>
+      <Flex justify={"space-between"} py={3} textColor={"gray"}>
         <Text>Anyone Can Reply</Text>
 
         <Button colorScheme="gray" rounded={"full"} w={"90px"}>

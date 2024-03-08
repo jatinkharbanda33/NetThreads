@@ -8,6 +8,7 @@ import UserPage from "./pages/UserPage";
 import { useEffect } from "react";
 import { changeUser } from "./redux/slices/userSlice";
 import LikePage from "./pages/LikePage";
+import PostPage from "./pages/PostPage";
 function App() {
   let isUser=useSelector((state)=>state.user);
   const dispatch=useDispatch();
@@ -48,6 +49,7 @@ function App() {
           <Route path='/' element={isUser || localStorage.getItem("authToken") ? <HomePage /> :<Navigate to="/auth" />} />
           <Route path='/auth' element={!isUser ? <AuthPage />: <Navigate to="/" />} />
           <Route path='/post/likes/:id' element={isUser || localStorage.getItem("authToken") ? <LikePage />:<Navigate to="/auth" />}></Route>
+          <Route path='/post/:id' element={isUser || localStorage.getItem("authToken")?<PostPage />:<Navigate to="/auth" />}></Route>
         </Routes>
         </Container>
     </Box>

@@ -4,7 +4,6 @@ import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
-import { formatDistanceToNow, set } from "date-fns";
 import { HStack, Spinner,Link } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
@@ -17,6 +16,15 @@ const Post = ({ post }) => {
   const [repliesCount,setrepliesCount]=useState(post.repliesCount);
   const toggleLike = async () => {
     try {
+      if(isLiked){
+        setLike(!isLiked);
+      setLikesCount(likesCount-1);
+      }
+      else{
+        setLike(!isLiked);
+        setLikesCount(likesCount+1);
+
+      }
       const token = localStorage.getItem("authToken");
       const request = await fetch(`/api/posts/likepost/${post._id}`, {
         method: "POST",
@@ -32,15 +40,11 @@ const Post = ({ post }) => {
       }
       
       if(isLiked){
-      setLike(!isLiked);
-      setLikesCount(likesCount-1);
       let newpost={...post,likesCount:post.likesCount-1};
       dispatch(updatePost(newpost));
       }
       else{
         let newpost={...post,likesCount:post.likesCount+1};
-        setLike(!isLiked);
-      setLikesCount(likesCount+1);
       dispatch(updatePost(newpost));
 
       }
@@ -71,6 +75,24 @@ const Post = ({ post }) => {
     };
     isLiked();
   }, []);
+  function formatTimestamp(timestamp) {
+    const now = new Date();
+    const diff = now.getTime() - new Date(timestamp).getTime();
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+   
+    if (seconds < 60) {
+       return seconds + "s";
+    } else if (minutes < 60) {
+       return minutes + "m";
+    } else if (hours <= 48) {
+       return hours + "h";
+    } else {
+       return days + "d";
+    }
+   }
   return (
       <Flex flex={1} flexDirection={"column"} gap={2} padding={2}>
         <Flex justifyContent={"space-between"} w={"full"}>
@@ -90,7 +112,7 @@ const Post = ({ post }) => {
               textAlign={"right"}
               color={"gray.light"}
             >
-              {formatDistanceToNow(new Date(post.timestamps))} ago
+              {formatTimestamp(post.timestamps)}
             </Text>
           </Flex>
         </Flex>

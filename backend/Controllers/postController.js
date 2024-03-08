@@ -138,7 +138,7 @@ const likePost = async (req, res) => {
 const replyToPost = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
-    const { text } = req.body;
+    const { text,image } = req.body;
     const currentUserId = req.user._id;
     const repliesCollection = await Replies();
     const postCollection = await Posts();
@@ -146,6 +146,8 @@ const replyToPost = async (req, res) => {
       postId: postId,
       userId: currentUserId,
       text: text,
+      image:image,
+      inserted_at:new Date()
     });
     await postCollection.updateOne(
       { _id: postId },
@@ -153,7 +155,7 @@ const replyToPost = async (req, res) => {
     );
     return res
       .status(201)
-      .json({ message: "Reply added to the Post Successfully" });
+      .json({status:true, message: "Reply added to the Post Successfully" });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -234,17 +236,41 @@ const getLikes = async (req, res) => {
 };
 const getReplies = async (req, res) => {
   try {
-    const currentUserId = req.user._id;
     const postId = new ObjectId(String(req.params.id));
     const skip = req.query.skip || 0;
-    const limit = req.query.skip || 12;
+    const limit = req.query.skip || 40;
     const repliesCollection = await Replies();
-    const pipeline = [
-      { $match: { postId: postId } },
-      { $skip: parseInt(skip) },
-      { $limit: parseInt(limit) },
-      { $project: { userId: 1, text: 1 } },
-    ];
+    const pipeline=[
+      {$match:{
+        postId:postId,
+      }},
+      {
+        $sort:{
+          _id:1,
+        }
+      },
+      {$skip:skip},
+      {$limit:limit},
+      {
+        $lookup:{
+          from:"Users",
+          localField:"userId",
+          foreignField:"_id",
+          as:"result",
+        }
+      },
+      {$unwind:{
+        path:"$result"
+      }},
+      {$project:{
+        __id:1,
+        username:"$result.username",
+        profile_picture:"$result.profilepicture",
+        name:"result.name",
+        text:1,
+        image:1,
+      }}
+    ]
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();
     return res.status(200).json(postReplies);
   } catch (err) {
@@ -265,7 +291,28 @@ const isLiked = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
+const deleteReply=async(req,res)=>{
+  try{
+    const currentUserId=req.user._id;
+    const {reply_id,post_id}=req.body;
+    const replyId=new ObjectId(reply_id);
+    const postId=new ObjectId(post_id);
+    const repliesCollection=await Replies();
+    const verifyreply=await repliesCollection.findOne({_id:replyId,postId:postId,userId:currentUserId});
+    if(!verifyreply) return res.status(400).json({error:"Invalid Request"});
+    await repliesCollection.deleteOne({_id:replyId});
+    const postsCollection=await Posts();
+    await postsCollection.updateOne({_id:postId},{$inc:{
+      repliesCount:-1,
+    }});
+    return res.status(200).json({status:true,message:"Reply Deleted"});
+  }
+  catch(err)
+  {
+    return res.status(500).json({ error: err.message });
+    
+  }
+}
 export {
   getPost,
   getFeedPosts,
@@ -277,4 +324,5 @@ export {
   getLikes,
   getReplies,
   isLiked,
+  deleteReply
 };

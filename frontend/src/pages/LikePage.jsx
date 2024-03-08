@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Flex, Spinner,Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 const LikePage = () => {
   const { id } = useParams();
   const [likesArray,setLikesArray]=useState([]);
