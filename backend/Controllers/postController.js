@@ -354,6 +354,38 @@ const deleteReply=async(req,res)=>{
     
   }
 }
+const LikeReply=async(req,res)=>{
+  try{
+    const replyId=new ObjectId(String(req.params.id));
+    const userId=req.user._id;
+    const likesCollection=Likes();
+    const repliesCollection=Replies();
+    const isValid=await repliesCollection.findOne({_id:replyId});
+    if(!isValid) return res.status(400).json({status:false,message:"Invalid Reply Id"});
+    const isLiked=await likesCollection.findOne({replyId:replyId,userId:userId});
+    if(isLiked){
+      await likesCollection.deleteOne({replyId:replyId,userId:userId});
+      await repliesCollection.updateOne({_id:replyId},{$inc:{
+        repliesCount:-1
+      }});
+
+    }
+    else{
+      await likesCollection.insertOne({replyId:replyId,userId:userId});
+      await repliesCollection.updateOne({_id:replyId},{$inc:{
+        repliesCount:1
+      }});
+
+    }
+    return res.status(200).json({status:true,message:"Likes/Unlikes Successfull"});
+
+
+  }
+  catch(err){
+    return res.status(500).json({ error: err.message });
+
+  }
+}
 export {
   getPost,
   getFeedPosts,

@@ -117,7 +117,7 @@ const Post = ({ post }) => {
             </Text>
           </Flex>
         </Flex>
-        <Link as={RouterLink} to={postpath}>
+        <Link as={RouterLink} to={postpath} style={{ textDecoration: 'none'}}>
         <Text fontSize={"md"}>{post.text}</Text>
         {post.image && (
           <Box
@@ -129,7 +129,7 @@ const Post = ({ post }) => {
             <Image src={post.image} w={"full"} />
           </Box>
         )}
-        </Link>
+        </Link >
         <HStack gap={2}>
           {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
           {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}
