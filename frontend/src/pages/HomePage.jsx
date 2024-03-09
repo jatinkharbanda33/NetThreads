@@ -38,8 +38,9 @@ const HomePage = () => {
     getFeedPosts();
   }, []);
   return (
-    <Flex gap="10" alignItems={"flex-start"} >
-      <Box flex={70}>
+    <Flex gap="10" 
+     alignItems={"flex-start"} overflowX="hidden">
+      <Box flex={70} style={{ width: "100%" }}>
         <NewPost />
         {!loading && posts.length === 0 && (
           <Flex justifyContent={"center"}>

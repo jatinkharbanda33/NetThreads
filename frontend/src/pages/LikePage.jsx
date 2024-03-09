@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Spinner,Text,Button } from "@chakra-ui/react";
+import { Box, Flex, Spinner,Text, Button, Avatar, HStack, Image, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 const LikePage = () => {
   const { id } = useParams();
@@ -40,9 +40,10 @@ const LikePage = () => {
         setLoading(false);
     }
   },[]);
+  console.log(likesArray);
   return (
-    <Flex gap="10" alignItems={"flex-start"}>
-      <Box flex={70}>
+    <Flex w="full" alignItems={"flex-start"} >
+      <Box w="full">
       {!loading && likesArray.length === 0 && (
           <Flex justifyContent={"center"}>
             This Post has 0 likes
@@ -54,15 +55,29 @@ const LikePage = () => {
           </Flex>
         )}
         {!loading && likesArray.map((item)=>(
-          <Flex justify={"between"} w={"full"} key = {item._id + "div"}>
-            <Box>
-            <Text key={item._id}>{item.username}</Text>
-            {/* <Text key={item._id+"name"}>{item.name}</Text> */}
-            </Box>
-            <Button>Follow</Button>
-            <hr />
-          </Flex>
+          <Box key={item._id + "d"}>
+
+          <Flex w={"full"} justifyContent={"space-between"} py={4} key = {item._id + "Data"}>
+              <HStack gap="2">
+              <Avatar size="md" src={item.profile_picture} />
+              <VStack gap={0.2}>
+                <HStack>
+              <Text fontSize={"md"} fontWeight={"bold"} ml={3} onClick={() => {}}>
+                {item?.username}
+              </Text>
+              <Image src="/verified.png" w={4} h={4}  />
+                </HStack>
+
+              <Text color={"grey"} ml={-3}>
+                {item?.name}
+              </Text>
+              </VStack>
+            </HStack>
+          <Button variant={"outline"} rounded={"xl"} px={8}>Follow</Button>
           
+          </Flex>
+          <hr style={{marginLeft:"60px",}}/>
+          </Box>
         ))}
 
       </Box>

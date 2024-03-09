@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Post from '../components/Post'
+import Post from "../components/Post"
 import { useParams } from "react-router-dom";
 const PostPage = () => {
   const { id } = useParams();
@@ -54,7 +54,9 @@ const PostPage = () => {
     getPostReplies()
   },[]);
   return (
-    <></>
+    <>
+     {post && <Post post={post} /> }
+    </>
   )
 }
 

@@ -7,9 +7,19 @@ import { FiLogOut } from "react-icons/fi";
 import { changeAuth } from "../redux/slices/authSlice";
 import { AiFillHome } from "react-icons/ai";
 import { changeUser } from "../redux/slices/userSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IoArrowBack } from "react-icons/io5";
+
 const Header = () => {
+  const navigate = useNavigate();
+  const HandleBack=()=>{
+    navigate(-1);
+  }
   const { colorMode, toggleColorMode } = useColorMode();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const {  pathname } = location;
+
   const handleLoginClick = () => {
     dispatch(changeAuth("login"));
   };
@@ -46,11 +56,13 @@ const Header = () => {
   const user = useSelector((state) => state.user);
   return (
     <Flex justifyContent={"space-between"} mt={6} mb={6}>
-      {user && (
+      {user && 
+        pathname =='/'?
         <Link as={RouterLink} to="/">
           <AiFillHome size={24} />
-        </Link>
-      )}
+        </Link>:
+        <IoArrowBack size={24}  onClick={HandleBack}/>}
+      
       {!user && (
         <Link as={RouterLink} to={"/auth"} onClick={handleLoginClick}>
           Login
@@ -65,9 +77,12 @@ const Header = () => {
       />
       {user && (
         <Flex alignItems={"center"} gap={4}>
+          
           <Link as={RouterLink} to={"/"}>
             <RxAvatar size={24} />
           </Link>
+          
+          
           <Link as={RouterLink} to={"/"}>
             <MdOutlineSettings size={20} />
           </Link>

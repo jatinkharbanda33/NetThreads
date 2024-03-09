@@ -4,7 +4,6 @@ import {Navigate,Route,Routes} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
-import UserPage from "./pages/UserPage";
 import { useEffect } from "react";
 import { changeUser } from "./redux/slices/userSlice";
 import LikePage from "./pages/LikePage";

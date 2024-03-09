@@ -14,6 +14,7 @@ import {
 import { MdAttachment } from "react-icons/md";
 
 const NewPost = () => {
+  const [thread, setThread] = useState("");
   let file;
   const handlePost = async () => {
     try {
@@ -47,7 +48,7 @@ const NewPost = () => {
   };
 
   const handleFileChange = (e) => {
-    console
+    
     file = e.target.files[0];
   };
 
@@ -59,6 +60,7 @@ const NewPost = () => {
         base: "full",
         sm: "600px",
       }}
+      
     >
       <Flex direction={"row"}>
         <Avatar name={currentuser?.name} src="https://bit.ly/dan-abramov" />
@@ -71,6 +73,9 @@ const NewPost = () => {
             placeholder="Start a NetThread..."
             size="lg"
             focusBorderColor="grey"
+            onChange={(e)=>{
+              setThread(e.target.value)
+            }}
           ></Input>
           <Flex px={3} justify={"space-between"} w={"140px"}>
             <Input
@@ -91,7 +96,7 @@ const NewPost = () => {
       <Flex justify={"space-between"} py={3} textColor={"gray"}>
         <Text>Anyone Can Reply</Text>
 
-        <Button colorScheme="gray" rounded={"full"} w={"90px"}>
+        <Button colorScheme="gray" rounded={"full"} w={"90px"} isDisabled={thread.length===0 && !file}>
           Post
         </Button>
       </Flex>

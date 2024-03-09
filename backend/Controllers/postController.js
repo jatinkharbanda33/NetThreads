@@ -40,15 +40,17 @@ const getPost = async (req, res) => {
         image:1,
         _id:1,
         result:1,
+        timestamps:1,
+        likesCount:1,
+        repliesCount:1,
         name:"$postedByUser.name",
         username:"$postedByUser.username",
         profilepicture:"$postedByUser.profilepicture"
       }}
     ];
     const result=await postCollection.aggregate(pipeline).toArray();
-    console.log(result);
     if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
-    return res.status(200).json({status:false,result:result[0]});
+    return res.status(200).json({status:true,result:result[0]});
   } catch (err) {
     res.status(500).json({ status:false,error: err.message });
   }
@@ -181,7 +183,9 @@ const replyToPost = async (req, res) => {
       userId: currentUserId,
       text: text,
       image:image,
-      inserted_at:new Date()
+      inserted_at:new Date(),
+      likesCount:0,
+      repliesCount:0
     });
     await postCollection.updateOne(
       { _id: postId },
@@ -259,7 +263,7 @@ const getLikes = async (req, res) => {
         __id:1,
         username:"$result.username",
         profile_picture:"$result.profilepicture",
-        name:"result.name"
+        name:"$result.name"
       }}
     ]
     const postLikes = await likesCollection.aggregate(pipeline).toArray();
@@ -304,6 +308,8 @@ const getReplies = async (req, res) => {
         text:1,
         image:1,
         inserted_at:1,
+        likesCount:1,
+        repliesCount:1,
       }}
     ]
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();

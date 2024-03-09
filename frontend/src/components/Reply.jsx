@@ -8,14 +8,14 @@ import { HStack, Spinner,Link } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
 
-const Post = ({ post }) => {
+const Reply = ({ reply }) => {
   let dispatch=useDispatch();
-  let postpath=String(`/post/${post._id}`);
-  let likespath=String(`/post/likes/${post._id}`);
-  const [isLiked, setLike] = useState(false);
-  const [likesCount,setLikesCount]=useState(post.likesCount);
-  const [repliesCount,setrepliesCount]=useState(post.repliesCount);
-  const toggleLike = async () => {
+  /* let postpath=String(`/post/${post._id}`); */
+  /* let likespath=String(`/post/likes/${post._id}`); */
+  /* const [isLiked, setLike] = useState(false); */
+  /* const [likesCount,setLikesCount]=useState(post.likesCount); */
+ /*  const [repliesCount,setrepliesCount]=useState(post.repliesCount); */
+  /* const toggleLike = async () => {
     try {
       if(isLiked){
         setLike(!isLiked);
@@ -75,7 +75,7 @@ const Post = ({ post }) => {
       }
     };
     isLiked();
-  }, []);
+  }, []); */
   function formatTimestamp(timestamp) {
     const now = new Date();
     const diff = now.getTime() - new Date(timestamp).getTime();
