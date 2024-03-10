@@ -326,10 +326,10 @@ const isLiked = async (req, res) => {
     const result=await likesCollection.findOne({postId:postId,userId:currentUserId});
     if(result) return res.status(200).json({answer:true});
     else{
-      return res.status(200).json({answer:false});
+      return res.status(200).json({status:true,answer:false});
     }
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({status:false, error: err.message });
   }
 };
 const deleteReply=async(req,res)=>{
@@ -350,16 +350,17 @@ const deleteReply=async(req,res)=>{
   }
   catch(err)
   {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({status:false, error: err.message });
     
   }
 }
 const LikeReply=async(req,res)=>{
   try{
-    const replyId=new ObjectId(String(req.params.id));
+    let {replyId}=req.body
+    replyId=new ObjectId(String(replyId));
     const userId=req.user._id;
-    const likesCollection=Likes();
-    const repliesCollection=Replies();
+    const likesCollection=await Likes();
+    const repliesCollection=await Replies();
     const isValid=await repliesCollection.findOne({_id:replyId});
     if(!isValid) return res.status(400).json({status:false,message:"Invalid Reply Id"});
     const isLiked=await likesCollection.findOne({replyId:replyId,userId:userId});
@@ -382,9 +383,29 @@ const LikeReply=async(req,res)=>{
 
   }
   catch(err){
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({status:false, error: err.message });
 
   }
+}
+const isLikedReply=async(req,res)=>{
+  try{
+    const currentUser=req.user._id;
+    let {replyId}=req.body;
+    if(!replyId) return res.status(400).json({status:false,error:"Invalid Request"});
+    replyId=new ObjectId(String(replyId));
+    const likesCollection=await Likes();
+    const isLiked=await likesCollection.findOne({usedId:currentUser,replyId:replyId});
+    if(isLiked){
+      return res.status(200).json({status:true,answer:true});
+    }
+    else{
+      return res.status(200).json({status:true,answer:false});
+    }
+  }
+  catch(err){
+    return res.status(500).json({status:false, error: err.message });
+  }
+
 }
 export {
   getPost,
@@ -397,5 +418,7 @@ export {
   getLikes,
   getReplies,
   isLiked,
-  deleteReply
+  deleteReply,
+  LikeReply,
+  isLikedReply
 };

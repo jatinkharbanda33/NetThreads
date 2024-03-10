@@ -27,7 +27,7 @@ const protectRoute = async (req, res, next) => {
     const userCollection = await Users();
     const userId = String(decode.userId);
     const currentuser = await userCollection.findOne(
-      { _id: new ObjectId(userId) , token:token},
+      { _id:new  ObjectId(userId)},
       { projection: { password: 0 } }
     );
 

@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { ImCancelCircle } from "react-icons/im";
+
 import {
   Box,
   Flex,
@@ -10,19 +12,23 @@ import {
   Avatar,
   Icon,
   IconButton,
+  HStack
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
 
 const NewPost = () => {
   const [thread, setThread] = useState("");
-  let file;
+  const [file, setFile] = useState(null);
+  // let file;
   const handlePost = async () => {
     try {
       const token = localStorage.getItem("authToken");
       const formData = new FormData();
       if(file){
+        
         formData.append("my_file", file);
       }
+      
 
       const response = await axios.post("/api/posts/createpost", {
         headers: {
@@ -44,13 +50,16 @@ const NewPost = () => {
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
+    fileInputRef.current.value="";
     fileInputRef.current.click();
   };
 
   const handleFileChange = (e) => {
     
-    file = e.target.files[0];
+    setFile(e.target.files[0]);
+    console.log(e.target.files[0]);
   };
+  
 
   return (
     <Box
@@ -84,12 +93,21 @@ const NewPost = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
             />
+            <HStack gap={2}>
+
             <Icon
               as={MdAttachment}
               boxSize={5}
               onClick={handleIconClick}
               style={{ cursor: 'pointer', border: 'none', padding: 0 }}
-            />
+              />
+              {file && 
+              <HStack padding={4}>
+                <Text>{file.name}</Text>
+                <ImCancelCircle cursor={"pointer"} onClick = {()=>{setFile(null)}}/>
+              </HStack>
+              }
+            </HStack>
           </Flex>
         </Flex>
       </Flex>

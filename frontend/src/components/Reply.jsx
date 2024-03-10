@@ -4,17 +4,16 @@ import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
-import { HStack, Spinner,Link } from "@chakra-ui/react";
+import { HStack, Spinner, Link } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
 
 const Reply = ({ reply }) => {
-  let dispatch=useDispatch();
   /* let postpath=String(`/post/${post._id}`); */
   /* let likespath=String(`/post/likes/${post._id}`); */
   /* const [isLiked, setLike] = useState(false); */
   /* const [likesCount,setLikesCount]=useState(post.likesCount); */
- /*  const [repliesCount,setrepliesCount]=useState(post.repliesCount); */
+  /*  const [repliesCount,setrepliesCount]=useState(post.repliesCount); */
   /* const toggleLike = async () => {
     try {
       if(isLiked){
@@ -76,32 +75,42 @@ const Reply = ({ reply }) => {
     };
     isLiked();
   }, []); */
-  function formatTimestamp(timestamp) {
-    const now = new Date();
-    const diff = now.getTime() - new Date(timestamp).getTime();
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-   
-    if (seconds < 60) {
-       return seconds + "s";
-    } else if (minutes < 60) {
-       return minutes + "m";
-    } else if (hours <= 48) {
-       return hours + "h";
-    } else {
-       return days + "d";
-    }
-   }
+  // function formatTimestamp(timestamp) {
+  //   const now = new Date();
+  //   const diff = now.getTime() - new Date(timestamp).getTime();
+  //   const seconds = Math.floor(diff / 1000);
+  //   const minutes = Math.floor(seconds / 60);
+  //   const hours = Math.floor(minutes / 60);
+  //   const days = Math.floor(hours / 24);
+
+  //   if (seconds < 60) {
+  //      return seconds + "s";
+  //   } else if (minutes < 60) {
+  //      return minutes + "m";
+  //   } else if (hours <= 48) {
+  //      return hours + "h";
+  //   } else {
+  //      return days + "d";
+  //   }
+  //  }
+
   return (
-      <Flex flex={1} flexDirection={"column"} gap={2} padding={2}>
+    <Flex
+      flex={1}
+      key={reply._id}
+      gap={2}
+      justifyContent={"center"}
+      alignContent={"center"}
+      w={"99%"}
+      padding={5}
+    >
+      <Flex flex={1} flexDirection={"column"} gap={2}>
         <Flex justifyContent={"space-between"} w={"full"}>
           <Flex w={"full"} alignItems={"center"}>
             <HStack gap="2">
               <Avatar size="xs" src="https://bit.ly/broken-link" />
               <Text fontSize={"md"} fontWeight={"bold"} onClick={() => {}}>
-                {post?.username}
+                {reply?.username}
               </Text>
               <Image src="/verified.png" w={4} h={4} ml={1} />
             </HStack>
@@ -113,36 +122,36 @@ const Reply = ({ reply }) => {
               textAlign={"right"}
               color={"gray.light"}
             >
-              {formatTimestamp(post.timestamps)}
+              {"56d"}
             </Text>
           </Flex>
         </Flex>
-        <Link as={RouterLink} to={postpath}>
-        <Text fontSize={"md"}>{post.text}</Text>
-        {post.image && (
+        {/* <Link as={RouterLink} to={postpath}> */}
+        <Text fontSize={"md"}>{reply.text}</Text>
+        {
           <Box
             borderRadius={6}
             overflow={"hidden"}
             border={"1px solid"}
             borderColor={"gray.light"}
           >
-            <Image src={post.image} w={"full"} />
+            {<Image src={reply.image} w={"full"} alt="err" />}
           </Box>
-        )}
-        </Link>
-        <HStack gap={2}>
-          {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
-          {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}
-          <FaRegComment size={18}  />
-        </HStack>
-        <HStack gap={2}>
-          <Link as={RouterLink} to={likespath}>
-          <Text>{likesCount} likes</Text>
-          </Link>
-          <Text>{repliesCount} replies</Text>
-        </HStack>
+        }
+        {/* </Link> */}
+
+        {/* {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
+          {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />} */}
+        <FaRegHeart size={18} />
+
+        {/* <Link as={RouterLink} to={likespath}> */}
+        <Text>{reply.likesCount} likes</Text>
+        {/* </Link> */}
+
+        <hr />
       </Flex>
+    </Flex>
   );
 };
 
-export default Post;
+export default Reply;
