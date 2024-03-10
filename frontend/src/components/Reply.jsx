@@ -11,14 +11,13 @@ import { updatePost } from "../redux/slices/postSlice";
 const Reply = ({ reply }) => {
   /* let postpath=String(`/post/${post._id}`); */
   /* let likespath=String(`/post/likes/${post._id}`); */
-  /* const [isLiked, setLike] = useState(false); */
-  /* const [likesCount,setLikesCount]=useState(post.likesCount); */
-  /*  const [repliesCount,setrepliesCount]=useState(post.repliesCount); */
-  /* const toggleLike = async () => {
+   const [isLiked, setLike] = useState(false);
+   const [likesCount,setLikesCount]=useState(reply.likesCount); 
+   const toggleLike = async () => {
     try {
       if(isLiked){
         setLike(!isLiked);
-      setLikesCount(likesCount-1);
+       setLikesCount(likesCount-1);
       }
       else{
         setLike(!isLiked);
@@ -26,26 +25,30 @@ const Reply = ({ reply }) => {
 
       }
       const token = localStorage.getItem("authToken");
-      const request = await fetch(`/api/posts/likepost/${post._id}`, {
+
+      let payload={
+        replyId:reply._id
+      }
+      const request = await fetch(`/api/posts/likereply`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        body:JSON.stringify(payload)
       });
       const response = await request.json();
-      if (response.error) {
+     
+      if (!response.status) {
         console.log(response.error);
         return;
       }
       
       if(isLiked){
-      let newpost={...post,likesCount:post.likesCount-1};
-      dispatch(updatePost(newpost));
+      reply={...reply,likesCount:reply.likesCount-1};
       }
       else{
-        let newpost={...post,likesCount:post.likesCount+1};
-      dispatch(updatePost(newpost));
+        reply={...reply,likesCount:reply.likesCount+1};
 
       }
     } catch (err) {
@@ -56,16 +59,16 @@ const Reply = ({ reply }) => {
     const isLiked = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const request = await fetch(`/api/posts/isliked/${post._id}`, {
+        const request = await fetch(`/api/posts/isliked/reply/${reply._id}`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          
         });
         const response = await request.json();
-        if (response.error) {
-          console.log(response.error);
+        if (!response.status) {
           return;
         }
         setLike(response['answer']);
@@ -74,7 +77,7 @@ const Reply = ({ reply }) => {
       }
     };
     isLiked();
-  }, []); */
+  }, []);
   // function formatTimestamp(timestamp) {
   //   const now = new Date();
   //   const diff = now.getTime() - new Date(timestamp).getTime();
@@ -138,16 +141,12 @@ const Reply = ({ reply }) => {
             {<Image src={reply.image} w={"full"} alt="err" />}
           </Box>
         }
-        {/* </Link> */}
-
-        {/* {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
-          {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />} */}
-        <FaRegHeart size={18} />
-
+          <HStack gap={2}>
+          {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
+          {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}
+        </HStack>
         {/* <Link as={RouterLink} to={likespath}> */}
-        <Text>{reply.likesCount} likes</Text>
-        {/* </Link> */}
-
+        <Text>{likesCount} likes</Text>
         <hr />
       </Flex>
     </Flex>

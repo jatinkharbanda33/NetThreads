@@ -40,7 +40,6 @@ const LikePage = () => {
         setLoading(false);
     }
   },[]);
-  console.log(likesArray);
   return (
     <Flex w="full" alignItems={"flex-start"} >
       <Box w="full">

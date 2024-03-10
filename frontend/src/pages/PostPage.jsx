@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Post from "../components/Post"
+import Reply from '../components/Reply';
 import { useParams } from "react-router-dom";
 const PostPage = () => {
   const { id } = useParams();
@@ -56,6 +57,7 @@ const PostPage = () => {
   return (
     <>
      {post && <Post post={post} /> }
+     {postReplies.map((reply)=>(<Reply key = {reply._id} reply={reply}/>))}
     </>
   )
 }

@@ -15,7 +15,7 @@ router.post("/getreplies/:id",protectRoute,getReplies);
 router.post("/isliked/:id",protectRoute,isLiked);
 router.post("/deleteReply",protectRoute,deleteReply);
 router.post("/likereply",protectRoute,LikeReply);
-router.post("/isliked/reply",protectRoute,isLikedReply);
+router.post("/isliked/reply/:id",protectRoute,isLikedReply);
 
 
 export default router;

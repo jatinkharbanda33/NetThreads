@@ -367,14 +367,14 @@ const LikeReply=async(req,res)=>{
     if(isLiked){
       await likesCollection.deleteOne({replyId:replyId,userId:userId});
       await repliesCollection.updateOne({_id:replyId},{$inc:{
-        repliesCount:-1
+        likesCount:-1
       }});
 
     }
     else{
       await likesCollection.insertOne({replyId:replyId,userId:userId});
       await repliesCollection.updateOne({_id:replyId},{$inc:{
-        repliesCount:1
+        likesCount:1
       }});
 
     }
@@ -389,12 +389,12 @@ const LikeReply=async(req,res)=>{
 }
 const isLikedReply=async(req,res)=>{
   try{
+    console.log("hello");
     const currentUser=req.user._id;
-    let {replyId}=req.body;
-    if(!replyId) return res.status(400).json({status:false,error:"Invalid Request"});
-    replyId=new ObjectId(String(replyId));
+    let replyId=String(req.params.id);
+    replyId=new ObjectId(replyId);
     const likesCollection=await Likes();
-    const isLiked=await likesCollection.findOne({usedId:currentUser,replyId:replyId});
+    const isLiked=await likesCollection.findOne({userId:currentUser,replyId:replyId});
     if(isLiked){
       return res.status(200).json({status:true,answer:true});
     }
