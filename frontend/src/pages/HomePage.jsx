@@ -6,7 +6,7 @@ import Post from "../components/Post";
 import { changeUser } from "../redux/slices/userSlice";
 import NewPost from "../components/NewPost";
 const HomePage = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const posts = useSelector((state) => state.post);
   const dispatch=useDispatch();
   let currentuser=useSelector((state)=>state.user);
@@ -28,12 +28,12 @@ const HomePage = () => {
           return;
         }
         dispatch(changePost(response));
+        setLoading(false);
         
       } catch (err) {
         console.log(err);
-      } finally {
         setLoading(false);
-      }
+      } 
     };
     getFeedPosts();
   }, []);
@@ -42,17 +42,17 @@ const HomePage = () => {
      alignItems={"flex-start"} overflowX="hidden">
       <Box flex={70} style={{ width: "100%" }}>
         <NewPost />
-        {!loading && posts.length === 0 && (
-          <Flex justifyContent={"center"}>
-            Follow Some users to see the feed
-          </Flex>
-        )}
         {loading && (
           <Flex justify={"center"}>
             <Spinner size="xl"></Spinner>
           </Flex>
         )}
-        {posts.map((post) => (
+        {!loading && posts.length === 0 && (
+          <Flex justifyContent={"center"}>
+            Follow Some users to see the feed
+          </Flex>
+        )}
+        {!loading && posts.map((post) => (
 					<Post key={post._id} post={post}  />
 				))}
       </Box>

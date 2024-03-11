@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 const LikePage = () => {
   const { id } = useParams();
   const [likesArray,setLikesArray]=useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(()=>{
     setLoading(true);
     try{ 
@@ -25,6 +25,7 @@ const LikePage = () => {
                 return;
               }
               setLikesArray(response);
+              setLoading(false);
             }
             catch(err){
                 console.log(err);
@@ -32,7 +33,7 @@ const LikePage = () => {
 
         }
         getLikes();
-        setLoading(false);
+        
 
     }
     catch(err){
@@ -43,14 +44,14 @@ const LikePage = () => {
   return (
     <Flex w="full" alignItems={"flex-start"} >
       <Box w="full">
+      {loading && (
+          <Flex justify={"center"}>
+            <Spinner size="xl"></Spinner>
+          </Flex>
+        )}
       {!loading && likesArray.length === 0 && (
           <Flex justifyContent={"center"}>
             This Post has 0 likes
-          </Flex>
-        )}
-        {loading && (
-          <Flex justify={"center"}>
-            <Spinner size="xl"></Spinner>
           </Flex>
         )}
         {!loading && likesArray.map((item)=>(

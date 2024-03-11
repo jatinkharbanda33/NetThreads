@@ -389,7 +389,6 @@ const LikeReply=async(req,res)=>{
 }
 const isLikedReply=async(req,res)=>{
   try{
-    console.log("hello");
     const currentUser=req.user._id;
     let replyId=String(req.params.id);
     replyId=new ObjectId(replyId);

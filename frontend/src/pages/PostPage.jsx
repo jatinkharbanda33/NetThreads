@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Post from "../components/Post"
 import Reply from '../components/Reply';
 import { useParams } from "react-router-dom";
+import { Flex, Spinner } from "@chakra-ui/react";
 const PostPage = () => {
   const { id } = useParams();
   const [post,setPost]=useState(null);
+  const [loading,setLoading]=useState(true);
   const [postReplies,setPostReplies]=useState([]);
   useEffect(()=>{
     const getPost=async()=>{
@@ -27,6 +29,7 @@ const PostPage = () => {
       }
       catch(err){
         console.log(err);
+        setLoading(false);
       }
     }
     const getPostReplies=async()=>{
@@ -46,9 +49,11 @@ const PostPage = () => {
           return;
         }
         setPostReplies(response.result);
+        setLoading(false);
       }
       catch(err){
         console.log(err);
+        setLoading(false);
       }
     }
     getPost();
@@ -56,8 +61,14 @@ const PostPage = () => {
   },[]);
   return (
     <>
-     {post && <Post post={post} /> }
-     {postReplies.map((reply)=>(<Reply key = {reply._id} reply={reply}/>))}
+    {loading && (
+          <Flex justify={"center"}>
+            <Spinner size="xl"></Spinner>
+          </Flex>
+        )}
+        {!loading && post && <Post post={post} /> }
+     {!loading && postReplies.map((reply)=>(<Reply key = {reply._id} reply={reply}/>))}
+    
     </>
   )
 }
