@@ -57,17 +57,16 @@ const NewPost = () => {
   const handleFileChange = (e) => {
     
     setFile(e.target.files[0]);
-    console.log(e.target.files[0]);
   };
   
 
   return (
-    <Box
+    <Flex direction={'column'}
       p={3}
       rounded={"lg"}
       w={{
         base: "full",
-        sm: "600px",
+        md: "600px",
       }}
       
     >
@@ -118,7 +117,7 @@ const NewPost = () => {
           Post
         </Button>
       </Flex>
-    </Box>
+    </Flex>
   );
 };
 
