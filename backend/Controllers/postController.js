@@ -6,7 +6,7 @@ import {
   PostsMIS,
 } from "../ConnectDB/getData.js";
 import { ObjectId } from "mongodb";
-
+import {putObjectinS3,getUrlinS3} from '../utils/s3bucket.js'
 const getPost = async (req, res) => {
   try {
     const currentUserId=req.user._id;
@@ -100,12 +100,14 @@ const getFeedPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
   try {
-    const { text, image } = req.body;
+    const { text, image_name,image_content_type } = req.body;
     const creatorId = req.user._id;
     const allHashTags = text.match(/#\w+/g) || [];
     const postCollection = await Posts();
     const postsMisCollection = await PostsMIS();
     const currentDate = new Date().setHours(0, 0, 0, 0);
+    const {url,status,error,key}=await putObjectinS3(image_name,req.user.username,image_content_type);
+    if(!status) return res.status(400).json({status:false,error:error});
      await postsMisCollection.updateOne(
       { date: currentDate },
       {
@@ -121,15 +123,15 @@ const createPost = async (req, res) => {
     const newPost = await postCollection.insertOne({
       postedBy: creatorId,
       text: text,
-      image: image,
+      image: key,
       likesCount: 0,
       timestamps: new Date(),
       repliesCount: 0,
       hashTags: allHashTags,
     });
-    return res.status(201).json({ _id: newPost.insertedId });
+    return res.status(201).json({ _id: newPost.insertedId,status:true,url:url });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message,status:false });
   }
 };
 const likePost = async (req, res) => {
