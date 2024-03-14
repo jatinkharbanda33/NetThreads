@@ -102,7 +102,6 @@ const createPost = async (req, res) => {
   try {
     const { text, file_name,file_content_type } = req.body;
     const creatorId = req.user._id;
-    const allHashTags = text.match(/#\w+/g) || [];
     const postCollection = await Posts();
     const postsMisCollection = await PostsMIS();
     const currentDate = new Date().setHours(0, 0, 0, 0);
@@ -111,13 +110,7 @@ const createPost = async (req, res) => {
         { date: currentDate },
         {
           $inc: { postCount: 1 },
-          $addToSet: {
-            hashtags: {
-              $each: allHashTags.map((tag) => ({ name: tag, count: 1 })),
-            },
-          },
         },
-        { upsert: true }
       );
       const newPost = await postCollection.insertOne({
         postedBy: creatorId,
@@ -125,8 +118,7 @@ const createPost = async (req, res) => {
         image: null,
         likesCount: 0,
         timestamps: new Date(),
-        repliesCount: 0,
-        hashTags: allHashTags,
+        repliesCount: 0
       });
       return res.status(201).json({ _id: newPost.insertedId,status:true});
     }
@@ -137,13 +129,9 @@ const createPost = async (req, res) => {
       { date: currentDate },
       {
         $inc: { postCount: 1 },
-        $addToSet: {
-          hashtags: {
-            $each: allHashTags.map((tag) => ({ name: tag, count: 1 })),
-          },
-        },
+        
       },
-      { upsert: true }
+      
     );
     const newPost = await postCollection.insertOne({
       postedBy: creatorId,
@@ -151,8 +139,7 @@ const createPost = async (req, res) => {
       image: key,
       likesCount: 0,
       timestamps: new Date(),
-      repliesCount: 0,
-      hashTags: allHashTags,
+      repliesCount: 0
     });
     return res.status(201).json({ _id: newPost.insertedId,status:true,url:url });
   }

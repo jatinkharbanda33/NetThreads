@@ -25,49 +25,59 @@ const NewPost = () => {
 
   const handlePost = async () => {
     try {
-      const requestBody={};
-      if(!thread && !file) {
+      const requestBody = {};
+      if (!thread && !file) {
         console.log("Invalid request");
         return;
       }
-      if(thread){
-        requestBody.text=String(thread);
+      if (thread) {
+        requestBody.text = thread;
       }
-      if(file){
-        requestBody.file_name=file;
-        requestBody.file_content_type=file;
+      if (file) {
+        requestBody.file_name = file.name;
+        requestBody.file_content_type = file.type;
       }
-      const response = await axios.post("/api/posts/createpost", {
+      console.log(JSON.stringify(requestBody));
+      const token=localStorage.getItem("authToken");
+      const request = await fetch("/api/posts/createpost", {
+        method:"POST",
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "applications/json",
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        
+        body: JSON.stringify(requestBody)
       });
+      const response=await request.json();
+      console.log(response);
 
       if (response.error) {
         console.log(response.error);
         return;
       }
-      if(!response.status){
+      if (!response.status) {
         console.log("error :400");
+        return;
       }
-      if(file){
-        await axios.put(response.url,file,{
-          headers:{
-            "Content-Type":file.type,
+      if (response.url) {
+        await fetch(response.url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type,
           },
-          
-        }).then(response=>{console.log("ok")});
+          body: file 
+        });
+      }
+      setFile(null);
+      setThread("");
+      setFilePreview(null);
+      setView(false);
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
   };
 
   const currentuser = useSelector((state) => state.user);
   const fileInputRef = useRef(null);
-  console.log(currentuser);
   const userPath = `/user/${currentuser?._id}`;
 
   const handleIconClick = () => {
@@ -79,9 +89,9 @@ const NewPost = () => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     setFilePreview(URL.createObjectURL(selectedFile));
-    console.log(file);
+   
   };
-
+  console.log(file);
   return (
     <Flex
       direction={"column"}
@@ -197,6 +207,7 @@ const NewPost = () => {
           rounded={"full"}
           w={"90px"}
           isDisabled={thread.length === 0 && !file}
+          onClick={handlePost}
         >
           Post
         </Button>
