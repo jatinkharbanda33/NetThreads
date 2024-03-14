@@ -25,7 +25,18 @@ const NewPost = () => {
 
   const handlePost = async () => {
     try {
-      
+      const requestBody={};
+      if(!thread && !file) {
+        console.log("Invalid request");
+        return;
+      }
+      if(thread){
+        requestBody.text=String(thread);
+      }
+      if(file){
+        requestBody.file_name=file;
+        requestBody.file_content_type=file;
+      }
       const response = await axios.post("/api/posts/createpost", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -68,6 +79,7 @@ const NewPost = () => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     setFilePreview(URL.createObjectURL(selectedFile));
+    console.log(file);
   };
 
   return (

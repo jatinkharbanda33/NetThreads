@@ -100,13 +100,13 @@ const getFeedPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
   try {
-    const { text, image_name,image_content_type } = req.body;
+    const { text, file_name,file_content_type } = req.body;
     const creatorId = req.user._id;
     const allHashTags = text.match(/#\w+/g) || [];
     const postCollection = await Posts();
     const postsMisCollection = await PostsMIS();
     const currentDate = new Date().setHours(0, 0, 0, 0);
-    if(!image_name || !image_content_type){
+    if(!file_name || !file_content_type){
       await postsMisCollection.updateOne(
         { date: currentDate },
         {
@@ -131,7 +131,7 @@ const createPost = async (req, res) => {
       return res.status(201).json({ _id: newPost.insertedId,status:true});
     }
     else{
-    const {url,status,error,key}=await putObjectinS3(image_name,req.user.username,image_content_type);
+    const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type);
     if(!status) return res.status(400).json({status:false,error:error});
      await postsMisCollection.updateOne(
       { date: currentDate },
