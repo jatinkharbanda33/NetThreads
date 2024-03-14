@@ -39,7 +39,7 @@ const HomePage = () => {
   }, []);
   return (
     <Flex gap="10" 
-     alignItems={"flex-start"} overflowX="hidden">
+     alignItems={"flex-start"} overflow="hidden">
       <Box flex={70} style={{ width: "100%" }}>
         <NewPost />
         {loading && (
