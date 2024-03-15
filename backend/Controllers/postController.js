@@ -11,6 +11,7 @@ const getPost = async (req, res) => {
   try {
     const currentUserId=req.user._id;
     const postId = new ObjectId(String(req.params.id));
+    
     const postCollection = await Posts();
     const pipeline=[
       {$match:{
@@ -50,6 +51,8 @@ const getPost = async (req, res) => {
     ];
     const result=await postCollection.aggregate(pipeline).toArray();
     if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
+    result[0].image=await getUrlinS3(result[0].image);
+    result[0].image=result[0].image.url;
     return res.status(200).json({status:true,result:result[0]});
   } catch (err) {
     res.status(500).json({ status:false,error: err.message });
@@ -92,6 +95,11 @@ const getFeedPosts = async (req, res) => {
     ];
 
     const feedPosts = await postsCollection.aggregate(pipeline).toArray();
+    for(let i=0;i<feedPosts.length;i++){
+      feedPosts[i].image=await getUrlinS3(feedPosts[i].image);
+      feedPosts[i].image=feedPosts[i].image.url;
+      
+    }
     res.status(200).json(feedPosts);
   } catch (err) {
     res.status(500).json({ error: err.message });

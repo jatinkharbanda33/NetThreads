@@ -12,8 +12,6 @@ const getUrlinS3=async(keyy)=>{
                 secretAccessKey:process.env.AWS_SECRET_KEY
             }
         });
-        
-      
         const command=new GetObjectCommand({
             Bucket:"netthreads",
             Key:keyy
