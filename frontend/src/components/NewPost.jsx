@@ -93,6 +93,7 @@ const NewPost = () => {
   };
   console.log(file);
   return (
+    <>
     <Flex
       direction={"column"}
       p={3}
@@ -199,7 +200,7 @@ const NewPost = () => {
           </Flex>
         </Flex>
       </Flex>
-      <Flex justify={"space-between"} py={3} textColor={"gray"}>
+      <Flex justify={"space-between"} alignItems={"center"} textColor={"gray"}>
         <Text>Anyone Can Reply</Text>
 
         <Button
@@ -213,6 +214,8 @@ const NewPost = () => {
         </Button>
       </Flex>
     </Flex>
+    <hr/>
+    </>
   );
 };
 

@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Avatar } from "@chakra-ui/avatar";
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
-import { HStack, Spinner,Link } from "@chakra-ui/react";
+import { HStack, Spinner, Link,VStack } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
 
+
 const Post = ({ post }) => {
-  let dispatch=useDispatch();
-  let postpath=String(`/post/${post._id}`);
-  let likespath=String(`/post/likes/${post._id}`);
+  let dispatch = useDispatch();
+  let postpath = String(`/post/${post._id}`);
+  let likespath = String(`/post/likes/${post._id}`);
   const [isLiked, setLike] = useState(false);
-  const [likesCount,setLikesCount]=useState(post.likesCount);
-  const [repliesCount,setrepliesCount]=useState(post.repliesCount);
+  const [likesCount, setLikesCount] = useState(post.likesCount);
+  const [repliesCount, setrepliesCount] = useState(post.repliesCount);
   const toggleLike = async () => {
     try {
-      if(isLiked){
+      if (isLiked) {
         setLike(!isLiked);
-      setLikesCount(likesCount-1);
-      }
-      else{
+        setLikesCount(likesCount - 1);
+      } else {
         setLike(!isLiked);
-        setLikesCount(likesCount+1);
-
+        setLikesCount(likesCount + 1);
       }
       const token = localStorage.getItem("authToken");
       const request = await fetch(`/api/posts/likepost/${post._id}`, {
@@ -39,15 +38,13 @@ const Post = ({ post }) => {
         console.log(response.error);
         return;
       }
-      
-      if(isLiked){
-      let newpost={...post,likesCount:post.likesCount-1};
-      dispatch(updatePost(newpost));
-      }
-      else{
-        let newpost={...post,likesCount:post.likesCount+1};
-      dispatch(updatePost(newpost));
 
+      if (isLiked) {
+        let newpost = { ...post, likesCount: post.likesCount - 1 };
+        dispatch(updatePost(newpost));
+      } else {
+        let newpost = { ...post, likesCount: post.likesCount + 1 };
+        dispatch(updatePost(newpost));
       }
     } catch (err) {
       console.log(err);
@@ -69,7 +66,7 @@ const Post = ({ post }) => {
           console.log(response.error);
           return;
         }
-        setLike(response['answer']);
+        setLike(response["answer"]);
       } catch (err) {
         console.log(err);
       }
@@ -83,23 +80,33 @@ const Post = ({ post }) => {
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-   
+
     if (seconds < 60) {
-       return seconds + "s";
+      return seconds + "s";
     } else if (minutes < 60) {
-       return minutes + "m";
+      return minutes + "m";
     } else if (hours <= 48) {
-       return hours + "h";
+      return hours + "h";
     } else {
-       return days + "d";
+      return days + "d";
     }
-   }
+  }
   return (
+    <>
+    <Flex borderColor={
+      "gray"
+    }> 
+      <VStack>
+
+      <Avatar size="xs" src="https://bit.ly/broken-link" mt={2}/>
+      
+
+      
+      </VStack>
       <Flex flex={1} flexDirection={"column"} gap={2} padding={2}>
         <Flex justifyContent={"space-between"} w={"full"}>
           <Flex w={"full"} alignItems={"center"}>
             <HStack gap="2">
-              <Avatar size="xs" src="https://bit.ly/broken-link" />
               <Text fontSize={"md"} fontWeight={"bold"} onClick={() => {}}>
                 {post?.username}
               </Text>
@@ -117,32 +124,35 @@ const Post = ({ post }) => {
             </Text>
           </Flex>
         </Flex>
-        <Link as={RouterLink} to={postpath} style={{ textDecoration: 'none'}}>
-        <Text fontSize={"md"}>{post.text}</Text>
-        {post.image && (
-          <Box
-            borderRadius={6}
-            overflow={"hidden"}
-            border={"1px solid"}
-            borderColor={"gray.light"}
-          >
-            <Image src={post.image} w={"full"} />
-          </Box>
-        )}
-        </Link >
+        <Link as={RouterLink} to={postpath} style={{ textDecoration: "none" }}>
+          <Text fontSize={"15px"} mb={3}>{post.text}</Text>
+          {post.image && (
+            <Box
+              borderRadius={6}
+              overflow={"hidden"}
+              border={"1px solid"}
+              borderColor={"gray.light"}
+            >
+              <Image src={post.image} w={"full"} maxHeight={"460px"} />
+            </Box>
+          )}
+        </Link>
         <HStack gap={2}>
-          {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
+          {isLiked && <FaHeart color="red" onClick={toggleLike} size={18} />}
           {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}
-          <FaRegComment size={18}  />
+          <FaRegComment size={18} />
         </HStack>
         <HStack gap={2}>
           <Link as={RouterLink} to={likespath}>
-          <Text>{likesCount} likes</Text>
+            <Text>{likesCount} likes</Text>
           </Link>
           <Text>{repliesCount} replies</Text>
         </HStack>
-        <hr/>
       </Flex>
+     
+    </Flex>
+     <hr />
+     </>
   );
 };
 
