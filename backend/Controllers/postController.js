@@ -260,7 +260,7 @@ const deletePost = async (req, res) => {
 };
 const getUserPosts = async (req, res) => {
   try {
-    const currentUserId = req.params.id;
+    const currentUserId =new ObjectId(String(req.params.id));
     const page_count=req.body.page_count?req.body.page_count:0;
     const limit=30;
     const skip=page_count*limit;
