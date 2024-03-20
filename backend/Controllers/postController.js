@@ -223,7 +223,8 @@ const replyToPost = async (req, res) => {
       text: text,
       inserted_at:new Date(),
       likesCount:0,
-      repliesCount:0
+      repliesCount:0,
+      image:null
     });
   }
     await postCollection.updateOne(
@@ -271,6 +272,11 @@ const getUserPosts = async (req, res) => {
       { $limit: parseInt(limit) },
     ];
     const userPosts = await postCollection.aggregate(pipeline).toArray();
+    for(let i=0;i<userPosts.length;i++){
+      userPosts[i].image=await getUrlinS3(userPosts[i].image);
+      userPosts[i].image=userPosts[i].image.url;
+
+    }
     return res.status(200).json(userPosts);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -355,6 +361,12 @@ const getReplies = async (req, res) => {
       }}
     ]
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();
+    for(let i=0;i<postReplies.length;i++){
+      if(postReplies[i].image){
+        postReplies[i].image=await getUrlinS3(postReplies[i].image);
+        postReplies[i].image=postReplies[i].image.url;
+      }
+    }
     return res.status(200).json({status:true,result:postReplies});
   } catch (err) {
     return res.status(500).json({status:false, error: err.message });
