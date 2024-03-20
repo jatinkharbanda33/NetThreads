@@ -37,7 +37,6 @@ const NewPost = () => {
         requestBody.file_name = file.name;
         requestBody.file_content_type = file.type;
       }
-      console.log(JSON.stringify(requestBody));
       const token=localStorage.getItem("authToken");
       const request = await fetch("/api/posts/createpost", {
         method:"POST",
@@ -91,7 +90,6 @@ const NewPost = () => {
     setFilePreview(URL.createObjectURL(selectedFile));
    
   };
-  console.log(file);
   return (
     <>
     <Flex

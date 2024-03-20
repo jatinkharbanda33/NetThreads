@@ -8,6 +8,7 @@ import NewPost from "../components/NewPost";
 const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const posts = useSelector((state) => state.post);
+  console.log(posts);
   const dispatch=useDispatch();
   let currentuser=useSelector((state)=>state.user);
   useEffect(() => {

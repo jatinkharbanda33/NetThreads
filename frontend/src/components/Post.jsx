@@ -9,8 +9,13 @@ import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
 
 
-const Post = ({ post }) => {
+const Post = ({ post,postname, profilepic }) => {
   let dispatch = useDispatch();
+  if(postname){
+    post.profilepicture = profilepic;
+    post.username = postname;
+  }
+  
   let postpath = String(`/post/${post._id}`);
   let likespath = String(`/post/likes/${post._id}`);
   const [isLiked, setLike] = useState(false);
@@ -98,7 +103,7 @@ const Post = ({ post }) => {
     }> 
       <VStack>
 
-      <Avatar size="xs" src="https://bit.ly/broken-link" mt={2}/>
+      <Avatar size="xs" src={post.profilepicture || "https://bit.ly/broken-link"} mt={2}/>
       
 
       
@@ -107,9 +112,11 @@ const Post = ({ post }) => {
         <Flex justifyContent={"space-between"} w={"full"}>
           <Flex w={"full"} alignItems={"center"}>
             <HStack gap="2">
+              <Link as = {RouterLink} to = {`/user/${post.postedBy}`}>
               <Text fontSize={"md"} fontWeight={"bold"} onClick={() => {}}>
-                {post?.username}
+                {post.username}
               </Text>
+              </Link>
               <Image src="/verified.png" w={4} h={4} ml={1} />
             </HStack>
           </Flex>
