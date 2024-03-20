@@ -90,7 +90,8 @@ const getFeedPosts = async (req, res) => {
         timestamps:1,
         repliesCount:1,
         postedBy:1,
-        username:"$result.username"
+        username:"$result.username",
+        profilepicture:"$result.profilepicture"
         
       }}
     ];
