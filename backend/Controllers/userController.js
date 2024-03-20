@@ -2,6 +2,7 @@ import { Users, Followers, Following } from "../ConnectDB/getData.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import { ObjectId } from "mongodb";
+import { putObjectinS3,getUrlinS3 } from "../utils/s3bucket.js";
 
 const signupUser = async (req, res) => {
   try {
@@ -166,6 +167,23 @@ const getUserByToken=async(req,res)=>{
     res.status(500).json({error:err.message});
   }
 }
+const updateProfilePicture=async(req,res)=>{
+  try{
+    const {file_name,file_content_type}=req.body;
+    const userId=req.user._id;
+    const usersCollection=await Users();
+    const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type,"dp");
+    if(!status) return res.status(400).json({status:false,error:error});
+    await usersCollection.updateOne({_id:userId},{$set:{profilepicture:key}});
+    return res.status(201).json({status:true,url:url});
+
+  }
+  catch(err){
+    res.status(500).json({error:err.message});
+
+  }
+}
+
 
 export {
   signupUser,
@@ -173,5 +191,6 @@ export {
   logoutUser,
   getUserProfile,
   followUnfollowUser,
-  getUserByToken
+  getUserByToken,
+  updateProfilePicture
 };

@@ -60,8 +60,9 @@ const getPost = async (req, res) => {
 };
 const getFeedPosts = async (req, res) => {
   try {
-    const skip = parseInt(req.query.skip) || 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const page_count=req.body.page_count?req.body.page_count:0;
+    const limit=30;
+    const skip = page_count*limit;
     const postsCollection = await Posts();
     const pipeline = [
       {
@@ -131,7 +132,7 @@ const createPost = async (req, res) => {
       return res.status(201).json({ _id: newPost.insertedId,status:true});
     }
     else{
-    const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type);
+    const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type,"post");
     if(!status) return res.status(400).json({status:false,error:error});
      await postsMisCollection.updateOne(
       { date: currentDate },
@@ -197,19 +198,34 @@ const likePost = async (req, res) => {
 const replyToPost = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
-    const { text,image } = req.body;
+    const { text,image_name,image_content_type } = req.body;
     const currentUserId = req.user._id;
     const repliesCollection = await Replies();
     const postCollection = await Posts();
+    if(image_content_type && image_name){
+    const {status,error,key}=await putObjectinS3(image_name,req.user.username,image_content_type,"reply");
+    if(!status) return res.status(400).json({status:false,error:error});
     await repliesCollection.insertOne({
       postId: postId,
       userId: currentUserId,
       text: text,
-      image:image,
+      image:key,
       inserted_at:new Date(),
       likesCount:0,
       repliesCount:0
     });
+
+    }
+    else{
+    await repliesCollection.insertOne({
+      postId: postId,
+      userId: currentUserId,
+      text: text,
+      inserted_at:new Date(),
+      likesCount:0,
+      repliesCount:0
+    });
+  }
     await postCollection.updateOne(
       { _id: postId },
       { $inc: { repliesCount: 1 } }
@@ -244,8 +260,9 @@ const deletePost = async (req, res) => {
 const getUserPosts = async (req, res) => {
   try {
     const currentUserId = req.params.id;
-    const skip = req.query.skip || 0;
-    const limit = req.query.skip || 9;
+    const page_count=req.body.page_count?req.body.page_count:0;
+    const limit=30;
+    const skip=page_count*limit;
     const postCollection = await Posts();
     const pipeline = [
       { $match: { postedBy: currentUserId } },
@@ -262,8 +279,9 @@ const getUserPosts = async (req, res) => {
 const getLikes = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
-    const skip = req.query.skip || 0;
-    const limit = req.query.skip || 40;
+    const page_count=req.body.page_count?req.body.page_count:0;
+    const limit=30;
+    const skip=page_count*limit;
     const likesCollection = await Likes();
     const pipeline=[
       {$match:{
@@ -298,8 +316,9 @@ const getLikes = async (req, res) => {
 const getReplies = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
-    const skip = req.query.skip || 0;
-    const limit = req.query.skip || 40;
+    const page_count=req.body.page_count?req.body.page_count:0;
+    const limit=30;
+    const skip=page_count*limit;
     const repliesCollection = await Replies();
     const pipeline=[
       {$match:{

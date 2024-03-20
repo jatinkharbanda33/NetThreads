@@ -24,7 +24,7 @@ const getUrlinS3=async(keyy)=>{
         return {status:false,error:"Invalid keyy"};
     }
 }
-const putObjectinS3=async(filename,username,contentType)=>{
+const putObjectinS3=async(filename,username,contentType,type)=>{
     try{
         const client = new S3Client({
             region:'ap-south-1',
@@ -37,10 +37,10 @@ const putObjectinS3=async(filename,username,contentType)=>{
         let datetime=moment().format('YYYY-MM-DD HH:mm:ss');
         let keyy
         if(contentType.startsWith("image/")){
-            keyy=`${username}/images/${filename}_${datetime}` 
+            keyy=`${username}/${type}/images/${filename}_${datetime}` 
         }
         else if(contentType.startsWith("video/")){
-            keyy=`${username}/videos/${filename}_${datetime}` 
+            keyy=`${username}/${type}/videos/${filename}_${datetime}` 
 
         }
         else{
