@@ -66,7 +66,7 @@ const PostPage = () => {
             <Spinner size="xl"></Spinner>
           </Flex>
         )}
-        {!loading && post && <Post post={post} /> }
+        {!loading && post && <Post post={post} key={post._id} /> }
      {!loading && postReplies.map((reply)=>(<Reply key = {reply._id} reply={reply}/>))}
     
     </>
