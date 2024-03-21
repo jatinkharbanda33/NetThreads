@@ -61,7 +61,7 @@ const getPost = async (req, res) => {
 const getFeedPosts = async (req, res) => {
   try {
     const page_count=req.body.page_count?req.body.page_count:0;
-    const limit=30;
+    const limit=12;
     const skip = page_count*limit;
     const postsCollection = await Posts();
     const pipeline = [
@@ -263,7 +263,7 @@ const getUserPosts = async (req, res) => {
   try {
     const currentUserId =new ObjectId(String(req.params.id));
     const page_count=req.body.page_count?req.body.page_count:0;
-    const limit=30;
+    const limit=12;
     const skip=page_count*limit;
     const postCollection = await Posts();
     const pipeline = [
@@ -324,7 +324,7 @@ const getReplies = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
     const page_count=req.body.page_count?req.body.page_count:0;
-    const limit=30;
+    const limit=12;
     const skip=page_count*limit;
     const repliesCollection = await Replies();
     const pipeline=[
