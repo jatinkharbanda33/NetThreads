@@ -4,27 +4,36 @@ import { useParams } from "react-router-dom";
 const LikePage = () => {
   const { id } = useParams();
   const [likesArray,setLikesArray]=useState([]);
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   useEffect(()=>{
+    if(!hasMore) return;
     setLoading(true);
     try{ 
         const getLikes=async()=>{
             try{
+              const reqbody={page_count:page};
               const token=localStorage.getItem("authToken");
               const request=await fetch(`/api/posts/getlikes/${id}`,{
                 method:"POST",
                 headers:{
                   Authorization: `Bearer ${token}`,
                    "Content-Type": "application/json",
-                }
+                },
+                body:JSON.stringify(reqbody)
               });
               
               const response=await request.json();
-              if(response.err){
+              if(response.length==0){
+                setHasMore(false);
+                
+              }
+              else if(response.err){
                 console.log(response.err);
                 return;
               }
-              setLikesArray(response);
+              setLikesArray(prevData => [...prevData, ...response]);
               setLoading(false);
             }
             catch(err){
@@ -40,15 +49,22 @@ const LikePage = () => {
         console.log(err);
         setLoading(false);
     }
-  },[]);
+  },[page]);
+  const handleScroll = () => {
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 5 && !loading) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   return (
     <Flex w="full" alignItems={"flex-start"} >
       <Box w="full">
-      {loading && (
-          <Flex justify={"center"}>
-            <Spinner size="xl"></Spinner>
-          </Flex>
-        )}
       {!loading && likesArray.length === 0 && (
           <Flex justifyContent={"center"}>
             This Post has 0 likes
@@ -79,6 +95,11 @@ const LikePage = () => {
           <hr style={{marginLeft:"60px",}}/>
           </Box>
         ))}
+        {loading && (
+          <Flex justify={"center"}>
+            <Spinner size="xl"></Spinner>
+          </Flex>
+        )}
 
       </Box>
       <Box
