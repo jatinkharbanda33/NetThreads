@@ -199,42 +199,45 @@ const likePost = async (req, res) => {
 const replyToPost = async (req, res) => {
   try {
     const postId = new ObjectId(String(req.params.id));
-    const { text,image_name,image_content_type } = req.body;
+    const { text, image_name, image_content_type } = req.body;
     const currentUserId = req.user._id;
     const repliesCollection = await Replies();
     const postCollection = await Posts();
-    if(image_content_type && image_name){
-    const {status,error,key}=await putObjectinS3(image_name,req.user.username,image_content_type,"reply");
-    if(!status) return res.status(400).json({status:false,error:error});
-    await repliesCollection.insertOne({
-      postId: postId,
-      userId: currentUserId,
-      text: text,
-      image:key,
-      inserted_at:new Date(),
-      likesCount:0,
-      repliesCount:0
-    });
-
+    if (image_content_type && image_name) {
+      const { status, error, key } = await putObjectinS3(
+        image_name,
+        req.user.username,
+        image_content_type,
+        "reply"
+      );
+      if (!status) return res.status(400).json({ status: false, error: error });
+      await repliesCollection.insertOne({
+        postId: postId,
+        userId: currentUserId,
+        text: text,
+        image: key,
+        inserted_at: new Date(),
+        likesCount: 0,
+        repliesCount: 0,
+      });
+    } else {
+      await repliesCollection.insertOne({
+        postId: postId,
+        userId: currentUserId,
+        text: text,
+        inserted_at: new Date(),
+        likesCount: 0,
+        repliesCount: 0,
+        image: null,
+      });
     }
-    else{
-    await repliesCollection.insertOne({
-      postId: postId,
-      userId: currentUserId,
-      text: text,
-      inserted_at:new Date(),
-      likesCount:0,
-      repliesCount:0,
-      image:null
-    });
-  }
     await postCollection.updateOne(
       { _id: postId },
       { $inc: { repliesCount: 1 } }
     );
     return res
       .status(201)
-      .json({status:true, message: "Reply added to the Post Successfully" });
+      .json({ status: true, message: "Reply added to the Post Successfully" });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
