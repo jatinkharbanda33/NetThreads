@@ -174,8 +174,6 @@ const NewPost = () => {
                           
                           style={{ width: "25px", height: "25px" }}
                           onClick={() => {
-                            setFile(null);
-                            setFilePreview(null);
                             setView(false);
                           }}
                         />
