@@ -5,7 +5,6 @@ import moment from "moment";
 dotenv.config();
 const getUrlinS3=(keyy)=>{
         const newurl=String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME)+String(keyy);
-        console.log(newurl);
         return newurl;
 }
 const putObjectinS3=async(filename,username,contentType,type)=>{
