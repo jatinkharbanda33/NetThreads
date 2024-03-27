@@ -51,7 +51,7 @@ const getPost = async (req, res) => {
     ];
     const result=await postCollection.aggregate(pipeline).toArray();
     if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
-    if(result.image){
+    if(result[0].image){
     result[0].image=getUrlinS3(result[0].image);
     }
     
