@@ -51,8 +51,8 @@ const getPost = async (req, res) => {
     ];
     const result=await postCollection.aggregate(pipeline).toArray();
     if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
-    result[0].image=await getUrlinS3(result[0].image);
-    result[0].image=result[0].image.url;
+    result[0].image=getUrlinS3(result[0].image);
+    
     return res.status(200).json({status:true,result:result[0]});
   } catch (err) {
     res.status(500).json({ status:false,error: err.message });
@@ -98,9 +98,7 @@ const getFeedPosts = async (req, res) => {
 
     const feedPosts = await postsCollection.aggregate(pipeline).toArray();
     for(let i=0;i<feedPosts.length;i++){
-      feedPosts[i].image=await getUrlinS3(feedPosts[i].image);
-      feedPosts[i].image=feedPosts[i].image.url;
-      
+      feedPosts[i].image=getUrlinS3(feedPosts[i].image);
     }
     res.status(200).json(feedPosts);
   } catch (err) {
@@ -277,8 +275,8 @@ const getUserPosts = async (req, res) => {
     ];
     const userPosts = await postCollection.aggregate(pipeline).toArray();
     for(let i=0;i<userPosts.length;i++){
-      userPosts[i].image=await getUrlinS3(userPosts[i].image);
-      userPosts[i].image=userPosts[i].image.url;
+      userPosts[i].image= getUrlinS3(userPosts[i].image);
+      
 
     }
     return res.status(200).json(userPosts);
@@ -367,8 +365,8 @@ const getReplies = async (req, res) => {
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();
     for(let i=0;i<postReplies.length;i++){
       if(postReplies[i].image){
-        postReplies[i].image=await getUrlinS3(postReplies[i].image);
-        postReplies[i].image=postReplies[i].image.url;
+        postReplies[i].image= getUrlinS3(postReplies[i].image);
+        
       }
     }
     return res.status(200).json({status:true,result:postReplies});
