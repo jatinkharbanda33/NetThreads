@@ -5,6 +5,7 @@ import { changePost } from "../redux/slices/postSlice";
 import { useInView } from 'react-intersection-observer';
 import Post from "../components/Post";
 
+
 import { useInfiniteQuery } from "@tanstack/react-query";
 import NewPost from "../components/NewPost";
 const HomePage = () => {
@@ -68,13 +69,13 @@ const HomePage = () => {
         dispatch(changePost([...posts,...ans]));
       }
     }}, [inView,hasNextPage,fetchNextPage]);
-
+    
   return (
     <Flex gap="10" alignItems={"flex-start"} overflow="hidden">
       <Box flex={70} style={{ width: "100%" }}>
         <NewPost />
         {loading && (
-          <Flex justify={"center"}>
+          <Flex justify={"center"} align={"center"} py={"30px"}>
             <Spinner size="xl"></Spinner>
           </Flex>
         )}
@@ -97,7 +98,7 @@ const HomePage = () => {
           fetchNextPage();
         }}
       >
-        {isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "No more threads..."}
+        {isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "No more NeTthreads..."}
       </Button>
       </VStack>
       </Box>

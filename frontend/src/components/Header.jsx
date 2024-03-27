@@ -9,6 +9,7 @@ import { AiFillHome } from "react-icons/ai";
 import { changeUser } from "../redux/slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
+import react, {useState, useEffect } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -19,6 +20,14 @@ const Header = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const {  pathname } = location;
+  const [loading, setLoading] = useState(true); 
+  const user = useSelector((state) => state.user);
+  useEffect(() => {
+    
+    if (user !== null) {
+      setLoading(false);  
+    }
+  }, [user]);
 
   const handleLoginClick = () => {
     dispatch(changeAuth("login"));
@@ -53,7 +62,7 @@ const Header = () => {
   const changeTheme = () => {
     toggleColorMode();
   };
-  const user = useSelector((state) => state.user);
+  if(loading) return null;
   return (
     <Flex justifyContent={"space-between"} mt={6} mb={6}>
       {user && 
