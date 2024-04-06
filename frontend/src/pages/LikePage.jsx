@@ -7,11 +7,7 @@ import { useInView } from 'react-intersection-observer';
 const LikePage = () => {
   const { id } = useParams();
   const { ref, inView } = useInView();
-  
-  
   const [loading, setLoading] = useState(true);
- 
-    
         const getLikes=async(props)=>{
             try{
               const reqbody = { page_count: props.pageParam };
@@ -28,7 +24,6 @@ const LikePage = () => {
               const response=await request.json();
               if(response.length===0){
                return;
-                
               }
               else if(response.err){
                 console.log(response.err);
@@ -64,7 +59,7 @@ const LikePage = () => {
     
     if(inView && hasNextPage){
       fetchNextPage();
-    }}, [inView,hasNextPage,fetchNextPage]);
+    }}, [inView,hasNextPage]);
 
     const likesArray = data?.pages;
     console.log(likesArray);
@@ -79,8 +74,8 @@ const LikePage = () => {
             This Post has 0 likes
           </Flex>
         )}
-        {!loading && likesArray?.map((items)=>
-        items.map((item)=>(
+        {!loading && likesArray.length>0 &&  likesArray?.map((items)=>
+        items?.map((item)=>(
           <Box key={item._id + "d"}>
           <Flex w={"full"} justifyContent={"space-between"} py={4} key = {item._id + "Data"}>
               <HStack gap="2">

@@ -15,6 +15,7 @@ const Post = ({ post,postname, profilepic }) => {
     post.profilepicture = profilepic;
     post.username = postname;
   }
+
   
   let postpath = String(`/post/${post._id}`);
   let likespath = String(`/post/likes/${post._id}`);
@@ -77,6 +78,7 @@ const Post = ({ post,postname, profilepic }) => {
       }
     };
     isLiked();
+    console.log("Post");
   }, []);
   function formatTimestamp(timestamp) {
     const now = new Date();

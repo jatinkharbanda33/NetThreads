@@ -3,6 +3,7 @@ import Post from "../components/Post"
 import Reply from '../components/Reply';
 import { useParams } from "react-router-dom";
 import { Flex, Spinner } from "@chakra-ui/react";
+import NewReply from '../components/NewReply';
 const PostPage = () => {
   const { id } = useParams();
   const [post,setPost]=useState(null);
@@ -31,6 +32,7 @@ const PostPage = () => {
         console.log(err);
         setLoading(false);
       }
+      console.log("PostPage");
     }
     const getPostReplies=async()=>{
       try{
@@ -66,7 +68,8 @@ const PostPage = () => {
             <Spinner size="xl"></Spinner>
           </Flex>
         )}
-        {!loading && post && <Post post={post} key={post._id} /> }
+        {!loading && post &&<> <Post post={post} key={`/post/${post._id}`} />  <NewReply key={id} postId={id} /> </>}
+       
      {!loading && postReplies.map((reply)=>(<Reply key = {reply._id} reply={reply}/>))}
     
     </>

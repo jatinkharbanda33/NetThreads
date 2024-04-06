@@ -22,7 +22,6 @@ const NewPost = () => {
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const [view, setView] = useState(false);
-
   const handlePost = async () => {
     try {
       const requestBody = {};
@@ -66,6 +65,7 @@ const NewPost = () => {
           body: file 
         });
       }
+      console.log("Here set Thread");
       setFile(null);
       setThread("");
       setFilePreview(null);

@@ -111,7 +111,7 @@ const NewReply = ({postId}) => {
             type="text"
             variant="unstyled"
             p={3}
-            placeholder="Start a NetThread..."
+            placeholder="Reply to this Post"
             size="lg"
             focusBorderColor="grey"
             onChange={(e) => {

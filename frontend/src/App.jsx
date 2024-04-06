@@ -39,8 +39,13 @@ function App() {
       console.log(err);
     }
   }
+  if(!isUser && localStorage.getItem("authToken")){
   getUser();
+  }
+  console.log("User");
+  
   },[])
+  
   return (
     <Box position={"relative"} w={'full'} >
       <Container maxW='620px'>
