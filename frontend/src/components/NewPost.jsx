@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 import { ImCancelCircle } from "react-icons/im";
+import {Divider ,useColorModeValue } from "@chakra-ui/react";
 
 import {
   Box,
@@ -18,6 +19,7 @@ import {
 import { MdAttachment } from "react-icons/md";
 
 const NewPost = () => {
+  const dividerColor = useColorModeValue('black','gray.500');
   const [thread, setThread] = useState("");
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
@@ -210,7 +212,13 @@ const NewPost = () => {
         </Button>
       </Flex>
     </Flex>
-    <hr/>
+    <Divider
+      orientation="horizontal"
+      borderColor={dividerColor}
+      borderWidth="1px"
+      mt={4}
+      mb={4} 
+    />
     </>
   );
 };

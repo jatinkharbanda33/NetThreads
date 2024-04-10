@@ -4,19 +4,20 @@ import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
-import { HStack, Spinner, Link,VStack } from "@chakra-ui/react";
+import { HStack, Spinner, Link,VStack,Divider ,useColorModeValue } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
 
 
-const Post = ({ post,postname, profilepic }) => {
+
+const Post = React.memo(({ post,postname, profilepic }) => {
   let dispatch = useDispatch();
   if(postname){
     post.profilepicture = profilepic;
     post.username = postname;
   }
 
-  
+  const dividerColor = useColorModeValue('black','gray.500');
   let postpath = String(`/post/${post._id}`);
   let likespath = String(`/post/likes/${post._id}`);
   const [isLiked, setLike] = useState(false);
@@ -160,9 +161,17 @@ const Post = ({ post,postname, profilepic }) => {
       </Flex>
      
     </Flex>
-     <hr />
+    <Divider
+      orientation="horizontal"
+      borderColor={dividerColor}
+      borderWidth="1px"
+      
+      
+    />
      </>
   );
-};
+}, (prevProps, nextProps) => {
+  return prevProps.id === nextProps.id;
+});
 
 export default Post;

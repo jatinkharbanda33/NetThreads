@@ -14,14 +14,22 @@ import {useQuery,
   useQueryClient,
   QueryClient,
   QueryClientProvider, } from "@tanstack/react-query";
-const styles = {
-  global: (props) => ({
-    body: {
-      color: mode("gray.800", "whiteAlpha.900")(props),
-      bg: mode("gray.100", "#101010")(props),
+  const styles = {
+    global: (props) => ({
+      body: {
+        color: mode("gray.800", "whiteAlpha.900")(props),
+        bg: mode("gray.100", "#101010")(props),
+      },
+    }),
+    components: {
+      Divider: {
+        baseStyle: (props) => ({
+          color: mode('gray.500', 'black')(props),
+          bg: mode('gray.500', 'black')(props),
+        }),
+      },
     },
-  }),
-};
+  };
 const config = {
   initialColorMode: "dark",
   useSystemColorMode: true,
@@ -42,7 +50,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <ChakraProvider theme={theme}>
           <ColorModeScript initialColorMode={theme.config.initialColorMode} />
           <QueryClientProvider client={queryClient}>
-
           <App />
           </QueryClientProvider>
         </ChakraProvider>

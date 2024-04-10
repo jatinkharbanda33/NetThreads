@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box, Flex, Spinner,Text, Button, Avatar, HStack, Image, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
+import {  Link } from "@chakra-ui/layout";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from 'react-intersection-observer';
+import { Link as RouterLink } from "react-router-dom";
 
-const LikePage = () => {
+const LikePage = React.memo( () => {
   const { id } = useParams();
   const { ref, inView } = useInView();
   const [loading, setLoading] = useState(true);
@@ -82,9 +84,11 @@ const LikePage = () => {
               <Avatar size="md" src={item.profile_picture} />
               <VStack gap={0.2}>
                 <HStack>
+                <Link as = {RouterLink} to = {`/user/${item?._id}`}>
               <Text fontSize={"md"} fontWeight={"bold"} ml={3} onClick={() => {}}>
                 {item?.username}
               </Text>
+              </Link>
               <Image src="/verified.png" w={4} h={4}  />
                 </HStack>
 
@@ -93,7 +97,6 @@ const LikePage = () => {
               </Text>
               </VStack>
             </HStack>
-          <Button variant={"outline"} rounded={"xl"} px={8}>Follow</Button>
           
           </Flex>
           <hr style={{marginLeft:"60px",}}/>
@@ -116,6 +119,6 @@ const LikePage = () => {
     </Flex>
     
   );
-};
+});
 
 export default LikePage;

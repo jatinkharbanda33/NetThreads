@@ -1,8 +1,8 @@
-import { Users, Followers, Following } from "../ConnectDB/getData.js";
+import { Users } from "../ConnectDB/getData.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import { ObjectId } from "mongodb";
-import { putObjectinS3,getUrlinS3 } from "../utils/s3bucket.js";
+import { putObjectinS3 } from "../utils/s3bucket.js";
 
 const signupUser = async (req, res) => {
   try {
@@ -22,9 +22,7 @@ const signupUser = async (req, res) => {
       username: username,
       password: hashedpassword,
       profilepicture: null,
-      bio: null,
-      follower_count: 0,
-      following_count: 0,
+      bio: null
     });
     if (newUser) {
       res.status(201).json({
@@ -61,9 +59,7 @@ const loginUser = async (req, res) => {
       username: user.username,
       profilepicture: user.profilepicture,
       bio: user.bio,
-      token: authtoken,
-      follower_count: user.follower_count,
-      following_count: user.following_count,
+      token: authtoken
     });
   } catch (err) {
     res.status(500).json({status:false, error: err.message });
@@ -92,14 +88,12 @@ const getUserProfile = async (req, res) => {
       { projection: { password: 0, token: 0 } }
     );
     if (!user) return res.status(400).json({ error: "user Not Found" });
-    const followingCollection=await Following();
-    const isfollowedbyuser=await followingCollection.findOne({userId:userId,following:id})
-    res.status(200).json({...user,isfollowing:isfollowedbyuser?1:0});
+    res.status(200).json(user);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
-const followUnfollowUser = async (req, res) => {
+/* const followUnfollowUser = async (req, res) => {
   try {
     const targetUserId = new ObjectId(String(req.params.id));
     const currentUserId = req.user._id;
@@ -157,7 +151,7 @@ const followUnfollowUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
+}; */
 const getUserByToken=async(req,res)=>{
   try{
     const currentuser=req.user;
@@ -190,7 +184,6 @@ export {
   loginUser,
   logoutUser,
   getUserProfile,
-  followUnfollowUser,
   getUserByToken,
   updateProfilePicture
 };

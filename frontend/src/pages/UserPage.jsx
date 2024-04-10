@@ -6,7 +6,7 @@ import Post from "../components/Post";
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const UserPage = () => {
+const UserPage = React.memo( () => {
   const [userProfile, setUserProfile] = useState(null);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -18,9 +18,7 @@ const UserPage = () => {
     const getuser = async () => {
       try {
         const token = localStorage.getItem("authToken");
-
         setLoading(true);
-
         const request = await fetch(URL, {
           method: "GET",
           headers: {
@@ -125,6 +123,6 @@ const UserPage = () => {
       </VStack>
     </>
   );
-};
+});
 
 export default UserPage;

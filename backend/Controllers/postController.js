@@ -2,7 +2,6 @@ import {
   Posts,
   Likes,
   Replies,
-  Following,
   PostsMIS,
 } from "../ConnectDB/getData.js";
 import { ObjectId } from "mongodb";

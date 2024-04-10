@@ -11,17 +11,6 @@ const Posts = async () => {
   const posts = db.collection("Posts");
   return posts;
 };
-const Followers=async ()=>{
-  const db=await getDb();
-  const followers=db.collection("Followers");
-  return followers;
-}
-const Following = async () => {
-  const db = await getDb();
-  const following = db.collection("Following");
-  return following;
-};
-
 const Likes = async () => {
   const db = await getDb();
   const likes = db.collection("Likes");
@@ -37,4 +26,4 @@ const PostsMIS=async()=>{
   const postMis=db.collection("PostsMis");
   return postMis;
 }
-export { Users, Posts,Followers,Following,Likes,Replies,PostsMIS};
+export { Users, Posts,Likes,Replies,PostsMIS};

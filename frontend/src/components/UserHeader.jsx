@@ -244,18 +244,9 @@ const UserHeader = ({ user }) => {
           pb="3"
           cursor={"pointer"}
         >
-          <Text fontWeight={"bold"}> NetThreads</Text>
+          <Text fontWeight={"bold"}> {user.name}'s Activity</Text>
         </Flex>
-        <Flex
-          flex={1}
-          borderBottom={"1px solid gray"}
-          justifyContent={"center"}
-          color={"gray.light"}
-          pb="3"
-          cursor={"pointer"}
-        >
-          <Text fontWeight={"bold"}> Replies</Text>
-        </Flex>
+       
       </Flex>
     </VStack>
   );

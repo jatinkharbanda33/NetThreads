@@ -1,4 +1,4 @@
-import {Button, Flex, Link, Image, useColorMode } from "@chakra-ui/react";
+import {Button, Flex, Link, Image, useColorMode,Avatar } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
@@ -22,6 +22,7 @@ const Header = () => {
   const {  pathname } = location;
   const [loading, setLoading] = useState(true); 
   const user = useSelector((state) => state.user);
+  let currenuserurl=user?`/user/${user._id}`:"/";
   useEffect(() => {
     
     if (user !== null) {
@@ -80,15 +81,15 @@ const Header = () => {
       <Image
         cursor={"pointer"}
         alt="logo"
-        w={6}
-        src={colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
+        w={24}
+        src={colorMode === "dark" ? "/dark_nt.png" : "/light_nt.png"}
         onClick={changeTheme}
       />
       {user && (
         <Flex alignItems={"center"} gap={4}>
           
-          <Link as={RouterLink} to={"/"}>
-            <RxAvatar size={24} />
+          <Link as={RouterLink} to={currenuserurl}>
+          <Avatar name={user?.name} src="https://bit.ly/dan-abramov" size={'sm'} />
           </Link>
           
           

@@ -4,7 +4,7 @@ import Reply from '../components/Reply';
 import { useParams } from "react-router-dom";
 import { Flex, Spinner } from "@chakra-ui/react";
 import NewReply from '../components/NewReply';
-const PostPage = () => {
+const PostPage = React.memo( () => {
   const { id } = useParams();
   const [post,setPost]=useState(null);
   const [loading,setLoading]=useState(true);
@@ -74,6 +74,6 @@ const PostPage = () => {
     
     </>
   )
-}
+})
 
 export default PostPage
