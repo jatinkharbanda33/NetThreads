@@ -80,11 +80,7 @@ const HomePage = React.memo( () => {
             <Spinner size="xl"></Spinner>
           </Flex>
         )}
-        {!loading && posts.length === 0 && (
-          <Flex justifyContent={"center"}>
-            Follow Some users to see the feed
-          </Flex>
-        )}
+        
         {posts.length>0 &&
           posts.map((post) => (
             <Post key={`/home/post/${post._id}`} post={post}  />
