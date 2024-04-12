@@ -200,7 +200,7 @@ const UserHeader = ({ user }) => {
       {/* <Text>{user.bio}</Text> */}
 
       {currentuser?._id === user._id && (
-        <Link as={RouterLink} to="/">
+        <Link as={RouterLink} to="/user/updateinfo">
           <Button size={"sm"}>Update Profile</Button>
         </Link>
       )}

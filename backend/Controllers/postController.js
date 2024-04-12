@@ -50,10 +50,6 @@ const getPost = async (req, res) => {
     ];
     const result=await postCollection.aggregate(pipeline).toArray();
     if(!result || result.length==0) return res.status(400).json({status:false,error:"Invalid Id"});
-    if(result[0].image){
-    result[0].image=getUrlinS3(result[0].image);
-    }
-    
     return res.status(200).json({status:true,result:result[0]});
   } catch (err) {
     res.status(500).json({ status:false,error: err.message });
@@ -98,11 +94,6 @@ const getFeedPosts = async (req, res) => {
     ];
 
     const feedPosts = await postsCollection.aggregate(pipeline).toArray();
-    for(let i=0;i<feedPosts.length;i++){
-      if(feedPosts[i].image){
-      feedPosts[i].image=getUrlinS3(feedPosts[i].image);
-      }
-    }
     res.status(200).json(feedPosts);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -147,7 +138,7 @@ const createPost = async (req, res) => {
     const newPost = await postCollection.insertOne({
       postedBy: creatorId,
       text: text,
-      image: key,
+      image:String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key),
       likesCount: 0,
       timestamps: new Date(),
       repliesCount: 0
@@ -216,7 +207,7 @@ const replyToPost = async (req, res) => {
         postId: postId,
         userId: currentUserId,
         text: text,
-        image: key,
+        image: String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key),
         inserted_at: new Date(),
         likesCount: 0,
         repliesCount: 0,
@@ -277,13 +268,6 @@ const getUserPosts = async (req, res) => {
       { $limit: parseInt(limit) },
     ];
     const userPosts = await postCollection.aggregate(pipeline).toArray();
-    for(let i=0;i<userPosts.length;i++){
-      if(userPosts[i].image){
-      userPosts[i].image= getUrlinS3(userPosts[i].image);
-      }
-      
-
-    }
     return res.status(200).json(userPosts);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -368,12 +352,6 @@ const getReplies = async (req, res) => {
       }}
     ]
     const postReplies = await repliesCollection.aggregate(pipeline).toArray();
-    for(let i=0;i<postReplies.length;i++){
-      if(postReplies[i].image){
-        postReplies[i].image= getUrlinS3(postReplies[i].image);
-        
-      }
-    }
     return res.status(200).json({status:true,result:postReplies});
   } catch (err) {
     return res.status(500).json({status:false, error: err.message });

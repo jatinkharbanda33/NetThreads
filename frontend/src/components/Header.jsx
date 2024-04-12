@@ -81,8 +81,8 @@ const Header = () => {
       <Image
         cursor={"pointer"}
         alt="logo"
-        w={24}
-        src={colorMode === "dark" ? "/dark_nt.png" : "/light_nt.png"}
+        w={8}
+        src={colorMode === "dark" ? "/light-logo.svg" :"/dark-logo.svg" }
         onClick={changeTheme}
       />
       {user && (
@@ -93,7 +93,7 @@ const Header = () => {
           </Link>
           
           
-          <Link as={RouterLink} to={"/"}>
+          <Link as={RouterLink} to={"/user/updateinfo"}>
             <MdOutlineSettings size={20} />
           </Link>
           <Button size={"xs"} onClick={handleLogout}>

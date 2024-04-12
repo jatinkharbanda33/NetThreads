@@ -10,6 +10,7 @@ const AuthPage = lazy(() => import("./pages/AuthPage"));
 const LikePage = lazy(() => import("./pages/LikePage"));
 const PostPage = lazy(() => import("./pages/PostPage"));
 const UserPage = lazy(() => import("./pages/UserPage"));
+const UpdateInfo=lazy(()=>import("./pages/UpdateInfo"))
 
 const App = React.memo(() => {
   let isUser = useSelector((state) => state.user);
@@ -92,6 +93,16 @@ const App = React.memo(() => {
               element={
                 isUser || localStorage.getItem("authToken") ? (
                   <UserPage />
+                ) : (
+                  <Navigate to="/auth" />
+                )
+              }
+            />
+             <Route
+              path="/user/updateinfo"
+              element={
+                isUser || localStorage.getItem("authToken") ? (
+                  <UpdateInfo />
                 ) : (
                   <Navigate to="/auth" />
                 )
