@@ -24,7 +24,6 @@ const SignUpCard = () => {
   const [inputs, setInputs] = useState({
     name: "",
     username: "",
-    email: "",
     password: "",
   });
   const dispatch = useDispatch();
@@ -89,16 +88,6 @@ const SignUpCard = () => {
                 </FormControl>
               </Box>
             </HStack>
-            <FormControl isRequired>
-              <FormLabel>Email address</FormLabel>
-              <Input
-                type="email"
-                onChange={(e) =>
-                  setInputs({ ...inputs, email: e.target.value })
-                }
-                value={inputs.email}
-              />
-            </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>

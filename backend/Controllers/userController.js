@@ -6,10 +6,10 @@ import { putObjectinS3 } from "../utils/s3bucket.js";
 
 const signupUser = async (req, res) => {
   try {
-    const { name, email, username, password } = req.body;
+    const { name, username, password } = req.body;
     const userCollection = await Users();
     const user = await userCollection.findOne({
-      $or: [{ email: email }, { username: username }],
+       username: username ,
     });
     if (user) {
       return res.status(400).json({ error: "User Already Exists" });
@@ -18,7 +18,6 @@ const signupUser = async (req, res) => {
     const hashedpassword = await bcrypt.hash(password, salt);
     const newUser = await userCollection.insertOne({
       name: name,
-      email: email,
       username: username,
       password: hashedpassword,
       profilepicture: null,
@@ -28,7 +27,6 @@ const signupUser = async (req, res) => {
       res.status(201).json({
         _id: newUser.insertedId,
         name: name,
-        email: email,
         username: username,
       });
     } else {
@@ -55,7 +53,6 @@ const loginUser = async (req, res) => {
       status:true,
       _id: user._id,
       name: user.name,
-      email: user.email,
       username: user.username,
       profilepicture: user.profilepicture,
       bio: user.bio,
