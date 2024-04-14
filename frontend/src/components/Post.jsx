@@ -12,6 +12,7 @@ import { updatePost } from "../redux/slices/postSlice";
 
 const Post = React.memo(({ post,postname, profilepic }) => {
   let dispatch = useDispatch();
+  console.log(postname,profilepic);
   if(postname){
     post.profilepicture = profilepic;
     post.username = postname;
@@ -120,7 +121,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
                 {post.username}
               </Text>
               </Link>
-              <Image src="/verified.png" w={4} h={4} ml={1} />
+              <Image src="/verified.png" w={4} h={4} />
             </HStack>
           </Flex>
           <Flex gap={4} alignItems={"center"}>
@@ -147,16 +148,16 @@ const Post = React.memo(({ post,postname, profilepic }) => {
             </Box>
           )}
         </Link>
-        <HStack gap={2}>
-          {isLiked && <FaHeart color="red" onClick={toggleLike} size={18} />}
-          {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}
+        <HStack gap={4}>
+          {isLiked && <FaHeart color="red" onClick={toggleLike} size={20} />}
+          {!isLiked && <FaRegHeart onClick={toggleLike} size={20} />}
           <FaRegComment size={18} />
         </HStack>
-        <HStack gap={2}>
+        <HStack gap={4}>
           <Link as={RouterLink} to={likespath}>
-            <Text>{likesCount} likes</Text>
+            <Text color='#777777'>{likesCount} likes</Text>
           </Link>
-          <Text>{repliesCount} replies</Text>
+          <Text color='#777777'>{repliesCount} replies</Text>
         </HStack>
       </Flex>
      
