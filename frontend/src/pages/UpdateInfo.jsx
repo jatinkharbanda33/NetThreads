@@ -1,14 +1,14 @@
 // src/UpdateInfo.jsx
-import React, { useState } from 'react';
+import React, { useState,useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Button, FormControl, FormLabel, Input, VStack, IconButton ,InputGroup,InputRightElement} from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, VStack, IconButton ,InputGroup,InputRightElement, HStack} from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import { useSelector } from 'react-redux';
-
-
+import {DevTool} from '@hookform/devtools'
+let cnt=0;
 const UpdateInfo = () => {
-  const user = useSelector((state) => state.user);
- const { register, handleSubmit, setValue, formState: { errors } } = useForm(
+const user = useSelector((state) => state.user);
+ const { register,control, handleSubmit, setValue, formState: { errors } } = useForm(
   {
     defaultValues:{
       name:user?.name,
@@ -16,52 +16,46 @@ const UpdateInfo = () => {
     }
   }
  );
- const [isEditing, setIsEditing] = useState({ name: false, username: false });
-
+ cnt++;
+ const [isEditing, setIsEditing] = useState(false);
  const onSubmit = (data) => {
     console.log(data);
-    // Handle form submission, e.g., send data to an API
  };
-
- const toggleEdit = (field) => {
-    setIsEditing({ ...isEditing, [field]: !isEditing[field] });
- };
-
+ const toggleEdit = ()=>{
+  if(isEditing){
+   setValue('name',user?.name);
+    setValue('username',user?.username);
+    setIsEditing(false);
+  }
+  else{
+    setIsEditing(true);
+  }
+ }
  return (
     <Box p={4}>
+      <h1>Total Count {cnt/2}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={4}>
           <FormControl id="name">
             <FormLabel>Name</FormLabel>
             <InputGroup>
-              <Input {...register("name")} isDisabled={!isEditing.name} />
-              <InputRightElement>
-                <IconButton
-                 aria-label="Edit Name"
-                 icon={<EditIcon />}
-                 onClick={() => toggleEdit('name')}
-                />
-              </InputRightElement>
+              <Input {...register("name")} isDisabled={!isEditing} />
             </InputGroup>
           </FormControl>
 
           <FormControl id="username">
             <FormLabel>Username</FormLabel>
             <InputGroup>
-              <Input {...register("username")} isDisabled={!isEditing.username} />
-              <InputRightElement>
-                <IconButton
-                 aria-label="Edit Username"
-                 icon={<EditIcon />}
-                 onClick={() => toggleEdit('username')}
-                />
-              </InputRightElement>
+              <Input {...register("username")} isDisabled={!isEditing} />
             </InputGroup>
           </FormControl>
-
-          <Button type="submit" colorScheme="blue">Update Information</Button>
+          <HStack gap={2}>
+          <Button onClick={toggleEdit} type="submit" colorScheme="blue">{isEditing?"Cancel":"Edit"}</Button>
+          <Button type="submit" colorScheme="blue" isDisabled={!isEditing}>Update Information</Button>
+          </HStack>
         </VStack>
       </form>
+      <DevTool control={control} />
     </Box>
  );
 };
