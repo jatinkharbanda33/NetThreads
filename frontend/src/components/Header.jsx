@@ -1,9 +1,9 @@
-import {Button, Flex, Link, Image, useColorMode,Avatar } from "@chakra-ui/react";
+import {Button, Flex, Link, Image, useColorMode,Avatar,Box, MenuButton,Menu, MenuItem,MenuList,useDisclosure,IconButton } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 import { MdOutlineSettings } from "react-icons/md";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { changeAuth } from "../redux/slices/authSlice";
 import { AiFillHome } from "react-icons/ai";
 import { changeUser } from "../redux/slices/userSlice";
@@ -18,6 +18,7 @@ const Header = () => {
   }
   const { colorMode, toggleColorMode } = useColorMode();
   const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
   const {  pathname } = location;
   const [loading, setLoading] = useState(true); 
@@ -86,20 +87,37 @@ const Header = () => {
         onClick={changeTheme}
       />
       {user && (
-        <Flex alignItems={"center"} gap={4}>
-          
-          <Link as={RouterLink} to={currenuserurl}>
-          <Avatar name={user?.name} src="https://bit.ly/dan-abramov" size={'sm'} />
-          </Link>
-          
-          
-          <Link as={RouterLink} to={"/user/updateinfo"}>
-            <MdOutlineSettings size={20} />
-          </Link>
-          <Button size={"xs"} onClick={handleLogout}>
-						<FiLogOut size={20} />
-					</Button>
-        </Flex>
+       <Flex alignItems="center" gap={4}>
+       <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="left-start">
+         <MenuButton as={IconButton}  icon={isOpen ? <FiX /> : <FiMenu />} />
+         <MenuList>
+           <MenuItem as={RouterLink} to={currenuserurl}>
+             <Flex justifyContent="space-between" width="100%">
+               <Box>Your Profile</Box>
+               <Avatar name={user?.name} src="https://bit.ly/dan-abramov" size={'sm'} />
+             </Flex>
+           </MenuItem>
+           <MenuItem  as={RouterLink} to={"/user/updateinfo"}>
+             <Flex justifyContent="space-between" width="100%">
+               <Box>Update Your Info</Box>
+               <MdOutlineSettings size={20} />
+             </Flex>
+           </MenuItem>
+           <MenuItem onClick={()=>{}}>
+             <Flex justifyContent="space-between" width="100%">
+               <Box>Change Theme</Box>
+               {/* You can use any icon here for theme toggle */}
+             </Flex>
+           </MenuItem>
+           <MenuItem onClick={handleLogout}>
+             <Flex justifyContent="space-between" width="100%">
+               <Box>Sign Out</Box>
+               <FiLogOut size={20} />
+             </Flex>
+           </MenuItem>
+         </MenuList>
+       </Menu>
+     </Flex>
       )}
       {!user && (
         <Link as={RouterLink} to={"/auth"} onClick={handleSignUpClick}>

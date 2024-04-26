@@ -155,7 +155,9 @@ const Post = React.memo(({ post,postname, profilepic }) => {
       ) : (
         <Box as={FaRegHeart} onClick={toggleLike} size={20} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}} />
       )}
+       <Link as = {RouterLink} to = {`/user/${post.postedBy}`}>
       <Box as={FaRegComment} size={18} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}}/>
+      </Link>
     </HStack>
         <HStack gap={4}>
           <Link as={RouterLink} to={likespath}>

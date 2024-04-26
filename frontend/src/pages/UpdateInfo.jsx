@@ -77,7 +77,6 @@ console.log(user);
   }
   {!loading && 
     <Box p={4}>
-      <h1>Total Count {cnt/2}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={4}>
           <FormControl id="name">
