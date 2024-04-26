@@ -11,6 +11,7 @@ const UpdateInfo = () => {
   const [loading,setLoading]=useState(false);
   const dispatch=useDispatch();
 const user = useSelector((state) => state.user);
+console.log(user);
  const { register,control, handleSubmit, setValue, formState: { errors } } = useForm(
   {
     defaultValues:{

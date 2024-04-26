@@ -8,11 +8,10 @@ export const userSlice = createSlice({
         return action.payload;
     },
     changeName:(state,action)=>{
-      return {...state,name:action.payload.name};
+      return {...state,name:action.payload};
     },
     changeUsername:(state,action)=>{
-      console.log("Hello");
-      return {...state,username:action.payload.username};
+      return {...state,username:action.payload};
     }
   }
 });
