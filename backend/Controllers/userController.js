@@ -174,6 +174,39 @@ const updateProfilePicture=async(req,res)=>{
 
   }
 }
+const updateUserDetails = async (req, res) => {
+  try {
+    const { name, username } = req?.body;
+    const currentUser = req.user;
+    const userCollection = await Users();
+    const setFields = {};
+    if (username && username.length > 0 && username != currentUser.username) {
+      const user = await userCollection.findOne({
+        username: username,
+      });
+      if (user) {
+        return res.status(400).json({ error: "User Already Exists" });
+      }
+      setFields.username = String(username);
+    }
+    if (name && name.length > 0 && currentUser.name != name) {
+      setFields.name = String(name);
+    }
+    await userCollection.updateOne(
+      { _id: currentUser._id },
+      { $set: setFields }
+    );
+    return res
+      .status(200)
+      .json({
+        status: true,
+        status_code: 200,
+        message: "User Fields Update Successfully",
+      });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 
 
 export {
@@ -182,5 +215,6 @@ export {
   logoutUser,
   getUserProfile,
   getUserByToken,
-  updateProfilePicture
+  updateProfilePicture,
+  updateUserDetails
 };

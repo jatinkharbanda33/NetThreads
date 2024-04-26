@@ -1,12 +1,15 @@
 // src/UpdateInfo.jsx
 import React, { useState,useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Button, FormControl, FormLabel, Input, VStack, IconButton ,InputGroup,InputRightElement, HStack} from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
-import { useSelector } from 'react-redux';
+import { Box, Button, FormControl, FormLabel, Input, VStack, InputGroup, HStack,Flex,Spinner} from '@chakra-ui/react';
+import { useSelector,useDispatch } from 'react-redux';
 import {DevTool} from '@hookform/devtools'
+import { changeUsername,changeName } from "../redux/slices/userSlice";
+
 let cnt=0;
 const UpdateInfo = () => {
+  const [loading,setLoading]=useState(false);
+  const dispatch=useDispatch();
 const user = useSelector((state) => state.user);
  const { register,control, handleSubmit, setValue, formState: { errors } } = useForm(
   {
@@ -18,9 +21,43 @@ const user = useSelector((state) => state.user);
  );
  cnt++;
  const [isEditing, setIsEditing] = useState(false);
- const onSubmit = (data) => {
-    console.log(data);
- };
+ const onSubmit = async(data) =>{try {
+  setLoading(true);
+  const bodyFields={
+    username:data.username,
+    name:data.name
+  }
+  console.log(bodyFields);
+  const token = localStorage.getItem("authToken");
+
+  const request = await fetch("/api/users/update/userDetails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body:JSON.stringify(bodyFields)
+  });
+
+  const response = await request.json();
+  
+  if (!response.status) {
+    console.log(response.error);
+    return;
+  }
+  console.log(response.message);
+  dispatch(changeUsername(bodyFields.username));
+  dispatch(changeName(bodyFields.name));
+  setIsEditing(false);
+    
+ }
+ catch(err){
+  console.log(err.message);
+ }
+ finally{
+  setLoading(false);
+ }
+};
  const toggleEdit = ()=>{
   if(isEditing){
    setValue('name',user?.name);
@@ -32,6 +69,12 @@ const user = useSelector((state) => state.user);
   }
  }
  return (
+  <>
+  {loading && <Flex justify={"center"} align={"center"} py={"30px"}>
+      <Spinner size="xl"></Spinner>
+    </Flex>
+  }
+  {!loading && 
     <Box p={4}>
       <h1>Total Count {cnt/2}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,14 +93,15 @@ const user = useSelector((state) => state.user);
             </InputGroup>
           </FormControl>
           <HStack gap={2}>
-          <Button onClick={toggleEdit} type="submit" colorScheme="blue">{isEditing?"Cancel":"Edit"}</Button>
+          <Button onClick={toggleEdit}colorScheme="blue">{isEditing?"Cancel":"Edit"}</Button>
           <Button type="submit" colorScheme="blue" isDisabled={!isEditing}>Update Information</Button>
           </HStack>
         </VStack>
       </form>
       <DevTool control={control} />
     </Box>
- );
+  }
+</>)
 };
 
 export default UpdateInfo;
