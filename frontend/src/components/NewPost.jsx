@@ -104,7 +104,7 @@ const NewPost = () => {
       }}
     >
       <Flex direction={"row"}>
-        <Avatar name={currentuser?.name} src="https://bit.ly/dan-abramov" />
+        <Avatar name={currentuser?.name} src={currentuser.profilepicture} />
         <Flex direction={"column"}>
           <Link as = {RouterLink} to={userPath}>
           <Text px={4} fontSize={"md"} fontWeight={"bold"}>

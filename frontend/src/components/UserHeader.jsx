@@ -22,11 +22,14 @@ const UserHeader = ({ user }) => {
   const handleIconClick = () => {
     fileInputRef.current.value = "";
     fileInputRef.current.click();
+   
   };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
+    changeProfilePicture();
+
     
    
   };
@@ -35,27 +38,7 @@ const UserHeader = ({ user }) => {
     const currentURL = window.location.href;
     navigator.clipboard.writeText(currentURL).then(() => {});
   };
-  const handleFollowUnfollow=async()=>{
-    try{
-      const token = localStorage.getItem("authToken");
-      const request=await fetch(`/api/users/follow/${user}`,{
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const response = await request.json();
-      if (response.error) {
-        console.log(response.error);
-        return;
-      }
-      setisfollowing(!isfollowing);
-    }
-    catch(err){
-      console.log(err);
-    }
-  }
+ 
   const changeProfilePicture=async()=>{
     try{
       if(!file){
@@ -87,6 +70,7 @@ const UserHeader = ({ user }) => {
         console.log("error :400");
         return;
       }
+      console.log(response.url);
       if (response.url) {
         await fetch(response.url, {
           method: "PUT",
@@ -203,11 +187,6 @@ const UserHeader = ({ user }) => {
         <Link as={RouterLink} to="/user/updateinfo">
           <Button size={"sm"}>Update Profile</Button>
         </Link>
-      )}
-      {currentuser?._id !== user._id && (
-        <Button size={"sm"} onClick={handleFollowUnfollow}>
-          {isfollowing ? "Unfollow" : "Follow"}
-        </Button>
       )}
       <Flex w={"full"} justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"}>

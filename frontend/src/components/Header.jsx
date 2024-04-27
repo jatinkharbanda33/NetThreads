@@ -79,13 +79,15 @@ const Header = () => {
           Login
         </Link>
       )}
+      <Link as={RouterLink} to={"/"} >
       <Image
         cursor={"pointer"}
         alt="logo"
         w={8}
         src={colorMode === "dark" ? "/light-logo.svg" :"/dark-logo.svg" }
-        onClick={changeTheme}
+        
       />
+      </Link>
       {user && (
        <Flex alignItems="center" gap={4}>
        <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="left-start">
@@ -103,9 +105,9 @@ const Header = () => {
                <MdOutlineSettings size={20} />
              </Flex>
            </MenuItem>
-           <MenuItem onClick={()=>{}}>
+           <MenuItem onClick={changeTheme}>
              <Flex justifyContent="space-between" width="100%">
-               <Box>Change Theme</Box>
+               <Box>{colorMode=='dark'?"Light Mode":"Dark Mode"}</Box>
                {/* You can use any icon here for theme toggle */}
              </Flex>
            </MenuItem>

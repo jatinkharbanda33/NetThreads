@@ -165,7 +165,7 @@ const updateProfilePicture=async(req,res)=>{
     const usersCollection=await Users();
     const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type,"dp");
     if(!status) return res.status(400).json({status:false,error:error});
-    await usersCollection.updateOne({_id:userId},{$set:{profilepicture:key}});
+    await usersCollection.updateOne({_id:userId},{$set:{profilepicture:String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key)}});
     return res.status(201).json({status:true,url:url});
 
   }

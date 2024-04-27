@@ -107,7 +107,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
     }> 
       <VStack>
 
-      <Avatar size="xs" src={post.profilepicture || "https://bit.ly/broken-link"} mt={2}/>
+      <Avatar size="sm" src={post.profilepicture || "https://bit.ly/broken-link"} mt={2.5}/>
       
 
       
@@ -117,7 +117,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
           <Flex w={"full"} alignItems={"center"}>
             <HStack gap="2">
               <Link as = {RouterLink} to = {`/user/${post.postedBy}`}>
-              <Text fontSize={"md"} fontWeight={"bold"} onClick={() => {}}>
+              <Text fontSize={"l"} fontWeight={"bold"} onClick={() => {}}>
                 {post.username}
               </Text>
               </Link>
