@@ -12,10 +12,10 @@ import { updatePost } from "../redux/slices/postSlice";
 
 const Post = React.memo(({ post,postname, profilepic }) => {
   let dispatch = useDispatch();
-  console.log(postname,profilepic);
   if(postname){
     post.profilepicture = profilepic;
     post.username = postname;
+    console.log(postname,profilepic);
   }
 
   const dividerColor = useColorModeValue('black','gray.500');

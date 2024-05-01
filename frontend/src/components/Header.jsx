@@ -22,7 +22,7 @@ const Header = () => {
   const location = useLocation();
   const {  pathname } = location;
   const [loading, setLoading] = useState(true); 
-  const user = useSelector((state) => state.user);
+  let  user = useSelector((state) => state.user);
   let currenuserurl=user?`/user/${user._id}`:"/";
   useEffect(() => {
     
@@ -54,7 +54,8 @@ const Header = () => {
       return
     }
     localStorage.removeItem("authToken");
-    dispatch(changeUser(""));
+    dispatch(changeUser(null));
+    console.log(user);
     }
     catch(err){
       console.log(err);
@@ -74,17 +75,14 @@ const Header = () => {
         </Link>:
         <IoArrowBack size={24}  onClick={HandleBack}/>}
       
-      {!user && (
-        <Link as={RouterLink} to={"/auth"} onClick={handleLoginClick}>
-          Login
-        </Link>
-      )}
-      <Link as={RouterLink} to={"/"} >
+      
+      <Link as={RouterLink} to={user?"/":"/auth"} >
       <Image
         cursor={"pointer"}
         alt="logo"
         w={8}
         src={colorMode === "dark" ? "/light-logo.svg" :"/dark-logo.svg" }
+        onClick={!user && changeTheme}
         
       />
       </Link>
@@ -121,11 +119,7 @@ const Header = () => {
        </Menu>
      </Flex>
       )}
-      {!user && (
-        <Link as={RouterLink} to={"/auth"} onClick={handleSignUpClick}>
-          SignUp
-        </Link>
-      )}
+      
     </Flex>
   );
 };

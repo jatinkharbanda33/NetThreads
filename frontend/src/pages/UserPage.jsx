@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader";
-import { Button,VStack } from "@chakra-ui/react";
+import { Button,VStack,Spinner,Flex } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import Post from "../components/Post";
 import { useInView } from 'react-intersection-observer';
@@ -33,6 +33,7 @@ const UserPage = React.memo( () => {
         }
 
         setUserProfile(response);
+        console.log(response);
       } catch (err) {
         console.log(err);
       } finally {
@@ -95,12 +96,18 @@ const UserPage = React.memo( () => {
   //   return <h1> User Not Found</h1>;
   // }
   const content = data?.pages;
+
   return (
     <>
+     {loading && (
+          <Flex justify={"center"}>
+            <Spinner size="xl"></Spinner>
+          </Flex>
+        )}
       <UserHeader user={userProfile}></UserHeader>
       {!loading && content?.length === 0 && <h1>User has no posts</h1>}
 
-      {content?.map((postarr) =>
+      {!loading && content?.map((postarr) =>
         postarr?.map((post) => (
           <Post
             post={post}

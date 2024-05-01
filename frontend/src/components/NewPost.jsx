@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 import { ImCancelCircle } from "react-icons/im";
 import {Divider ,useColorModeValue } from "@chakra-ui/react";
@@ -13,7 +12,6 @@ import {
   Text,
   Avatar,
   Icon,
-  IconButton,
   HStack,Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";

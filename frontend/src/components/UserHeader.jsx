@@ -13,7 +13,6 @@ import { FaEdit } from "react-icons/fa";
 
 const UserHeader = ({ user }) => {
   const currentuser = useSelector((state) => state.user);
-  const [isfollowing, setisfollowing] = useState(false);
   const [file, setFile] = useState(null);
   
   const fileInputRef = useRef(null);
