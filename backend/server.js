@@ -25,6 +25,6 @@ app.get("/",(req,res)=>{
 });
 
 /* app.use("/api/users",userRoutes);
-app.use("/api/posts",postRoutes);
-app.listen(port,()=>console.log(`Listening on port ${port}`)); */
+app.use("/api/posts",postRoutes); */
+app.listen(port,()=>console.log(`Listening on port ${port}`)); 
 
