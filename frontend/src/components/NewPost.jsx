@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-import { ImCancelCircle } from "react-icons/im";
-import {Divider ,useColorModeValue } from "@chakra-ui/react";
 
+import { Divider, useColorModeValue } from "@chakra-ui/react";
+import { useFileUpload } from "../hooks/use-file-upload";
+import ImageModal from "../modals/ImageModal";
 import {
   Box,
   Flex,
@@ -12,16 +13,17 @@ import {
   Text,
   Avatar,
   Icon,
-  HStack,Link,
+  HStack,
+  Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
 
 const NewPost = () => {
-  const dividerColor = useColorModeValue('black','gray.500');
+  const dividerColor = useColorModeValue("black", "gray.500");
   const [thread, setThread] = useState("");
-  const [file, setFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
-  const [view, setView] = useState(false);
+
+  const { file, filePreview, handleFileChange, clearFile } = useFileUpload();
+
   const handlePost = async () => {
     try {
       const requestBody = {};
@@ -36,16 +38,16 @@ const NewPost = () => {
         requestBody.file_name = file.name;
         requestBody.file_content_type = file.type;
       }
-      const token=localStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken");
       const request = await fetch("/api/posts/createpost", {
-        method:"POST",
+        method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
-      const response=await request.json();
+      const response = await request.json();
       console.log(response);
 
       if (response.error) {
@@ -62,14 +64,14 @@ const NewPost = () => {
           headers: {
             "Content-Type": file.type,
           },
-          body: file 
+          body: file,
         });
       }
       console.log("Here set Thread");
-      setFile(null);
+      // setFile(null);
       setThread("");
-      setFilePreview(null);
-      setView(false);
+      // setFilePreview(null);
+      clearFile();
     } catch (err) {
       console.log(err);
     }
@@ -84,139 +86,82 @@ const NewPost = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    setFilePreview(URL.createObjectURL(selectedFile));
-   
-  };
   return (
     <>
-    <Flex
-      direction={"column"}
-      p={3}
-      rounded={"lg"}
-      w={{
-        base: "full",
-        md: "600px",
-      }}
-    >
-      <Flex direction={"row"}>
-        <Avatar name={currentuser?.name} src={currentuser.profilepicture} />
-        <Flex direction={"column"}>
-          <Link as = {RouterLink} to={userPath}>
-          <Text px={4} fontSize={"md"} fontWeight={"bold"}>
-            {currentuser?.username}
-          </Text>
-          </Link>
-          <Input
-            type="text"
-            variant="unstyled"
-            p={3}
-            placeholder="Start a NetThread..."
-            size="lg"
-            focusBorderColor="grey"
-            onChange={(e) => {
-              setThread(e.target.value);
-            }}
-          ></Input>
-          <Flex px={3} justify={"space-between"} w={"140px"}>
+      <Flex
+        direction={"column"}
+        p={3}
+        rounded={"lg"}
+        w={{
+          base: "full",
+          md: "600px",
+        }}
+      >
+        <Flex direction={"row"}>
+          <Avatar name={currentuser?.name} src={currentuser.profilepicture} />
+          <Flex direction={"column"}>
+            <Link as={RouterLink} to={userPath}>
+              <Text px={4} fontSize={"md"} fontWeight={"bold"}>
+                {currentuser?.username}
+              </Text>
+            </Link>
             <Input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-            <HStack gap={2}>
-              <Icon
-                as={MdAttachment}
-                boxSize={5}
-                onClick={handleIconClick}
-                style={{ cursor: "pointer", border: "none", padding: 0 }}
+              type="text"
+              variant="unstyled"
+              p={3}
+              placeholder="Start a NetThread..."
+              size="lg"
+              focusBorderColor="grey"
+              onChange={(e) => {
+                setThread(e.target.value);
+              }}
+            ></Input>
+            <Flex px={3} justify={"space-between"} w={"140px"}>
+              <Input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
               />
-              {file && (
-                <HStack padding={4}>
-                  {!view ? (
-                    <HStack>
-                      <Text>{file.name}</Text>
-                      <Button
-                        colorScheme="gray"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          setView(true);
-                        }}
-                      >
-                        View Attachment
-                      </Button>
-                      <ImCancelCircle
-                    cursor={"pointer"}
-                    style={{ width: "25px", height: "25px" }}
-                    onClick={() => {
-                      setFile(null);
-                      setFilePreview(null);
-                      setView(false);
-                    }}
-                  />
-                    </HStack>
-
-                  ) : (
-                    <Flex
-                      position="fixed"
-                      top="50%"
-                      left="50%"
-                      transform="translate(-50%, -50%)"
-                      zIndex="9999"
-                    >
-                      <Flex  gap={1} flexDirection={"column"} justifyContent={"center"}  style={{width:"100vh", height:"100vh", backgroundColor: "rgba(0, 0, 0, 0.5)"}}>
-
-                        <ImCancelCircle
-                          cursor={"pointer"}
-                          
-                          style={{ width: "25px", height: "25px" }}
-                          onClick={() => {
-                            setView(false);
-                          }}
-                        />
-                      <img
-                        src={filePreview}
-                        alt="Preview"
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "100%",
-                          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                          borderRadius: "10px",
-                        }}
-                      />
-                      </Flex>
-                    </Flex>
-                  )}
-                </HStack>
-              )}
-            </HStack>
+              <HStack gap={2}>
+                <Icon
+                  as={MdAttachment}
+                  boxSize={5}
+                  onClick={handleIconClick}
+                  style={{ cursor: "pointer", border: "none", padding: 0 }}
+                />
+                {file && file != null && (
+                  <ImageModal filePreview={filePreview} />
+                )}
+              </HStack>
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
-      <Flex justify={"space-between"} alignItems={"center"} textColor={"gray"}>
-        <Text>Anyone Can Reply</Text>
-
-        <Button
-          colorScheme="gray"
-          rounded={"full"}
-          w={"90px"}
-          isDisabled={thread.length === 0 && !file}
-          onClick={handlePost}
+        <Flex
+          justify={"space-between"}
+          alignItems={"center"}
+          textColor={"gray"}
         >
-          Post
-        </Button>
+          <Text>Anyone Can Reply</Text>
+
+          <Button
+            colorScheme="gray"
+            rounded={"full"}
+            w={"90px"}
+            isDisabled={thread.length === 0 && !file}
+            onClick={handlePost}
+          >
+            Post
+          </Button>
+        </Flex>
       </Flex>
-    </Flex>
-    <Divider
-      orientation="horizontal"
-      borderColor={dividerColor}
-      borderWidth="1px"
-      mt={4}
-      mb={4} 
-    />
+      <Divider
+        orientation="horizontal"
+        borderColor={dividerColor}
+        borderWidth="1px"
+        mt={4}
+        mb={4}
+      />
     </>
   );
 };
