@@ -1,119 +1,123 @@
 import { Avatar } from "@chakra-ui/avatar";
-import { Box, Flex, Link, Text, VStack } from "@chakra-ui/layout";
+import { Box, HStack, Flex, Link, Text, VStack } from "@chakra-ui/layout";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import { Portal } from "@chakra-ui/portal";
-import {  useSelector } from "react-redux";
-import { Button, Input, Icon} from "@chakra-ui/react";
-import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
+import { Button, Input, Icon,Image,useColorMode } from "@chakra-ui/react";
+import { useState, useEffect, useRef } from "react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { Link as RouterLink } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-
+import { useFileUpload } from "../hooks/use-file-upload";
+import { ImCancelCircle } from "react-icons/im";
+import ImageModal from "../modals/ImageModal";
 
 const UserHeader = ({ user }) => {
   const currentuser = useSelector((state) => state.user);
-  const [file, setFile] = useState(null);
-  
-  const fileInputRef = useRef(null);
+  const { file, handleFileChange, filePreview, clearFile, setFilePreview } =
+    useFileUpload();
+    const [view,setView] = useState(false);
+    const { colorMode, toggleColorMode } = useColorMode();
 
+  // useEffect(() => {
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setFilePreview(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     setFilePreview(null);
+  //   }
+  // }, [file]);
+  const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
     fileInputRef.current.value = "";
     fileInputRef.current.click();
-   
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    changeProfilePicture();
-
-    
-   
-  };
-  
   const copyURL = () => {
     const currentURL = window.location.href;
     navigator.clipboard.writeText(currentURL).then(() => {});
   };
- 
-  const changeProfilePicture=async()=>{
-    try{
-      if(!file){
-        console.log("No file");
-        return;
-      }
-      const requestBody = {};
-      if (file) {
-        requestBody.file_name = file.name;
-        requestBody.file_content_type = file.type;
-      }
-      const token = localStorage.getItem("authToken");
-      const request=await fetch(`/api/users/update/profilepicture`,{
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody)
-      });
-      const response=await request.json();
-      console.log(response);
 
-      if (response.error) {
-        console.log(response.error);
-        return;
-      }
-      if (!response.status) {
-        console.log("error :400");
-        return;
-      }
-      console.log(response.url);
-      if (response.url) {
-        await fetch(response.url, {
-          method: "PUT",
+  const changeProfilePicture = async () => {
+    // try{
+    if (!file) {
+      console.log("No file");
+      return;
+    }
+    const requestBody = {};
+    if (file) {
+      requestBody.file_name = file.name;
+      requestBody.file_content_type = file.type;
+      console.log(requestBody);
+    }
+    //   const token = localStorage.getItem("authToken");
+    //   const request=await fetch(`/api/users/update/profilepicture`,{
+    //     method: "POST",
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(requestBody)
+    //   });
+    //   const response=await request.json();
+    //   console.log(response);
+
+    //   if (response.error) {
+    //     console.log(response.error);
+    //     return;
+    //   }
+    //   if (!response.status) {
+    //     console.log("error :400");
+    //     return;
+    //   }
+    //   console.log(response.url);
+    //   if (response.url) {
+    //     await fetch(response.url, {
+    //       method: "PUT",
+    //       headers: {
+    //         "Content-Type": file.type,
+    //       },
+    //       body: file
+    //     });
+    //   }
+
+    // }
+    // catch(err){
+    //   console.log(err);
+
+    // }
+  };
+  useEffect(() => {
+    const getuserprofile = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const request = await fetch(`/api/users/profile/${user}`, {
+          method: "GET",
           headers: {
-            "Content-Type": file.type,
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          body: file 
         });
+        const response = await request.json();
+        console.log(response);
+        if (response.error) {
+          console.log(response.error);
+          return;
+        }
+        user = response;
+        setisfollowing(response.isfollowing === 1 ? true : false);
+      } catch (err) {
+        console.log(err);
       }
-
-    }
-    catch(err){
-      console.log(err);
-
-    }
-  }
-  // useEffect(() => {
-  //   const getuserprofile = async () => {
-  //     try{
-  //     const token = localStorage.getItem("authToken");
-  //     const request = await fetch(`/api/users/profile/${user}`, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     const response = await request.json();
-  //     console.log(response);
-  //     if (response.error) {
-  //       console.log(response.error);
-  //       return;
-  //     }
-  //     user=response;
-  //     setisfollowing(response.isfollowing===1?true:false);
-  //   }
-  //   catch(err){
-  //     console.log(err);
-  //   }
-  //   };
-  //   getuserprofile();
-    
-  // }, []);
-  if(!user) return  <h1>No user found</h1>;
+    };
+    getuserprofile();
+  }, []);
+  if (!user) return <h1>No user found</h1>;
   return (
     <VStack gap={4} alignItems={"start"}>
       <Flex justifyContent={"space-between"} w={"full"}>
@@ -155,28 +159,29 @@ const UserHeader = ({ user }) => {
               }}
             />
           )}
-          {
-            currentuser._id === user._id && (
-
+          {currentuser._id === user._id && (
             <Box>
-
-            
-           <Input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-          <Icon
-                as={FaEdit}
-                boxSize={5}
-                onClick={handleIconClick}
-                style={{ cursor: "pointer", border: "none", padding: 0 }}
+              <Input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
               />
-              </Box>
-            )
-          }
-
+              <HStack gap={2}>
+                <Icon
+                  as={FaEdit}
+                  boxSize={5}
+                  onClick={handleIconClick}
+                  style={{ cursor: "pointer", border: "none", padding: 0 }}
+                />
+                {file && file!=null && (
+                  
+                      <ImageModal filePreview={filePreview} />
+                  
+                )}
+              </HStack>
+            </Box>
+          )}
         </Box>
       </Flex>
 
@@ -189,13 +194,23 @@ const UserHeader = ({ user }) => {
       )}
       <Flex w={"full"} justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"}>
-         
           <Box w="1" h="1" bg={"gray.light"} borderRadius={"full"}></Box>
-          <Link color={"gray.light"} to="/">netthreads.com</Link>
+          <Link color={"gray.light"} to="/">
+            netthreads.com
+          </Link>
         </Flex>
         <Flex>
           <Box className="icon-container">
-            <BsInstagram size={24} cursor={"pointer"} />
+          <Image
+                  cursor={"pointer"}
+                  alt="logo"
+                  w={6}
+                  src={
+                    colorMode === "dark"
+                      ? "/dark_n_new.png"
+                      : "/light_n_new.png"
+                  }
+                />
           </Box>
           <Box className="icon-container">
             <Menu>
@@ -224,7 +239,6 @@ const UserHeader = ({ user }) => {
         >
           <Text fontWeight={"bold"}> {user.name}'s Activity</Text>
         </Flex>
-       
       </Flex>
     </VStack>
   );
