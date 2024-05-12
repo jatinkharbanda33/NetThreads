@@ -19,6 +19,7 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useDispatch} from "react-redux";
 import { changeAuth } from "../redux/slices/authSlice";
+import {  toast } from 'sonner'
 const SignUpCard = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputs, setInputs] = useState({
@@ -39,12 +40,14 @@ const SignUpCard = () => {
       const response = await request.json();
       if (response.error) {
         console.log(response.error);
+        toast.error('Invalid Inputs');
         return;
       }
       dispatch(changeAuth("login"));
       
     } catch (err) {
       console.log(err);
+      toast.error('An unexpected Error Occurred');
     }
   };
   return (

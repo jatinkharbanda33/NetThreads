@@ -17,6 +17,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
+import { Toaster, toast } from 'sonner'
 
 const NewPost = () => {
   const dividerColor = useColorModeValue("black", "gray.500");
@@ -50,12 +51,8 @@ const NewPost = () => {
       const response = await request.json();
       console.log(response);
 
-      if (response.error) {
-        console.log(response.error);
-        return;
-      }
       if (!response.status) {
-        console.log("error :400");
+        toast.error('An Error Occurred');
         return;
       }
       if (response.url) {
@@ -67,12 +64,14 @@ const NewPost = () => {
           body: file,
         });
       }
-      console.log("Here set Thread");
+      console.log(response.imageurl);
       // setFile(null);
       setThread("");
       // setFilePreview(null);
       clearFile();
+      toast.success('Post Added');
     } catch (err) {
+      toast.error('An Unexpected Error Occurred');
       console.log(err);
     }
   };
@@ -98,7 +97,7 @@ const NewPost = () => {
         }}
       >
         <Flex direction={"row"}>
-          <Avatar name={currentuser?.name} src={currentuser.profilepicture} />
+          <Avatar name={currentuser?.name} src={currentuser?.profilepicture} />
           <Flex direction={"column"}>
             <Link as={RouterLink} to={userPath}>
               <Text px={4} fontSize={"md"} fontWeight={"bold"}>

@@ -5,6 +5,7 @@ import { Box, Button, FormControl, FormLabel, Input, VStack, InputGroup, HStack,
 import { useSelector,useDispatch } from 'react-redux';
 import {DevTool} from '@hookform/devtools'
 import { changeUsername,changeName } from "../redux/slices/userSlice";
+import {  toast } from 'sonner'
 
 let cnt=0;
 const UpdateInfo = () => {
@@ -43,17 +44,19 @@ console.log(user);
   const response = await request.json();
   
   if (!response.status) {
-    console.log(response.error);
+    toast.error(response?.error);
     return;
   }
   console.log(response.message);
   dispatch(changeUsername(bodyFields.username));
   dispatch(changeName(bodyFields.name));
   setIsEditing(false);
+  toast.success(response?.message);
     
  }
  catch(err){
   console.log(err.message);
+  toast.error("An Error Occurred");
  }
  finally{
   setLoading(false);

@@ -20,6 +20,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { changeAuth } from "../redux/slices/authSlice";
 import { changeUser } from "../redux/slices/userSlice";
+import {  toast } from 'sonner'
 
 const LoginCard = () => {
   const dispatch = useDispatch();
@@ -41,14 +42,17 @@ const LoginCard = () => {
         const response=await request.json();
         if(!response.status){
           setIsError(true);
+          toast.error('Invalid Credentials')
           return;
         }
+        toast.success("Logged In");
         setIsError(false);
         localStorage.setItem("authToken",response["token"]);
         dispatch(changeUser(response));
     }
     catch(err){
         console.log(err);
+        toast.error('An unexpected Error Occurred');
     }
   }
   return (
@@ -116,9 +120,7 @@ const LoginCard = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            {isError && <Stack>
-              <Text align={'center'}>Invalid Credentials</Text>
-              </Stack>}
+           
             <Stack spacing={10} pt={2}>
               <Button
                 size="lg"

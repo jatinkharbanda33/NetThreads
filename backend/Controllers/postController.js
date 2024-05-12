@@ -122,7 +122,7 @@ const createPost = async (req, res) => {
         timestamps: new Date(),
         repliesCount: 0
       });
-      return res.status(201).json({ _id: newPost.insertedId,status:true});
+      return res.status(201).json({ _id: newPost.insertedId,status:true,imageurl:null});
     }
     else{
     const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type,"post");
@@ -135,15 +135,16 @@ const createPost = async (req, res) => {
       },
       
     );
+    const imageurl=String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key);
     const newPost = await postCollection.insertOne({
       postedBy: creatorId,
       text: text,
-      image:String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key),
+      image:imageurl,
       likesCount: 0,
       timestamps: new Date(),
       repliesCount: 0
     });
-    return res.status(201).json({ _id: newPost.insertedId,status:true,url:url });
+    return res.status(201).json({ _id: newPost.insertedId,status:true,url:url,imageurl:imageurl});
   }
   } catch (err) {
     return res.status(500).json({ error: err.message,status:false });
