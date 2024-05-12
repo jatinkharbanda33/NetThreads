@@ -1,5 +1,6 @@
 import {
   Modal,
+  Image,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -23,7 +24,7 @@ function ImageModal({ filePreview }) {
           <ModalHeader>Khabru Hawwtie</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <img
+            <Image
               src={filePreview}
               alt="Preview"
               style={{
