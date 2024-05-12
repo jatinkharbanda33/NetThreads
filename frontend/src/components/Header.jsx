@@ -24,7 +24,7 @@ const Header = () => {
   const {  pathname } = location;
   const [loading, setLoading] = useState(true); 
   let  user = useSelector((state) => state.user);
-  let currenuserurl=user?`/user/${user._id}`:"/";
+  let currenuserurl=user?`/user/${user._id}`:"/home";
   useEffect(() => {
     
     if (user !== null) {

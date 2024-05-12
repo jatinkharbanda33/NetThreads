@@ -58,7 +58,7 @@ const App = React.memo(() => {
           </Flex>}>
           <Routes>
             <Route
-              path="/home"
+              path={"/home"}
               element={
                 isUser || localStorage.getItem("authToken") ? (
                   <HomePage />
@@ -67,6 +67,7 @@ const App = React.memo(() => {
                 )
               }
             />
+            
             <Route
               path="/auth"
               element={!isUser ? <AuthPage /> : <Navigate to="/home" />}
@@ -111,6 +112,11 @@ const App = React.memo(() => {
                 )
               }
             />
+            <Route
+            path="/"
+            element={<Navigate to="/auth" />}
+            
+             />
           </Routes>
         </Suspense>
         <Toaster theme={colorMode=="dark"?"dark":"light"} toastOptions={{
