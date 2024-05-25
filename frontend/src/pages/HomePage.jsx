@@ -10,7 +10,7 @@ const HomePage = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const posts = useSelector((state) => state.post);
   const dispatch = useDispatch();
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
 
   const getFeedPosts = async (isInitialLoad = false) => {
@@ -34,10 +34,10 @@ const HomePage = React.memo(() => {
       }
       console.log(response);
       if (isInitialLoad) {
-        dispatch(changePost(response)); // Dispatching initial load
+        dispatch(changePost(response)); 
       } else {
-        // Optimized dispatch for appending new posts
-        dispatch(changePost(posts.concat(response)));
+        const newPosts=[...posts,...response];
+        dispatch(changePost(newPosts));
         setPage(prev => prev + 1);
       }
       setHasMore(response.length === 30);
@@ -48,9 +48,10 @@ const HomePage = React.memo(() => {
   };
 
   useEffect(() => {
-    if (posts.length === 0) {
+   if(posts.length==0){
       getFeedPosts(true); 
-    }
+   }
+    
   }, []);
 
   return (

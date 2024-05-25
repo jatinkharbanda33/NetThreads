@@ -1,4 +1,4 @@
-import { GetObjectCommand, S3Client ,PutObjectCommand} from "@aws-sdk/client-s3";
+import {  S3Client ,PutObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import dotenv from "dotenv";
 import moment from "moment";
@@ -16,15 +16,13 @@ const putObjectinS3=async(filename,username,contentType,type)=>{
                 secretAccessKey:process.env.AWS_SECRET_KEY
             }
         });
-        
-        let datetime=moment().format('YYYY-MM-DD HH:mm:ss');
         let keyy
         if(contentType.startsWith("image/")){
-            keyy=`${username}/${type}/images/${filename}_${datetime}` 
+            keyy=`${username}/${type}/images/${filename}` 
         }
-        else if(contentType.startsWith("video/")){
+       /*  else if(contentType.startsWith("video/")){
             keyy=`${username}/${type}/videos/${filename}_${datetime}` 
-        }
+        } */
         else{
             return {status:false,error:"invalid content-type"};
         }
