@@ -14,7 +14,7 @@ import ImageModal from "../modals/ImageModal";
 import { EditIcon } from "@chakra-ui/icons";
 import {toast} from 'sonner';
 import { color } from "framer-motion";
-
+import axios from "axios";
 
 const UserHeader = ({ user }) => {
 
@@ -63,15 +63,18 @@ const UserHeader = ({ user }) => {
       console.log(requestBody);
     }
       const token = localStorage.getItem("authToken");
-      const request=await fetch(`/api/users/update/profilepicture`,{
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:`/api/users/update/profilepicture`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody)
-      });
-      const response=await request.json();
+        data:requestBody
+
+      }
+      const request=await axios(sendConfig)
+      const response=await request.data;
       console.log(response);
 
       if (response.error) {

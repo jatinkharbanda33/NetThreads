@@ -20,6 +20,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useDispatch} from "react-redux";
 import { changeAuth } from "../redux/slices/authSlice";
 import {  toast } from 'sonner'
+import axios from "axios";
 const SignUpCard = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputs, setInputs] = useState({
@@ -30,14 +31,17 @@ const SignUpCard = () => {
   const dispatch = useDispatch();
   const handleSignUp = async () => {
     try {
-      const request = await fetch("/api/users/signup", {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:"/api/users/signup",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(inputs),
-      });
-      const response = await request.json();
+        data: inputs
+
+      }
+      const request = await axios(sendConfig)
+      const response = await request.data;
       if (response.error) {
         console.log(response.error);
         toast.error('Invalid Inputs');

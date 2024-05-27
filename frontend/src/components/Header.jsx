@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import react, {useState, useEffect } from "react";
 import { toast } from 'sonner'
+import axios from 'axios'
 
 const Header = () => {
   const navigate = useNavigate();
@@ -41,15 +42,18 @@ const Header = () => {
   const handleLogout=async ()=>{
     try{
     const token=localStorage.getItem("authToken");
-    const request=await fetch("/api/users/logout",{
+    let sendConfig={
       method:"POST",
+      url:"/api/users/logout",
       headers:{
         "Authorization": `Bearer ${token}`,
         "Content-Type":"application/json",
       }
 
-    });
-    const response=await request.json();
+    }
+    const request=await axios(sendConfig);
+   
+    const response=await request.data;
     if(response.err){
       toast.error("An Error Occurred");
       return

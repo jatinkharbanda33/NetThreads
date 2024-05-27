@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { ImCancelCircle } from "react-icons/im";
-
+import axios from "axios";
 import {
   Flex,
   Input,
@@ -36,15 +36,18 @@ const NewReply = ({postId}) => {
         requestBody.image_content_type = file.type;
       }
       const token=localStorage.getItem("authToken");
-      const request = await fetch(`/api/posts/replytopost/${postId}`, {
+      const sendConfig={
         method:"POST",
+        url:`/api/posts/replytopost/${postId}`,
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody)
-      });
-      const response=await request.json();
+       data: requestBody
+
+      }
+      const request = await axios(sendConfig)
+      const response=await request.data;
       console.log(response);
 
       if (response.error) {

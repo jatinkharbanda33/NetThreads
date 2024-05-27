@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
+import axios from "axios";
 
 const LikePage = React.memo(() => {
   const { id } = useParams();
@@ -28,14 +29,18 @@ const LikePage = React.memo(() => {
     try {
       const reqBody = { page_count: isInitialLoad ? 0 : page };
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`/api/posts/getlikes/${id}`, {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:`/api/posts/getlikes/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reqBody),
-      }).then((res) => res.json());
+        data:reqBody
+
+      }
+      const request = await axios(sendConfig)
+      const response=request.data;
 
       if (response.err) {
         console.error(response.err);

@@ -1,10 +1,11 @@
 import express from "express";
 import protectRoute from "../Middlewares/protectRoute.js";
-import {createPost, getFeedPosts,getPost, likePost, replyToPost ,deletePost,getUserPosts,getLikes,getReplies, isLiked, deleteReply, LikeReply, isLikedReply} from "../Controllers/postController.js";
+import {createPost, getPreviousPosts,getRecentPosts,getPost, likePost, replyToPost ,deletePost,getUserPosts,getLikes,getReplies, isLiked, deleteReply, LikeReply, isLikedReply} from "../Controllers/postController.js";
 const router=express.Router();
 
 router.post("/getpost/:id",protectRoute,getPost);
-router.post("/feedposts",protectRoute,getFeedPosts);
+router.post("/feedposts/recent",protectRoute,getRecentPosts);
+router.post("/feedposts/previous",protectRoute,getPreviousPosts);
 router.post("/createpost",protectRoute,createPost);
 router.post("/likepost/:query",protectRoute,likePost);
 router.post("/replytopost/:id",protectRoute,replyToPost);

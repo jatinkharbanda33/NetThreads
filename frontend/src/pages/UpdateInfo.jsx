@@ -6,7 +6,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import {DevTool} from '@hookform/devtools'
 import { changeUsername,changeName } from "../redux/slices/userSlice";
 import {  toast } from 'sonner'
-
+import axios from 'axios';
 let cnt=0;
 const UpdateInfo = () => {
   const [loading,setLoading]=useState(false);
@@ -31,17 +31,18 @@ console.log(user);
   }
   console.log(bodyFields);
   const token = localStorage.getItem("authToken");
-
-  const request = await fetch("/api/users/update/userDetails", {
-    method: "POST",
+  const sendConfig={
+    method:"POST",
+    url:"/api/users/update/userDetails",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body:JSON.stringify(bodyFields)
-  });
+    data:bodyFields
+  }
+  const request = await axios(sendConfig)
 
-  const response = await request.json();
+  const response = await request.data;
   
   if (!response.status) {
     toast.error(response?.error);

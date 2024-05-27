@@ -17,7 +17,8 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
-import { Toaster, toast } from 'sonner'
+import {  toast } from 'sonner'
+import axios from "axios";
 
 const NewPost = () => {
   const dividerColor = useColorModeValue("black", "gray.500");
@@ -40,15 +41,18 @@ const NewPost = () => {
         requestBody.file_content_type = file.type;
       }
       const token = localStorage.getItem("authToken");
-      const request = await fetch("/api/posts/createpost", {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:"/api/posts/createpost",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
-      });
-      const response = await request.json();
+        data:requestBody,
+
+      }
+      const request = await axios(sendConfig)
+      const response = await request.data;
       console.log(response);
 
       if (!response.status) {

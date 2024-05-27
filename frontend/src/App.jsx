@@ -12,6 +12,7 @@ const PostPage = lazy(() => import("./pages/PostPage"));
 const UserPage = lazy(() => import("./pages/UserPage"));
 const UpdateInfo=lazy(()=>import("./pages/UpdateInfo"));
 import { Toaster } from 'sonner'
+import axios from "axios";
 
 const App = React.memo(() => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -22,14 +23,17 @@ const App = React.memo(() => {
       try {
         if (localStorage.getItem("authToken") && !isUser) {
           const token = localStorage.getItem("authToken");
-          const req1 = await fetch("/api/users/getuser/token", {
-            method: "POST",
+          const sendConfig={
+            method:"POST",
+            url:"/api/users/getuser/token",
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-            },
-          });
-          const res1 = await req1.json();
+            }
+
+          }
+          const req1 = await axios(sendConfig)
+          const res1 = await req1.data;
           if (res1.status == false) {
             localStorage.removeItem("authToken");
             return;

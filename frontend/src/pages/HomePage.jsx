@@ -5,6 +5,7 @@ import { changePost } from "../redux/slices/postSlice";
 import Post from "../components/Post";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NewPost from "../components/NewPost";
+import axios from 'axios'
 
 const HomePage = React.memo(() => {
   const [loading, setLoading] = useState(false);
@@ -17,17 +18,21 @@ const HomePage = React.memo(() => {
     if (loading ||!hasMore) return;
     setLoading(true);
     try {
-      const reqBody = { page_count: page };
+
+      const reqBody = { lastFetchedPostId:posts.length>0?posts[posts.length-1]._id:null };
       const token = localStorage.getItem("authToken");
-      const request = await fetch("/api/posts/feedposts", {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:"/api/posts/feedposts/previous",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reqBody),
-      });
-      const response = await request.json();
+        data:reqBody
+      }
+      const request = await axios(sendConfig);
+      const response = request.data;
+      console.log(response);
       if (response.error) {
         console.log(response.error);
         return;
