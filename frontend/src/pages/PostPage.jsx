@@ -4,6 +4,7 @@ import Reply from '../components/Reply';
 import { useParams } from "react-router-dom";
 import { Flex, Spinner } from "@chakra-ui/react";
 import NewReply from '../components/NewReply';
+import axios from 'axios';
 const PostPage = React.memo( () => {
   const { id } = useParams();
   const [post,setPost]=useState(null);
@@ -13,15 +14,18 @@ const PostPage = React.memo( () => {
     const getPost=async()=>{
       try{
         const token=localStorage.getItem("authToken");
-        const request=await fetch(`/api/posts/getpost/${id}`,{
+        const sendConfig={
           method:"POST",
+          url:`/api/posts/getpost/${id}`,
           headers:{
             Authorization: `Bearer ${token}`,
              "Content-Type": "application/json",
           }
-        });
+
+        }
+        const request=await axios(sendConfig)
         
-        const response=await request.json();
+        const response=await request.data;
         if(!response.status){
           console.log(response.error);
           return;

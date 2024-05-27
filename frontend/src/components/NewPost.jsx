@@ -17,6 +17,8 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
+import {  toast } from 'sonner'
+import axios from "axios";
 
 const NewPost = () => {
   const dividerColor = useColorModeValue("black", "gray.500");
@@ -39,23 +41,22 @@ const NewPost = () => {
         requestBody.file_content_type = file.type;
       }
       const token = localStorage.getItem("authToken");
-      const request = await fetch("/api/posts/createpost", {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:"/api/posts/createpost",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
-      });
-      const response = await request.json();
+        data:requestBody,
+
+      }
+      const request = await axios(sendConfig)
+      const response = await request.data;
       console.log(response);
 
-      if (response.error) {
-        console.log(response.error);
-        return;
-      }
       if (!response.status) {
-        console.log("error :400");
+        toast.error('An Error Occurred');
         return;
       }
       if (response.url) {
@@ -67,12 +68,14 @@ const NewPost = () => {
           body: file,
         });
       }
-      console.log("Here set Thread");
+      console.log(response.imageurl);
       // setFile(null);
       setThread("");
       // setFilePreview(null);
       clearFile();
+      toast.success('Post Added');
     } catch (err) {
+      toast.error('An Unexpected Error Occurred');
       console.log(err);
     }
   };
@@ -98,7 +101,7 @@ const NewPost = () => {
         }}
       >
         <Flex direction={"row"}>
-          <Avatar name={currentuser?.name} src={currentuser.profilepicture} />
+          <Avatar name={currentuser?.name} src={currentuser?.profilepicture} />
           <Flex direction={"column"}>
             <Link as={RouterLink} to={userPath}>
               <Text px={4} fontSize={"md"} fontWeight={"bold"}>

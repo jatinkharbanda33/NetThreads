@@ -1,4 +1,4 @@
-import {Button, Flex, Link, Image, useColorMode,Avatar,Box, MenuButton,Menu, MenuItem,MenuList,useDisclosure,IconButton } from "@chakra-ui/react";
+import {Button, Flex, Link, Image, useColorMode,Avatar,Box, MenuButton,Menu, MenuItem,MenuList,useDisclosure,IconButton, background } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
@@ -10,6 +10,8 @@ import { changeUser } from "../redux/slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import react, {useState, useEffect } from "react";
+import { toast } from 'sonner'
+import axios from 'axios'
 
 const Header = () => {
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const Header = () => {
   const {  pathname } = location;
   const [loading, setLoading] = useState(true); 
   let  user = useSelector((state) => state.user);
-  let currenuserurl=user?`/user/${user._id}`:"/";
+  let currenuserurl=user?`/user/${user._id}`:"/home";
   useEffect(() => {
     
     if (user !== null) {
@@ -40,43 +42,55 @@ const Header = () => {
   const handleLogout=async ()=>{
     try{
     const token=localStorage.getItem("authToken");
-    const request=await fetch("/api/users/logout",{
+    let sendConfig={
       method:"POST",
+      url:"/api/users/logout",
       headers:{
         "Authorization": `Bearer ${token}`,
         "Content-Type":"application/json",
       }
 
-    });
-    const response=await request.json();
+    }
+    const request=await axios(sendConfig);
+   
+    const response=await request.data;
     if(response.err){
-      console.log(response.err);
+      toast.error("An Error Occurred");
       return
     }
+    toast.success("Logged Out")
     localStorage.removeItem("authToken");
     dispatch(changeUser(null));
     console.log(user);
     }
     catch(err){
+      toast.error("An Error Occurred");
       console.log(err);
     }
 
   }
   const changeTheme = () => {
+    if(colorMode=='light'){
+      toast.success('Switched to Dark Mode');
+    }
+    else{
+      toast.success('Switched to Light Mode');
+    }
     toggleColorMode();
+    
   };
   if(loading) return null;
   return (
     <Flex justifyContent={"space-between"} mt={6} mb={6}>
       {user && 
-        pathname =='/'?
-        <Link as={RouterLink} to="/">
+        pathname =='/home'?
+        <Link as={RouterLink} to="/home">
           <AiFillHome size={24} />
         </Link>:
         <IoArrowBack size={24}  onClick={HandleBack}/>}
       
       
-      <Link as={RouterLink} to={user?"/":"/auth"} >
+      <Link as={RouterLink} to={user?"/home":"/auth"} >
       <Image
         cursor={"pointer"}
         alt="logo"
@@ -94,7 +108,7 @@ const Header = () => {
            <MenuItem as={RouterLink} to={currenuserurl}>
              <Flex justifyContent="space-between" width="100%">
                <Box>Your Profile</Box>
-               <Avatar name={user?.name} src="https://bit.ly/dan-abramov" size={'sm'} />
+               <Avatar name={user?.name} src={user.profilepicture} size={'sm'} />
              </Flex>
            </MenuItem>
            <MenuItem  as={RouterLink} to={"/user/updateinfo"}>

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import Post from "../components/Post";
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from "@tanstack/react-query";
-
+import axios from "axios";
 const UserPage = React.memo( () => {
   const [userProfile, setUserProfile] = useState(null);
   const { id } = useParams();
@@ -19,14 +19,16 @@ const UserPage = React.memo( () => {
       try {
         const token = localStorage.getItem("authToken");
         setLoading(true);
-        const request = await fetch(URL, {
-          method: "GET",
-          headers: {
+        const sendConfig={
+           method:"GET",
+           url:URL,
+           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-          },
-        });
-        const response = await request.json();
+          }
+        }
+        const request = await axios(sendConfig)
+        const response = await request.data;
         if (response.error) {
           console.log(response.error);
           return;

@@ -7,7 +7,7 @@ import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
 import { HStack, Spinner, Link } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
-
+import axios from "axios";
 const Reply = ({ reply }) => {
   /* let postpath=String(`/post/${post._id}`); */
   /* let likespath=String(`/post/likes/${post._id}`); */
@@ -29,15 +29,19 @@ const Reply = ({ reply }) => {
       let payload={
         replyId:reply._id
       }
-      const request = await fetch(`/api/posts/likereply`, {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:`/api/posts/likereply`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body:JSON.stringify(payload)
-      });
-      const response = await request.json();
+        data:payload
+
+      }
+      const request = await axios(sendConfig);
+
+      const response = await request.data;
      
       if (!response.status) {
         console.log(response.error);
@@ -59,15 +63,17 @@ const Reply = ({ reply }) => {
     const isLiked = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const request = await fetch(`/api/posts/isliked/reply/${reply._id}`, {
-          method: "POST",
+        const sendConfig={
+          method:"POST",
+          url:`/api/posts/isliked/reply/${reply._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-          },
-          
-        });
-        const response = await request.json();
+          }
+
+        }
+        const request = await axios(sendConfig)
+        const response = await request.data;
         if (!response.status) {
           return;
         }

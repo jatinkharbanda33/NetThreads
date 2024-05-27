@@ -1,4 +1,4 @@
-import { Container, Box,Spinner,Flex } from "@chakra-ui/react";
+import { Container, Box,Spinner,Flex,useColorMode } from "@chakra-ui/react";
 import React, { Suspense, lazy } from "react";
 import Header from "./components/Header";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -10,9 +10,12 @@ const AuthPage = lazy(() => import("./pages/AuthPage"));
 const LikePage = lazy(() => import("./pages/LikePage"));
 const PostPage = lazy(() => import("./pages/PostPage"));
 const UserPage = lazy(() => import("./pages/UserPage"));
-const UpdateInfo=lazy(()=>import("./pages/UpdateInfo"))
+const UpdateInfo=lazy(()=>import("./pages/UpdateInfo"));
+import { Toaster } from 'sonner'
+import axios from "axios";
 
 const App = React.memo(() => {
+  const { colorMode, toggleColorMode } = useColorMode();
   let isUser = useSelector((state) => state.user);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,14 +23,17 @@ const App = React.memo(() => {
       try {
         if (localStorage.getItem("authToken") && !isUser) {
           const token = localStorage.getItem("authToken");
-          const req1 = await fetch("/api/users/getuser/token", {
-            method: "POST",
+          const sendConfig={
+            method:"POST",
+            url:"/api/users/getuser/token",
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-            },
-          });
-          const res1 = await req1.json();
+            }
+
+          }
+          const req1 = await axios(sendConfig)
+          const res1 = await req1.data;
           if (res1.status == false) {
             localStorage.removeItem("authToken");
             return;
@@ -49,13 +55,14 @@ const App = React.memo(() => {
   return (
     <Box position={"relative"} w={"full"}>
       <Container maxW="620px">
+
         <Header />
         <Suspense fallback={ <Flex justify={"center"}>
             <Spinner size="xl"></Spinner>
           </Flex>}>
           <Routes>
             <Route
-              path="/"
+              path={"/home"}
               element={
                 isUser || localStorage.getItem("authToken") ? (
                   <HomePage />
@@ -64,9 +71,10 @@ const App = React.memo(() => {
                 )
               }
             />
+            
             <Route
               path="/auth"
-              element={!isUser ? <AuthPage /> : <Navigate to="/" />}
+              element={!isUser ? <AuthPage /> : <Navigate to="/home" />}
             />
             <Route
               path="/post/likes/:id"
@@ -108,8 +116,17 @@ const App = React.memo(() => {
                 )
               }
             />
+            <Route
+            path="/"
+            element={<Navigate to="/auth" />}
+            
+             />
           </Routes>
         </Suspense>
+        <Toaster theme={colorMode=="dark"?"dark":"light"} toastOptions={{
+    style: { background: colorMode=="dark"?'#71797E':'white' },
+    
+  }}/>
       </Container>
     </Box>
   );

@@ -7,7 +7,7 @@ import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
 import { HStack, Spinner, Link,VStack,Divider ,useColorModeValue } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
-
+import axios from "axios";
 
 
 const Post = React.memo(({ post,postname, profilepic }) => {
@@ -34,14 +34,17 @@ const Post = React.memo(({ post,postname, profilepic }) => {
         setLikesCount(likesCount + 1);
       }
       const token = localStorage.getItem("authToken");
-      const request = await fetch(`/api/posts/likepost/${post._id}`, {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:`/api/posts/likepost/${post._id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-        },
-      });
-      const response = await request.json();
+        }
+
+      }
+      const request=await axios(sendConfig)
+      const response = await request.data;
       if (response.error) {
         console.log(response.error);
         return;
@@ -62,14 +65,16 @@ const Post = React.memo(({ post,postname, profilepic }) => {
     const isLiked = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const request = await fetch(`/api/posts/isliked/${post._id}`, {
-          method: "POST",
+        const sendConfig={
+          method:"POST",
+          url:`/api/posts/isliked/${post._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-          },
-        });
-        const response = await request.json();
+          }
+        }
+        const request = await axios(sendConfig);
+        const response = await request.data;
         if (response.error) {
           console.log(response.error);
           return;
@@ -82,14 +87,15 @@ const Post = React.memo(({ post,postname, profilepic }) => {
     isLiked();
     console.log("Post");
   }, []);
-  function formatTimestamp(timestamp) {
+  const formatTimestamp=(timestamp) =>{
     const now = new Date();
-    const diff = now.getTime() - new Date(timestamp).getTime();
+    const timestampDate = new Date(timestamp.replace(' ', 'T'));
+    const diff = now.getTime() - timestampDate.getTime();
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-
+  
     if (seconds < 60) {
       return seconds + "s";
     } else if (minutes < 60) {
@@ -100,6 +106,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
       return days + "d";
     }
   }
+  
   return (
     <>
     <Flex borderColor={
@@ -131,7 +138,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
               textAlign={"right"}
               color={"gray.light"}
             >
-              {formatTimestamp(post.timestamps)}
+              {formatTimestamp(post.inserted_at)}
             </Text>
           </Flex>
         </Flex>
@@ -155,14 +162,19 @@ const Post = React.memo(({ post,postname, profilepic }) => {
       ) : (
         <Box as={FaRegHeart} onClick={toggleLike} size={20} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}} />
       )}
-       <Link as = {RouterLink} to = {`/user/${post.postedBy}`}>
+       <Link as = {RouterLink} to = {postpath}>
       <Box as={FaRegComment} size={18} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}}/>
       </Link>
     </HStack>
         <HStack gap={4}>
-          <Link as={RouterLink} to={likespath}>
+          {likesCount>0 ?
+            <Link as={RouterLink} to={likespath}>
             <Text color='#777777'>{likesCount} likes</Text>
           </Link> 
+          :
+          <Text color='#777777'>{likesCount} likes</Text>
+
+  } 
           <Text color='#777777'>{repliesCount} replies</Text>
         </HStack>
       </Flex>

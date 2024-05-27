@@ -5,7 +5,8 @@ import {
   PostsMIS,
 } from "../ConnectDB/getData.js";
 import { ObjectId } from "mongodb";
-import {putObjectinS3,getUrlinS3} from '../utils/s3bucket.js'
+import {putObjectinS3} from '../utils/s3bucket.js'
+import moment from 'moment';
 const getPost = async (req, res) => {
   try {
     const currentUserId=req.user._id;
@@ -40,7 +41,7 @@ const getPost = async (req, res) => {
         image:1,
         _id:1,
         result:1,
-        timestamps:1,
+        inserted_at:1,
         likesCount:1,
         repliesCount:1,
         name:"$postedByUser.name",
@@ -55,19 +56,75 @@ const getPost = async (req, res) => {
     res.status(500).json({ status:false,error: err.message });
   }
 };
-const getFeedPosts = async (req, res) => {
+const getRecentPosts = async (req, res) => {
   try {
-    const page_count=req.body.page_count?req.body.page_count:0;
+    const prevFetchedId=req?.body?.prevFetchedId;
     const limit=12;
-    const skip = page_count*limit;
     const postsCollection = await Posts();
     const pipeline = [
+      {$match:{
+        _id:{$gt:new ObjectId(prevFetchedId)}
+
+      }},
       {
+
+            $sort: {
+              _id: 1,
+            },
+          },
+          { $limit: limit},
+          {$sort:{_id:-1}},
+          {$lookup:{
+            from:"Users",
+            localField:"postedBy",
+            foreignField:"_id",
+            as:"result"
+    
+          }},
+      {$unwind:{
+        path:"$result"
+      }},
+      {$project:{
+        _id:1,
+        text:1,
+        image:1,
+        likesCount:1,
+        inserted_at:1,
+        repliesCount:1,
+        postedBy:1,
+        username:"$result.username",
+        profilepicture:"$result.profilepicture"
+        
+      }}
+    ];
+
+    const feedPosts = await postsCollection.aggregate(pipeline).toArray();
+    res.status(200).json(feedPosts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const getPreviousPosts=async(req,res)=>{
+  try{
+    const lastFetchedPostId=req?.body?.lastFetchedPostId;
+  let matchFields={$match:{}}
+  if(lastFetchedPostId){
+    matchFields.$match._id={$lt:new ObjectId(lastFetchedPostId)};
+
+  }
+  else{
+    matchFields.$match.inserted_at={$lte:moment().format("YYYY-MM-DD HH:mm:ss")};
+  }
+    const limit=12;
+    const postsCollection = await Posts();
+    const pipeline = [
+      matchFields,
+      {
+
             $sort: {
               _id: -1,
             },
           },
-          { $skip: skip },
           { $limit: limit},
           {$lookup:{
             from:"Users",
@@ -84,7 +141,7 @@ const getFeedPosts = async (req, res) => {
         text:1,
         image:1,
         likesCount:1,
-        timestamps:1,
+        inserted_at:1,
         repliesCount:1,
         postedBy:1,
         username:"$result.username",
@@ -95,10 +152,16 @@ const getFeedPosts = async (req, res) => {
 
     const feedPosts = await postsCollection.aggregate(pipeline).toArray();
     res.status(200).json(feedPosts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+
+
   }
-};
+  catch(err){
+    console.log(err.message,err.stack)
+    res.status(500).json({ error: err.message });
+
+  }
+}
 
 const createPost = async (req, res) => {
   try {
@@ -119,10 +182,10 @@ const createPost = async (req, res) => {
         text: text,
         image: null,
         likesCount: 0,
-        timestamps: new Date(),
+        inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         repliesCount: 0
       });
-      return res.status(201).json({ _id: newPost.insertedId,status:true});
+      return res.status(201).json({ _id: newPost.insertedId,status:true,imageurl:null});
     }
     else{
     const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type,"post");
@@ -135,15 +198,16 @@ const createPost = async (req, res) => {
       },
       
     );
+    const imageurl=String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key);
     const newPost = await postCollection.insertOne({
       postedBy: creatorId,
       text: text,
-      image:String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key),
+      image:imageurl,
       likesCount: 0,
-      timestamps: new Date(),
+      inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
       repliesCount: 0
     });
-    return res.status(201).json({ _id: newPost.insertedId,status:true,url:url });
+    return res.status(201).json({ _id: newPost.insertedId,status:true,url:url,imageurl:imageurl});
   }
   } catch (err) {
     return res.status(500).json({ error: err.message,status:false });
@@ -208,7 +272,7 @@ const replyToPost = async (req, res) => {
         userId: currentUserId,
         text: text,
         image: String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key),
-        inserted_at: new Date(),
+        inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         likesCount: 0,
         repliesCount: 0,
       });
@@ -217,7 +281,7 @@ const replyToPost = async (req, res) => {
         postId: postId,
         userId: currentUserId,
         text: text,
-        inserted_at: new Date(),
+        inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         likesCount: 0,
         repliesCount: 0,
         image: null,
@@ -263,7 +327,7 @@ const getUserPosts = async (req, res) => {
     const postCollection = await Posts();
     const pipeline = [
       { $match: { postedBy: currentUserId } },
-      { $sort: { timestamps: -1 } },
+      { $sort: { inserted_at: -1 } },
       { $skip: parseInt(skip) },
       { $limit: parseInt(limit) },
     ];
@@ -447,7 +511,8 @@ const isLikedReply=async(req,res)=>{
 }
 export {
   getPost,
-  getFeedPosts,
+  getPreviousPosts,
+  getRecentPosts,
   createPost,
   likePost,
   replyToPost,

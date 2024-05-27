@@ -1,103 +1,89 @@
 import { Box, Flex, Spinner, Button, VStack } from "@chakra-ui/react";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changePost } from "../redux/slices/postSlice";
-import { useInView } from 'react-intersection-observer';
 import Post from "../components/Post";
-
-
-import { useInfiniteQuery } from "@tanstack/react-query";
+import InfiniteScroll from "react-infinite-scroll-component";
 import NewPost from "../components/NewPost";
-const HomePage = React.memo( () => {
-  const [loading, setLoading] = useState(true);
-  const posts = useSelector((state) => state.post);
-  
-  const dispatch = useDispatch();
-  let currentuser = useSelector((state) => state.user);
-  const { ref, inView } = useInView();
+import axios from 'axios'
 
-  const getFeedPosts = async (props) => {
+const HomePage = React.memo(() => {
+  const [loading, setLoading] = useState(false);
+  const posts = useSelector((state) => state.post);
+  const dispatch = useDispatch();
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+
+  const getFeedPosts = async (isInitialLoad = false) => {
+    if (loading ||!hasMore) return;
     setLoading(true);
     try {
-      const reqbody = { page_count: props.pageParam };
+
+      const reqBody = { lastFetchedPostId:posts.length>0?posts[posts.length-1]._id:null };
       const token = localStorage.getItem("authToken");
-      const request = await fetch("/api/posts/feedposts", {
-        method: "POST",
+      const sendConfig={
+        method:"POST",
+        url:"/api/posts/feedposts/previous",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reqbody),
-      });
-      const response = await request.json();
+        data:reqBody
+      }
+      const request = await axios(sendConfig);
+      const response = request.data;
+      console.log(response);
       if (response.error) {
         console.log(response.error);
         return;
       }
-      if (response.length === 0) {
-        return;
+      console.log(response);
+      if (isInitialLoad) {
+        dispatch(changePost(response)); 
+      } else {
+        const newPosts=[...posts,...response];
+        dispatch(changePost(newPosts));
+        setPage(prev => prev + 1);
       }
-     
-      return response;
+      setHasMore(response.length === 30);
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false);
-    } finally {
-      setLoading(false);
     }
   };
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["posters"],
-      queryFn: getFeedPosts,
-      initialPageParam: 0, //page_count in future
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = lastPage?.length ? allPages?.length : undefined;
-        return nextPage;
-      },
-    });
-  const content = data?.pages;
-  
+
   useEffect(() => {
-    console.log("This times");
-    if(inView && hasNextPage){
-      fetchNextPage();
-      if(content?.length>0){
-        const ans = content[content.length-1];
-        console.log(ans);
-        dispatch(changePost([...posts,...ans]));
-      }
-    }}, [inView,hasNextPage,fetchNextPage]);
-    console.log(posts);
+   if(posts.length==0){
+      getFeedPosts(true); 
+   }
     
-    
+  }, []);
+
   return (
     <Flex gap="10" alignItems={"flex-start"} overflow="hidden">
       <Box flex={70} style={{ width: "100%" }}>
         <NewPost />
-        {loading && (
-          <Flex justify={"center"} align={"center"} py={"30px"}>
-            <Spinner size="xl"></Spinner>
-          </Flex>
+        {posts.length > 0 && (
+          <InfiniteScroll
+            dataLength={posts.length}
+            next={() => getFeedPosts()} // Ensuring the correct function signature
+            hasMore={hasMore}
+            loader={<Flex justify={"center"} align={"center"} py={"20px"}>
+              <Spinner size="xl" />
+            </Flex>}
+            endMessage={
+              <Flex justifyContent={'center'} py={'20px'}>
+                <b>
+                  {posts.length === 0? "No Posts Yet" : "No More Posts"}
+                </b>
+              </Flex>
+            }
+          >
+            {posts.map((post) => (
+              <Post key={`/home/post/${post._id}`} post={post} />
+            ))}
+          </InfiniteScroll>
         )}
-        
-        {posts.length>0 &&
-          posts.map((post) => (
-            <Post key={`/home/post/${post._id}`} post={post}  />
-          ))
-        }
-        
-        <VStack py={4}>
-      <Button variant={"ghost "}
-      ref={ref}
-        isDisabled={!hasNextPage || isFetchingNextPage}
-        onClick={() => {
-          fetchNextPage();
-        }}
-      >
-        {isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "No more NeTthreads..."}
-      </Button>
-      </VStack>
       </Box>
       <Box
         flex={30}
