@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-export const useFileUpload = ()=>{
+import  {useState } from "react";
+ const useFileUpload = ()=>{
     const [file,setFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
     const handleFileChange = (e)=>{
@@ -13,3 +13,4 @@ export const useFileUpload = ()=>{
     }
     return {file,filePreview,handleFileChange,clearFile,setFilePreview};
 }
+export default useFileUpload;

@@ -1,9 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-
 import { Divider, useColorModeValue } from "@chakra-ui/react";
-import { useFileUpload } from "../hooks/use-file-upload";
 import ImageModal from "../modals/ImageModal";
 import {
   Box,
@@ -19,6 +17,7 @@ import {
 import { MdAttachment } from "react-icons/md";
 import {  toast } from 'sonner'
 import axios from "axios";
+import useFileUpload from "../hooks/use-File-Upload";
 
 const NewPost = () => {
   const dividerColor = useColorModeValue("black", "gray.500");
