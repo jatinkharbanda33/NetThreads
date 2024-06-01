@@ -45,7 +45,7 @@ const HomePage = React.memo(() => {
         dispatch(changePost(newPosts));
         setPage(prev => prev + 1);
       }
-      setHasMore(response.length === 30);
+      setHasMore(response.length ==12);
       setLoading(false);
     } catch (err) {
       console.log(err);

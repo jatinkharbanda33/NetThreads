@@ -113,18 +113,14 @@ const Post = React.memo(({ post,postname, profilepic }) => {
       "gray"
     }> 
       <VStack>
-
       <Avatar size="sm" src={post.profilepicture || "https://bit.ly/broken-link"} mt={2.5}/>
-      
-
-      
       </VStack>
       <Flex flex={1} flexDirection={"column"} gap={2} padding={2}>
         <Flex justifyContent={"space-between"} w={"full"}>
           <Flex w={"full"} alignItems={"center"}>
             <HStack gap="2">
-              <Link as = {RouterLink} to = {`/user/${post.postedBy}`}>
-              <Text fontSize={"l"} fontWeight={"bold"} onClick={() => {}}>
+              <Link as = {RouterLink} to = {`/user/${post.postedBy}`}  _hover={{textDecoration: 'none'}}  >
+              <Text fontSize={"l"} fontWeight={"bold"}  _hover={{boxShadow: '0 0 20px rgba(128, 128, 128, 0.7)', bg:'transparent'}} onClick={() => {}}>
                 {post.username}
               </Text>
               </Link>
@@ -158,15 +154,15 @@ const Post = React.memo(({ post,postname, profilepic }) => {
         <HStack gap={4}>
       {isLiked ? (
 
-        <Box as={FaHeart} color="red"  onClick={toggleLike} size={20} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}} />
+        <Box as={FaHeart} color="red"  onClick={toggleLike} size={24} _hover={{ transform: 'scale(1.1)'}} />
       ) : (
-        <Box as={FaRegHeart} onClick={toggleLike} size={20} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}} />
+        <Box as={FaRegHeart} onClick={toggleLike} size={24} _hover={{ transform: 'scale(1.1)'}} />
       )}
        <Link as = {RouterLink} to = {postpath}>
-      <Box as={FaRegComment} size={18} _hover={{ bgColor: 'gray.500' , borderRadius:"50%" , borderWidth:0.2}}/>
+      <Box as={FaRegComment} size={24} _hover={{transform: 'scale(1.1)'}}/> 
       </Link>
     </HStack>
-        <HStack gap={4}>
+        <HStack gap={2}>
           {likesCount>0 ?
             <Link as={RouterLink} to={likespath}>
             <Text color='#777777'>{likesCount} likes</Text>
