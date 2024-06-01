@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
 import { Divider, useColorModeValue } from "@chakra-ui/react";
-import { useFileUpload } from "../hooks/use-file-upload";
+import { useFileUpload } from "../hooks/use-File-Upload";
 import ImageModal from "../modals/ImageModal";
 import {
   Box,
