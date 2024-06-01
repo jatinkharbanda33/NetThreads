@@ -11,7 +11,7 @@ export default defineConfig({
       "/api":{
         target: "https://netthreads.jumpingcrab.com",
 				changeOrigin: true,
-				secure: false,
+				secure: true,
       }
     }
   }
