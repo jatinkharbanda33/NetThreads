@@ -8,12 +8,9 @@ import { useState, useEffect, useRef } from "react";
 import { CgMoreO } from "react-icons/cg";
 import { Link as RouterLink } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-import { useFileUpload } from "../hooks/use-file-upload";
-import { ImCancelCircle } from "react-icons/im";
+import useFileUpload from "../hooks/use-File-Upload";
 import ImageModal from "../modals/ImageModal";
-import { EditIcon } from "@chakra-ui/icons";
 import {toast} from 'sonner';
-import { color } from "framer-motion";
 import axios from "axios";
 
 const UserHeader = ({ user }) => {
