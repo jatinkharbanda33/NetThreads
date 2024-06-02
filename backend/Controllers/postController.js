@@ -102,15 +102,12 @@ const getPreviousPosts=async(req,res)=>{
   try{
     const db=req.app.locals.db;
     const lastFetchedPostId=req?.body?.lastFetchedPostId;
-    console.log(lastFetchedPostId)
   const matchFields={$match:{}}
   if(lastFetchedPostId!=null){
-    console.log("not here");
     matchFields.$match._id={$lt:new ObjectId(lastFetchedPostId)};
 
   }
   else{
-    console.log("here");
     matchFields.$match.inserted_at={$lte:moment().format("YYYY-MM-DD HH:mm:ss")};
   }
     const limit=12;
@@ -146,7 +143,6 @@ const getPreviousPosts=async(req,res)=>{
         
       }}
     ];
-    console.log(matchFields,pipeline);
 
     const feedPosts = await db.collection('Posts').aggregate(pipeline).toArray();
     res.status(200).json(feedPosts);
