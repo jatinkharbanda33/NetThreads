@@ -1,4 +1,4 @@
-import { Users } from "../ConnectDB/getData.js";
+
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 
@@ -24,9 +24,9 @@ const protectRoute = async (req, res, next) => {
       return res.status(401).json({ status:false,  message: "Invalid token" });
     }
 
-    const userCollection = await Users();
+    const db=req.app.locals.db;
     const userId = String(decode.userId);
-    const currentuser = await userCollection.findOne(
+    const currentuser = await db.collection('Users').findOne(
       { _id:new  ObjectId(userId)},
       { projection: { password: 0 } }
     );
