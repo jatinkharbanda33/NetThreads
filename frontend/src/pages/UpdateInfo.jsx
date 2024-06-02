@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Box, Button, FormControl, FormLabel, Input, VStack, InputGroup, HStack,Flex,Spinner} from '@chakra-ui/react';
 import { useSelector,useDispatch } from 'react-redux';
-import {DevTool} from '@hookform/devtools'
 import { changeUsername,changeName } from "../redux/slices/userSlice";
 import {  toast } from 'sonner'
 import axios from 'axios';
@@ -102,7 +101,6 @@ console.log(user);
           </HStack>
         </VStack>
       </form>
-      <DevTool control={control} />
     </Box>
   }
 </>)

@@ -14,8 +14,6 @@ connect();
 app.use(express.json({ limit: "50mb" })); 
 app.use(express.urlencoded({ extended: true })); 
 app.get("/",(req,res)=>{
-	console.log(req);
-
 	return res.status(200).json({status:true,message:"Server Started"});
 });
 
