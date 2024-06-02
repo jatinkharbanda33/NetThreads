@@ -103,7 +103,7 @@ const getPreviousPosts=async(req,res)=>{
     const db=req.app.locals.db;
     const lastFetchedPostId=req?.body?.lastFetchedPostId;
   const matchFields={$match:{}}
-  if(lastFetchedPostId){
+  if(lastFetchedPostId!=null){
     matchFields.$match._id={$lt:new ObjectId(lastFetchedPostId)};
 
   }
