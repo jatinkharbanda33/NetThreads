@@ -146,6 +146,7 @@ const getPreviousPosts=async(req,res)=>{
         
       }}
     ];
+    console.log(matchFields,pipeline);
 
     const feedPosts = await db.collection('Posts').aggregate(pipeline).toArray();
     res.status(200).json(feedPosts);
