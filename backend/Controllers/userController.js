@@ -1,4 +1,3 @@
-import { Users } from "../ConnectDB/getData.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import { ObjectId } from "mongodb";
@@ -6,9 +5,9 @@ import { putObjectinS3 } from "../utils/s3bucket.js";
 
 const signupUser = async (req, res) => {
   try {
+    const db=req.app.locals.db;
     const { name, username, password } = req.body;
-    const userCollection = await Users();
-    const user = await userCollection.findOne({
+    const user = await db.collection('Users').findOne({
        username: username ,
     });
     if (user) {
@@ -16,7 +15,7 @@ const signupUser = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
-    const newUser = await userCollection.insertOne({
+    const newUser = await db.collection('Users').insertOne({
       name: name,
       username: username,
       password: hashedpassword,
@@ -38,14 +37,14 @@ const signupUser = async (req, res) => {
 };
 const loginUser = async (req, res) => {
   try {
+    const db=req.app.locals.db;
     const { username, password } = req.body;
-    const userCollection = await Users();
-    const user = await userCollection.findOne({ username: username });
+    const user = await db.collection('Users').findOne({ username: username });
     if (!user) return res.status(400).json({status:false, error: "Invalid Username" });
     const verifypassword = await bcrypt.compare(password, user.password);
     if (!verifypassword) res.status(400).json({status:false, error: "Wrong Password" });
     const authtoken = generateToken(user._id);
-    await userCollection.updateOne(
+    await db.collection('Users').updateOne(
       { _id: user._id },
       { $set: { token: authtoken } }
     );
@@ -65,8 +64,8 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
   try {
     const userId = req.user._id;
-    const userCollection = await Users();
-    await userCollection.updateOne({ _id: userId }, { $set: { token: null } });
+    const db=req.app.locals.db;
+    await db.collection('Users').updateOne({ _id: userId }, { $set: { token: null } });
     res.status(200).json({
       message: "Logged Out Succesfully",
     });
@@ -76,11 +75,9 @@ const logoutUser = async (req, res) => {
 };
 const getUserProfile = async (req, res) => {
   try {
-    const userId = req.user._id;
     const id = new ObjectId(String(req.params.id));
-    
-    const userCollection = await Users();
-    const user = await userCollection.findOne(
+    const db=req.app.locals.db;
+    const user = await db.collection('Users').findOne(
       { _id: id },
       { projection: { password: 0, token: 0 } }
     );
@@ -160,13 +157,13 @@ const getUserByToken=async(req,res)=>{
 }
 const updateProfilePicture=async(req,res)=>{
   try{
+    const db=req.app.locals.db;
     const {file_name,file_content_type}=req.body;
     const userId=req.user._id;
-    const usersCollection=await Users();
     const {url,status,error,key}=await putObjectinS3(file_name,req.user.username,file_content_type,"dp");
     if(!status) return res.status(400).json({status:false,error:error});
-    await usersCollection.updateOne({_id:userId},{$set:{profilepicture:String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key)}});
-    return res.status(201).json({status:true,url:url,imageurl:String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME+key)});
+    await db.collection('Users').updateOne({_id:userId},{$set:{profilepicture:key}});
+    return res.status(201).json({status:true,url:url,imageurl:key});
 
   }
   catch(err){
@@ -176,12 +173,12 @@ const updateProfilePicture=async(req,res)=>{
 }
 const updateUserDetails = async (req, res) => {
   try {
+    const db=req.app.locals.db;
     const { name, username } = req?.body;
     const currentUser = req.user;
-    const userCollection = await Users();
     const setFields = {};
     if (username && username.length > 0 && username != currentUser.username) {
-      const user = await userCollection.findOne({
+      const user = await db.collection('Users').findOne({
         username: username,
       });
       if (user) {
@@ -192,7 +189,7 @@ const updateUserDetails = async (req, res) => {
     if (name && name.length > 0 && currentUser.name != name) {
       setFields.name = String(name);
     }
-    await userCollection.updateOne(
+    await db.collection('Users').updateOne(
       { _id: currentUser._id },
       { $set: setFields }
     );

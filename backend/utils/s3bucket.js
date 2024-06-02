@@ -1,7 +1,6 @@
 import {  S3Client ,PutObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import dotenv from "dotenv";
-import moment from "moment";
 dotenv.config();
 const getUrlinS3=(keyy)=>{
         const newurl=String(process.env.AWS_CLOUDFRONT_DOMAIN_NAME)+String(keyy);
@@ -33,7 +32,7 @@ const putObjectinS3=async(filename,username,contentType,type)=>{
             
         });
         let url=await getSignedUrl(client,object);
-        return {status:true,url:url,key:keyy};
+        return {status:true,url:url,key:process.env.AWS_CLOUDFRONT_DOMAIN_NAME+keyy};
 
     }
     catch(err){
