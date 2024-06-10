@@ -94,7 +94,7 @@ const LikePage = React.memo(() => {
                     <Avatar size="md" src={item.profile_picture} />
                     <VStack align="start" spacing={0.5}>
                       <HStack>
-                        <Link as={RouterLink} to={`/user/${item?._id}`}>
+                        <Link as={RouterLink} to={`/user/${item?.user_id}`}>
                           <Text fontSize={"md"} fontWeight={"bold"}>
                             {item?.username}
                           </Text>
