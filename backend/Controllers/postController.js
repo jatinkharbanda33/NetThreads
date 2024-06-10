@@ -341,7 +341,7 @@ const getLikes = async (req, res) => {
         path:"$result"
       }},
       {$project:{
-        __id:1,
+        __id:"$result._id",
         username:"$result.username",
         profile_picture:"$result.profilepicture",
         name:"$result.name"
