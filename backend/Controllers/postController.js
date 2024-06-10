@@ -341,10 +341,11 @@ const getLikes = async (req, res) => {
         path:"$result"
       }},
       {$project:{
-        __id:"$result._id",
+       _id:0,
         username:"$result.username",
         profile_picture:"$result.profilepicture",
-        name:"$result.name"
+        name:"$result.name",
+        user_id:"$result._id"
       }}
     ]
     const postLikes = await db.collection('Likes').aggregate(pipeline).toArray();
