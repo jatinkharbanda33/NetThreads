@@ -113,7 +113,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
       "gray"
     }> 
       <VStack>
-      <Avatar size="sm" src={post.profilepicture || "https://bit.ly/broken-link"} mt={2.5}/>
+      <Avatar size="md" src={post.profilepicture || "https://bit.ly/broken-link"} mt={2.5}/>
       </VStack>
       <Flex flex={1} flexDirection={"column"} gap={2} padding={2}>
         <Flex justifyContent={"space-between"} w={"full"}>

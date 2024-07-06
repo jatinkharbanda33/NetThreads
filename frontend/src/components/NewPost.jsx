@@ -22,9 +22,7 @@ import useFileUpload from "../hooks/use-File-Upload";
 const NewPost = () => {
   const dividerColor = useColorModeValue("black", "gray.500");
   const [thread, setThread] = useState("");
-
   const { file, filePreview, handleFileChange, clearFile } = useFileUpload();
-
   const handlePost = async () => {
     try {
       const requestBody = {};
@@ -100,7 +98,7 @@ const NewPost = () => {
         }}
       >
         <Flex direction={"row"}>
-          <Avatar name={currentuser?.name} src={currentuser?.profilepicture} />
+          <Avatar size='lg' name={currentuser?.name} src={currentuser?.profilepicture} />
           <Flex direction={"column"}>
             <Link as={RouterLink} to={userPath}>
               <Text px={4} fontSize={"md"} fontWeight={"bold"}>
