@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Avatar } from "@chakra-ui/avatar";
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
-import { Link as RouterLink } from "react-router-dom";
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
 import { HStack, Spinner, Link } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
@@ -117,7 +116,7 @@ const Reply = ({ reply }) => {
         <Flex justifyContent={"space-between"} w={"full"}>
           <Flex w={"full"} alignItems={"center"}>
             <HStack gap="2">
-              <Avatar size="xs" src="https://bit.ly/broken-link" />
+            <Avatar size="md" src={reply.profile_picture || "https://bit.ly/broken-link"} mt={2.5}/>
               <Text fontSize={"md"} fontWeight={"bold"} onClick={() => {}}>
                 {reply?.username}
               </Text>
@@ -137,16 +136,18 @@ const Reply = ({ reply }) => {
         </Flex>
         {/* <Link as={RouterLink} to={postpath}> */}
         <Text fontSize={"md"}>{reply.text}</Text>
-        {
-          <Box
-            borderRadius={6}
-            overflow={"hidden"}
-            border={"1px solid"}
-            borderColor={"gray.light"}
-          >
-            {<Image src={reply.image} w={"full"} alt="err" />}
-          </Box>
-        }
+       
+            {reply.image && (
+            <Box
+              borderRadius={6}
+              overflow={"hidden"}
+              border={"1px solid"}
+              borderColor={"gray.light"}
+            >
+              <Image src={reply.image} w={"full"} maxHeight={"460px"} />
+            </Box>
+          )}
+          
           <HStack gap={2}>
           {isLiked && <FaHeart color="red" onClick={toggleLike} size={18}  />}
           {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}

@@ -57,7 +57,8 @@ const getRecentPosts = async (req, res) => {
     const db=req.app.locals.db;
     const pipeline = [
       {$match:{
-        _id:{$gt:new ObjectId(prevFetchedId)}
+        _id:{$gt:new ObjectId(prevFetchedId)},
+        parent_post_id:0,
 
       }},
       {
@@ -103,6 +104,7 @@ const getPreviousPosts=async(req,res)=>{
     const db=req.app.locals.db;
     const lastFetchedPostId=req?.body?.lastFetchedPostId;
   const matchFields={$match:{}}
+  matchFields.$match.parent_post_id=0;
   if(lastFetchedPostId!=null){
     matchFields.$match._id={$lt:new ObjectId(lastFetchedPostId)};
 
@@ -167,6 +169,7 @@ const createPost = async (req, res) => {
         image: null,
         likesCount: 0,
         inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+        parent_post_id:0,
         repliesCount: 0
       });
       return res.status(201).json({ _id: newPost.insertedId,status:true,imageurl:null});
@@ -241,25 +244,32 @@ const replyToPost = async (req, res) => {
     const { text, image_name, image_content_type } = req.body;
     const currentUserId = req.user._id;
     if (image_content_type && image_name) {
-      const { status, error, key } = await putObjectinS3(
+      const { url,status, error, key } = await putObjectinS3(
         image_name,
         req.user.username,
         image_content_type,
         "reply"
       );
       if (!status) return res.status(400).json({ status: false, error: error });
-      await db.collection('Replies').insertOne({
-        postId: postId,
+      await db.collection('Posts').insertOne({
+        parent_post_id:postId,
         userId: currentUserId,
         text: text,
-        image: key,
+        image: url,
         inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         likesCount: 0,
         repliesCount: 0,
       });
+      await db.collection('Posts').updateOne(
+        { _id: postId },
+        { $inc: { repliesCount: 1 } }
+      );
+      return res
+      .status(201)
+      .json({ status: true, message: "Reply added to the Post Successfully",url:url});
     } else {
-      awaitdb.collection('Replies').insertOne({
-        postId: postId,
+      await db.collection('Posts').insertOne({
+        parent_post_id:postId,
         userId: currentUserId,
         text: text,
         inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -267,14 +277,15 @@ const replyToPost = async (req, res) => {
         repliesCount: 0,
         image: null,
       });
-    }
-    await db.collection('Posts').updateOne(
-      { _id: postId },
-      { $inc: { repliesCount: 1 } }
-    );
-    return res
+      await db.collection('Posts').updateOne(
+        { _id: postId },
+        { $inc: { repliesCount: 1 } }
+      );
+      return res
       .status(201)
       .json({ status: true, message: "Reply added to the Post Successfully" });
+    }
+   
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -305,7 +316,7 @@ const getUserPosts = async (req, res) => {
     const limit=12;
     const skip=page_count*limit;
     const pipeline = [
-      { $match: { postedBy: currentUserId } },
+      { $match: { postedBy: currentUserId,parent_post_id:0 } },
       { $sort: { inserted_at: -1 } },
       { $skip: parseInt(skip) },
       { $limit: parseInt(limit) },
@@ -359,11 +370,12 @@ const getReplies = async (req, res) => {
     const db=req.app.locals.db;
     const postId = new ObjectId(String(req.params.id));
     const page_count=req.body.page_count?req.body.page_count:0;
+    console.log(postId);
     const limit=12;
     const skip=page_count*limit;
     const pipeline=[
       {$match:{
-        postId:postId,
+        parent_post_id:postId
       }},
       {
         $sort:{
@@ -395,7 +407,7 @@ const getReplies = async (req, res) => {
         repliesCount:1,
       }}
     ]
-    const postReplies = await db.collection('Replies').aggregate(pipeline).toArray();
+    const postReplies = await db.collection('Posts').aggregate(pipeline).toArray();
     return res.status(200).json({status:true,result:postReplies});
   } catch (err) {
     return res.status(500).json({status:false, error: err.message });

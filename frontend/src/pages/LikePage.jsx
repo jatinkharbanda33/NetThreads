@@ -53,6 +53,7 @@ const LikePage = React.memo(() => {
       if (!isInitialLoad) setPage((prevPage) => prevPage + 1);
 
       // Check if there are more items to load
+      console.log(newItems[0]);
       setHasMore(newItems.length==30);
     } catch (error) {
       console.error(error);
