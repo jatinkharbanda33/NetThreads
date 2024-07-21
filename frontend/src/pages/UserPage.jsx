@@ -1,39 +1,40 @@
 import React, { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader";
-import { Button,VStack,Spinner,Flex } from "@chakra-ui/react";
+import { Button, VStack, Spinner, Flex } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import Post from "../components/Post";
-import { useInView } from 'react-intersection-observer';
+import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-const UserPage = React.memo( () => {
+import { useNavigate } from "react-router-dom";
+const UserPage = React.memo(() => {
+  const navigate=useNavigate();
   const [userProfile, setUserProfile] = useState(null);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const { ref, inView } = useInView();
-
-  let URL = `/api/users/profile/${id}`;
+  let URL = `${import.meta.env.VITE_API_BASE_URL}/users/profile/${id}`;
 
   useEffect(() => {
     const getuser = async () => {
       try {
         const token = localStorage.getItem("authToken");
         setLoading(true);
-        const sendConfig={
-           method:"GET",
-           url:URL,
-           headers: {
+        const sendConfig = {
+          method: "GET",
+          url: URL,
+          headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-          }
-        }
-        const request = await axios(sendConfig)
+          },
+        };
+        const request = await axios(sendConfig);
+        if(request.status==401) navigate("/");
         const response = await request.data;
         if (response.error) {
           console.log(response.error);
           return;
         }
-
         setUserProfile(response);
         console.log(response);
       } catch (err) {
@@ -52,16 +53,17 @@ const UserPage = React.memo( () => {
       const reqbody = { page_count: props.pageParam };
       const token = localStorage.getItem("authToken");
       setLoading(true);
-
-      const request = await fetch(`/api/posts/getuserposts/${id}`, {
+      const sendConfig = {
         method: "POST",
+        url: `${import.meta.env.VITE_API_BASE_URL}/posts/getuserposts/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reqbody),
-      });
-      const response = await request.json();
+      };
+      const request = await axios(sendConfig);
+      if(request.status==401) navigate("/");
+      const response = await request.data;
       if (response.error) {
         console.log(response.error);
         return;
@@ -88,11 +90,11 @@ const UserPage = React.memo( () => {
         return nextPage;
       },
     });
-    useEffect(() => {
-      
-    if(inView && hasNextPage){
+  useEffect(() => {
+    if (inView && hasNextPage) {
       fetchNextPage();
-    }}, [inView,hasNextPage,fetchNextPage]);
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   // if(!id){
   //   return <h1> User Not Found</h1>;
@@ -101,34 +103,40 @@ const UserPage = React.memo( () => {
 
   return (
     <>
-     {loading && (
-          <Flex justify={"center"}>
-            <Spinner size="xl"></Spinner>
-          </Flex>
-        )}
+      {loading && (
+        <Flex justify={"center"}>
+          <Spinner size="xl"></Spinner>
+        </Flex>
+      )}
       <UserHeader user={userProfile}></UserHeader>
       {!loading && content?.length === 0 && <h1>User has no posts</h1>}
 
-      {!loading && content?.map((postarr) =>
-        postarr?.map((post) => (
-          <Post
-            post={post}
-            key={post._id}
-            postname={userProfile?.username}
-            profilepic={userProfile?.profilepicture}
-          />
-        ))
-      )}
+      {!loading &&
+        content?.map((postarr) =>
+          postarr?.map((post) => (
+            <Post
+              post={post}
+              key={post._id}
+              postname={userProfile?.username}
+              profilepic={userProfile?.profilepicture}
+            />
+          ))
+        )}
       <VStack py={4}>
-      <Button variant={"ghost "}
-      ref={ref}
-        isDisabled={!hasNextPage || isFetchingNextPage}
-        onClick={() => {
-          fetchNextPage();
-        }}
-      >
-        {isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "No more threads..."}
-      </Button>
+        <Button
+          variant={"ghost "}
+          ref={ref}
+          isDisabled={!hasNextPage || isFetchingNextPage}
+          onClick={() => {
+            fetchNextPage();
+          }}
+        >
+          {isFetchingNextPage
+            ? "Loading more..."
+            : hasNextPage
+            ? "Load More"
+            : "No more threads..."}
+        </Button>
       </VStack>
     </>
   );

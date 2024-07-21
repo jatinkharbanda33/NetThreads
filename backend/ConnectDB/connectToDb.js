@@ -1,12 +1,19 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ReadPreference } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
 const uri = process.env.MONGO_DB_URI;
 let _db;
 
-const connect = async function () {
+const connectToMongo = async function () {
   try {
-    const client = new MongoClient(uri);
+    const options = {
+      maxPoolSize: 20,
+      minPoolSize: 5,
+      maxIdleTimeMS: 30000,
+      waitQueueTimeoutMS: 5000,
+      readPreference: 'secondary'
+    };
+    const client = new MongoClient(uri,options);
     await client.connect();
     _db = client.db("Threads");
     console.log("Connected to MongoDB");
@@ -22,8 +29,8 @@ const disconnect = async () => {
   }
 };
 
-const getDb = async () => {
+const getDb = () => {
   return _db;
 };
 
-export { connect, disconnect, getDb };
+export { connectToMongo, disconnect, getDb };

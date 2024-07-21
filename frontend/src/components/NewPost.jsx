@@ -15,11 +15,13 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
-import {  toast } from 'sonner'
+import { toast } from "sonner";
 import axios from "axios";
 import useFileUpload from "../hooks/use-File-Upload";
+import { useNavigate } from "react-router-dom";
 
 const NewPost = () => {
+  const navigate=useNavigate();
   const dividerColor = useColorModeValue("black", "gray.500");
   const [thread, setThread] = useState("");
   const { file, filePreview, handleFileChange, clearFile } = useFileUpload();
@@ -27,7 +29,6 @@ const NewPost = () => {
     try {
       const requestBody = {};
       if (!thread && !file) {
-        console.log("Invalid request");
         return;
       }
       if (thread) {
@@ -37,23 +38,21 @@ const NewPost = () => {
         requestBody.file_name = file.name;
         requestBody.file_content_type = file.type;
       }
-      const token = localStorage.getItem("authToken");
-      const sendConfig={
-        method:"POST",
-        url:"/api/posts/createpost",
+      const token = localStorage.getItem('authToken');
+      const sendConfig = {
+        method: "POST",
+        url: `${process.env.VITE_API_BASE_URL}/posts/create`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        data:requestBody,
-
-      }
-      const request = await axios(sendConfig)
+        data: requestBody,
+      };
+      const request = await axios(sendConfig);
+      if(request.status==401) navigate("/");
       const response = await request.data;
-      console.log(response);
-
       if (!response.status) {
-        toast.error('An Error Occurred');
+        toast.error("An Error Occurred");
         return;
       }
       if (response.url) {
@@ -65,14 +64,12 @@ const NewPost = () => {
           body: file,
         });
       }
-      console.log(response.imageurl);
-      // setFile(null);
       setThread("");
       // setFilePreview(null);
       clearFile();
-      toast.success('Post Added');
+      toast.success("Post Added");
     } catch (err) {
-      toast.error('An Unexpected Error Occurred');
+      toast.error("An Unexpected Error Occurred");
       console.log(err);
     }
   };
@@ -98,7 +95,11 @@ const NewPost = () => {
         }}
       >
         <Flex direction={"row"}>
-          <Avatar size='lg' name={currentuser?.name} src={currentuser?.profilepicture} />
+          <Avatar
+            size="lg"
+            name={currentuser?.name}
+            src={currentuser?.profilepicture}
+          />
           <Flex direction={"column"}>
             <Link as={RouterLink} to={userPath}>
               <Text px={4} fontSize={"md"} fontWeight={"bold"}>

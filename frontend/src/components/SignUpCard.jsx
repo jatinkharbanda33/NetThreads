@@ -21,7 +21,9 @@ import { useDispatch} from "react-redux";
 import { changeAuth } from "../redux/slices/authSlice";
 import {  toast } from 'sonner'
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const SignUpCard = () => {
+  const navigate=useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [inputs, setInputs] = useState({
     name: "",
@@ -33,7 +35,7 @@ const SignUpCard = () => {
     try {
       const sendConfig={
         method:"POST",
-        url:"/api/users/signup",
+        url:`${import.meta.env.VITE_API_BASE_URL}/users/signup`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -41,6 +43,7 @@ const SignUpCard = () => {
 
       }
       const request = await axios(sendConfig)
+      if(request.status==401) navigate("/");
       const response = await request.data;
       if (response.error) {
         console.log(response.error);

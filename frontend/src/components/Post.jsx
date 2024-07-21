@@ -8,16 +8,15 @@ import { HStack, Spinner, Link,VStack,Divider ,useColorModeValue } from "@chakra
 import { useDispatch } from "react-redux";
 import { updatePost } from "../redux/slices/postSlice";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 const Post = React.memo(({ post,postname, profilepic }) => {
+  const navigate=useNavigate();
   let dispatch = useDispatch();
   if(postname){
     post.profilepicture = profilepic;
     post.username = postname;
-    console.log(postname,profilepic);
   }
-
   const dividerColor = useColorModeValue('black','gray.500');
   let postpath = String(`/post/${post._id}`);
   let likespath = String(`/post/likes/${post._id}`);
@@ -33,10 +32,10 @@ const Post = React.memo(({ post,postname, profilepic }) => {
         setLike(!isLiked);
         setLikesCount(likesCount + 1);
       }
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem('authToken');
       const sendConfig={
         method:"POST",
-        url:`/api/posts/likepost/${post._id}`,
+        url:`${import.meta.env.VITE_API_BASE_URL}/posts/like/${post._id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -44,6 +43,7 @@ const Post = React.memo(({ post,postname, profilepic }) => {
 
       }
       const request=await axios(sendConfig)
+      if(request.status==401) navigate("/");  
       const response = await request.data;
       if (response.error) {
         console.log(response.error);
@@ -64,19 +64,19 @@ const Post = React.memo(({ post,postname, profilepic }) => {
   useEffect(() => {
     const isLiked = async () => {
       try {
-        const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem('authToken');
         const sendConfig={
           method:"POST",
-          url:`/api/posts/isliked/${post._id}`,
+          url:`${import.meta.env.VITE_API_BASE_URL}/posts/isliked/${post._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           }
         }
         const request = await axios(sendConfig);
+        if(request.status==401) navigate("/");  
         const response = await request.data;
         if (response.error) {
-          console.log(response.error);
           return;
         }
         setLike(response["answer"]);
@@ -85,7 +85,6 @@ const Post = React.memo(({ post,postname, profilepic }) => {
       }
     };
     isLiked();
-    console.log("Post");
   }, []);
   const formatTimestamp=(timestamp) =>{
     const now = new Date();

@@ -9,52 +9,55 @@ import {
   Image,
   VStack,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
 import { Link } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const LikePage = React.memo(() => {
-  const { id } = useParams();
-  const [likesArray, setLikesArray] = useState([]);
+const SearchPage = React.memo(() => {
+  const navigate=useNavigate();
+  const [searchArray, setSearchArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
-  const navigate=useNavigate();
-  const getLikes = async (isInitialLoad = false) => {
-    if (!hasMore || loading) return;
+  const [searchQuery, setSearchQuery] = useState("");
+  const getResults = async (isInitialLoad = false) => {
+    if (!hasMore || loading || searchQuery.length == 0) return;
 
     setLoading(true);
     try {
-      const reqBody = { page_count: isInitialLoad ? 0 : page };
-      const token = localStorage.getItem('authToken');
-      const sendConfig={
-        method:"POST",
-        url:`${import.meta.env.VITE_API_BASE_URL}/posts/get/likes/${id}`,
+      const reqBody = {
+        lastFetchedId:
+          searchArray.length > 0 ? searchArray[searchArray.length - 1]._id : 0,
+        username: searchQuery,
+      };
+      const token = localStorage.getItem("authToken");
+      const sendConfig = {
+        method: "POST",
+        url: `${import.meta.env.VITE_API_BASE_URL}/search/users`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        data:reqBody
-
-      }
-      const request = await axios(sendConfig)
+        data: reqBody,
+      };
+      const request = await axios(sendConfig);
       if(request.status==401) navigate("/");
-      const response=request.data;
+      const response = request.data;
 
       if (response.err) {
         console.error(response.err);
         return;
       }
       const newItems = Array.isArray(response) ? response : [];
-      setLikesArray((prevLikes) =>
-        isInitialLoad ? newItems : [...prevLikes, ...newItems]
+      setSearchArray((prevItems) =>
+        isInitialLoad ? newItems : [...prevItems, ...newItems]
       );
       if (!isInitialLoad) setPage((prevPage) => prevPage + 1);
 
       // Check if there are more items to load
-      setHasMore(newItems.length==30);
+      console.log(newItems[0]);
+      setHasMore(newItems.length == 30);
     } catch (error) {
       console.error(error);
     } finally {
@@ -63,7 +66,7 @@ const LikePage = React.memo(() => {
   };
 
   useEffect(() => {
-    getLikes(true); 
+    getLikes(true);
   }, []);
 
   return (
@@ -77,10 +80,10 @@ const LikePage = React.memo(() => {
             loader={<Spinner />}
             endMessage={
               <p style={{ textAlign: "center", padding: "20px 0" }}>
-              <b>
-                {likesArray.length === 0 ? "No Likes Yet" : "No More Likes"}
-              </b>
-            </p>
+                <b>
+                  {likesArray.length === 0 ? "No Likes Yet" : "No More Likes"}
+                </b>
+              </p>
             }
           >
             {likesArray.map((item) => (
@@ -100,9 +103,8 @@ const LikePage = React.memo(() => {
                             {item?.username}
                           </Text>
                         </Link>
-                        
-                          <Image src="/verified.png" w={4} h={4} />
-                      
+
+                        <Image src="/verified.png" w={4} h={4} />
                       </HStack>
                       <Text color={"grey"}>{item?.name}</Text>
                     </VStack>
