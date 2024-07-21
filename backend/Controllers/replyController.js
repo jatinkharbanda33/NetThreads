@@ -252,5 +252,10 @@ const isLiked=async(req,res)=>{
 
   }
 }
+const pk=async(req,res)=>{
+  console.log("IKFFVVF");
+  return res.status(200).json({status:true,message:"waaw"});
 
-export {getReply,createReply,likeReply,getReplies,isLiked}
+}
+
+export {getReply,createReply,likeReply,getReplies,isLiked,pk}
