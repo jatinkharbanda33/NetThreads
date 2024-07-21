@@ -7,6 +7,6 @@ router.post("/get/:id",protectRoute,getReply);
 router.post("/create",protectRoute,createReply);
 router.post("/like/:id",protectRoute,likeReply);
 router.post("/get/replies",protectRoute,getReplies);
-router.get("/get/isLiked",protectRoute,isLiked);
+router.get("/get/isLiked/:id",protectRoute,isLiked);
 router.post("/replies",protectRoute,getAllReplies)
 export default router;

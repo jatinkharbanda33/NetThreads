@@ -13,6 +13,7 @@ const UserPage = lazy(() => import("./pages/UserPage"));
 const UpdateInfo = lazy(() => import("./pages/UpdateInfo"));
 import { Toaster } from "sonner";
 import axios from "axios";
+import ReplyPage from "./pages/ReplyPage";
 const App = React.memo(() => {
   const [loading, setLoading] = useState(true);
   const { colorMode, toggleColorMode } = useColorMode();
@@ -111,7 +112,7 @@ const App = React.memo(() => {
                 element={!isUser ? <AuthPage /> : <Navigate to="/home" />}
               />
               <Route
-                path="/post/likes/:id"
+                path="/likes/:id"
                 element={
                   isUser || localStorage.getItem("authToken") ? (
                     <LikePage />
@@ -125,6 +126,16 @@ const App = React.memo(() => {
                 element={
                   isUser || localStorage.getItem("authToken") ? (
                     <PostPage />
+                  ) : (
+                    <Navigate to="/auth" />
+                  )
+                }
+              />
+               <Route
+                path="/reply/:id"
+                element={
+                  isUser || localStorage.getItem("authToken") ? (
+                    <ReplyPage />
                   ) : (
                     <Navigate to="/auth" />
                   )
