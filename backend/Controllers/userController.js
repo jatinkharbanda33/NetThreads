@@ -52,10 +52,8 @@ const loginUser = async (req, res) => {
     );
     res.cookie('refreshToken',refreshToken,{
       httpOnly:true,
-      secure:false,
-      sameSite:'Lax',
+      secure:true,
       maxAge:15*24*60*60*1000,
-      domain:'.localhost'
     })
     res.status(200).json({
       status:true,
@@ -78,10 +76,8 @@ const logoutUser = async (req, res) => {
     await db.collection('Users').updateOne({ _id: userId }, { $set: { token: null } });
     res.clearCookie('refreshToken',{
       httpOnly:true,
-      secure:false,
-      sameSite:'Lax',
+      secure:true,
       maxAge:15*24*60*60*1000,
-      domain:'.localhost'
     })
     res.status(200).json({
       message: "Logged Out Succesfully",
@@ -223,6 +219,9 @@ const updateUserDetails = async (req, res) => {
 const refreshToken=async(req,res)=>{
   try{
     const refreshToken=req.cookies?.refreshToken;
+    console.log(req.cookies);
+    console.log(req.cookie);
+    console.log(refreshToken);
     if(!refreshToken) return res.status(401).json({status:false,error:"Unauthorized"});
     let decode;
     try{
