@@ -252,7 +252,7 @@ const isLiked=async(req,res)=>{
 
   }
 }
-const pk=async(req,res)=>{
+const getAllReplies=async(req,res)=>{
   try {
     console.log("Hey we have received a req");
     let { parent_reply_id, lastFetchedId } = req.body;
@@ -315,4 +315,4 @@ const pk=async(req,res)=>{
 
 }
 
-export {getReply,createReply,likeReply,getReplies,isLiked,pk}
+export {getReply,createReply,likeReply,getReplies,isLiked,getAllReplies}

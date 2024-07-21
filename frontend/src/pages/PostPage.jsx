@@ -49,7 +49,7 @@ const PostPage = React.memo( () => {
         }
         const sendConfig={
           method:"POST",
-          url:`${import.meta.env.VITE_API_BASE_URL}/reply/random`,
+          url:`${import.meta.env.VITE_API_BASE_URL}/reply/replies`,
           headers:{
             Authorization: `Bearer ${token}`,
              "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const PostPage = React.memo( () => {
           console.log(response.error);
           return;
         }
-        setPostReplies(response.result);
+        setPostReplies(response.data);
         setLoading(false);
       }
       catch(err){
