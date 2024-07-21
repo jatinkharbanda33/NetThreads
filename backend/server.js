@@ -1,32 +1,45 @@
-import express from "express";
 import dotenv from "dotenv";
-import { MongoClient } from "mongodb";
 dotenv.config();
-import userRoutes from './Routes/userRoutes.js';
-import postRoutes from './Routes/postRoutes.js';
-const app=express();
-const port=process.env.PORT || 5000;
-
-//Middlewares
-app.use(express.json({ limit: "50mb" })); 
-app.use(express.urlencoded({ extended: true })); 
-const uri=process.env.MONGO_DB_URI;
-	const client = new MongoClient(uri);
-	await client.connect();
-	app.locals.db=client.db("Threads");
-	console.log("Connected to MongoDB");
-app.get("/",async (req,res)=>{
-	try{
-	return res.status(200).json({status:true,message:"Server Started"});
-		
-	}
-	catch(err){
-		console.log(err.message);
-		return res.status(500).json({status:false,message:"Internal Server Error"});
-	}
+import express from "express";
+import cors from 'cors';
+import cookieParser from "cookie-parser";
+import { connectToMongo } from "./ConnectDB/connectToDb.js";
+dotenv.config();
+import userRoutes from "./Routes/userRoutes.js";
+import postRoutes from "./Routes/postRoutes.js";
+import searchRoutes from "./Routes/searchRoutes.js"
+import replyRoutes from "./Routes/replyRoutes.js"
+const app = express();
+const port = process.env.PORT || 5000;
+const allowedOrigins = ['http://localhost:3000', 'https://your-deployed-frontend.com'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials:true
+};
+app.use(cookieParser());
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/search", searchRoutes);
+app.use("/api/reply", replyRoutes);
+app.get("/", async (req, res) => {
+  try {
+    return res.status(200).json({ status: true, message: "Server Started" });
+  } catch (err) {
+    console.error(err.message);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal Server Error" });
+  }
 });
-
-app.use("/api/users",userRoutes);
-app.use("/api/posts",postRoutes);
-app.listen(port,()=>console.log(`Listening on port ${port}`)); 
-
+connectToMongo();
+app.listen(port, () => console.log(`Listening on port ${port}`));

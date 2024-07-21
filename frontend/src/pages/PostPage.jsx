@@ -5,7 +5,9 @@ import { useParams } from "react-router-dom";
 import { Flex, Spinner } from "@chakra-ui/react";
 import NewReply from '../components/NewReply';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const PostPage = React.memo( () => {
+  const navigate=useNavigate();
   const { id } = useParams();
   const [post,setPost]=useState(null);
   const [loading,setLoading]=useState(true);
@@ -13,10 +15,10 @@ const PostPage = React.memo( () => {
   useEffect(()=>{
     const getPost=async()=>{
       try{
-        const token=localStorage.getItem("authToken");
+        const token= localStorage.getItem('authToken');
         const sendConfig={
           method:"POST",
-          url:`/api/posts/getpost/${id}`,
+          url:`${import.meta.env.VITE_API_BASE_URL}/posts/get/${id}`,
           headers:{
             Authorization: `Bearer ${token}`,
              "Content-Type": "application/json",
@@ -24,7 +26,7 @@ const PostPage = React.memo( () => {
 
         }
         const request=await axios(sendConfig)
-        
+        if(request.status==401) navigate("/");
         const response=await request.data;
         if(!response.status){
           console.log(response.error);
@@ -40,16 +42,18 @@ const PostPage = React.memo( () => {
     }
     const getPostReplies=async()=>{
       try{
-        const token=localStorage.getItem("authToken");
-        const request=await fetch(`/api/posts/getreplies/${id}`,{
+        const token= localStorage.getItem('authToken');
+        const sendConfig={
           method:"POST",
+          url:`${import.meta.env.VITE_API_BASE_URL}/posts/getreplies/${id}`,
           headers:{
             Authorization: `Bearer ${token}`,
              "Content-Type": "application/json",
           }
-        });
-        
-        const response=await request.json();
+        }
+        const request=await axios(sendConfig)
+        if(request.status==401) navigate("/");
+        const response=await request.data;
         if(!response.status){
           console.log(response.error);
           return;

@@ -1,7 +1,6 @@
 import {Button, Flex, Link, Image, useColorMode,Avatar,Box, MenuButton,Menu, MenuItem,MenuList,useDisclosure,IconButton, background } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-import { RxAvatar } from "react-icons/rx";
 import { MdOutlineSettings } from "react-icons/md";
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { changeAuth } from "../redux/slices/authSlice";
@@ -41,31 +40,31 @@ const Header = () => {
   };
   const handleLogout=async ()=>{
     try{
-    const token=localStorage.getItem("authToken");
+    const token=localStorage.getItem('authToken');
     let sendConfig={
       method:"POST",
-      url:"/api/users/logout",
+      url:`${import.meta.env.VITE_API_BASE_URL}/users/logout`,
       headers:{
         "Authorization": `Bearer ${token}`,
         "Content-Type":"application/json",
       }
-
     }
     const request=await axios(sendConfig);
-   
+    const statusCode=request.status;
+    if(statusCode==401){
+      navigate("/");
+    }
     const response=await request.data;
     if(response.err){
       toast.error("An Error Occurred");
       return
     }
     toast.success("Logged Out")
-    localStorage.removeItem("authToken");
+    localStorage.removeItem('authToken');
     dispatch(changeUser(null));
-    console.log(user);
     }
     catch(err){
       toast.error("An Error Occurred");
-      console.log(err);
     }
 
   }

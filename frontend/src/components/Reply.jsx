@@ -3,13 +3,13 @@ import { Avatar } from "@chakra-ui/avatar";
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
-import { HStack, Spinner, Link } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
-import { updatePost } from "../redux/slices/postSlice";
+import { HStack} from "@chakra-ui/react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const Reply = ({ reply }) => {
   /* let postpath=String(`/post/${post._id}`); */
   /* let likespath=String(`/post/likes/${post._id}`); */
+  const navigate=useNavigate();
    const [isLiked, setLike] = useState(false);
    const [likesCount,setLikesCount]=useState(reply.likesCount); 
    const toggleLike = async () => {
@@ -23,14 +23,14 @@ const Reply = ({ reply }) => {
         setLikesCount(likesCount+1);
 
       }
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem('authToken');
 
       let payload={
         replyId:reply._id
       }
       const sendConfig={
         method:"POST",
-        url:`/api/posts/likereply`,
+        url:`${import.meta.env.VITE_API_BASE_URL}/reply/like/${reply._id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -39,6 +39,7 @@ const Reply = ({ reply }) => {
 
       }
       const request = await axios(sendConfig);
+      if(request.status==401) navigate("/");
 
       const response = await request.data;
      
@@ -61,7 +62,7 @@ const Reply = ({ reply }) => {
   useEffect(() => {
     const isLiked = async () => {
       try {
-        const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem('authToken');
         const sendConfig={
           method:"POST",
           url:`/api/posts/isliked/reply/${reply._id}`,
@@ -72,6 +73,7 @@ const Reply = ({ reply }) => {
 
         }
         const request = await axios(sendConfig)
+        if(request.status==401) navigate("/");
         const response = await request.data;
         if (!response.status) {
           return;

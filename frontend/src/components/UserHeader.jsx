@@ -12,9 +12,9 @@ import useFileUpload from "../hooks/use-File-Upload";
 import ImageModal from "../modals/ImageModal";
 import {toast} from 'sonner';
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const UserHeader = ({ user }) => {
-
+  const navigate=useNavigate();
   const [loading,setLoading] = useState(false);
   const currentuser = useSelector((state) => state.user);
   const { file, handleFileChange, filePreview, clearFile, setFilePreview } =
@@ -59,10 +59,10 @@ const UserHeader = ({ user }) => {
       requestBody.file_content_type = file.type;
       console.log(requestBody);
     }
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem('authToken');
       const sendConfig={
         method:"POST",
-        url:`/api/users/update/profilepicture`,
+        url:`${process.env.VITE_API_BASE_URL}/users/update/profilepicture`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -71,6 +71,7 @@ const UserHeader = ({ user }) => {
 
       }
       const request=await axios(sendConfig)
+      if(request.status==401) navigate("/");
       const response=await request.data;
       console.log(response);
 
@@ -105,16 +106,19 @@ const UserHeader = ({ user }) => {
   useEffect(() => {
     const getuserprofile = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-        const request = await fetch(`/api/users/profile/${user}`, {
-          method: "GET",
+        const token = localStorage.getItem('authToken');
+        const sendConfig={
+          method:"GET",
+          url:`${process.env.VITE_API_BASE_URL}/users/profile/${user}`,
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        });
-        const response = await request.json();
-        console.log(response);
+          data:requestBody
+  
+        }
+        const request=await axios(sendConfig)
+        const response=await request.data;
         if (response.error) {
           console.log(response.error);
           return;

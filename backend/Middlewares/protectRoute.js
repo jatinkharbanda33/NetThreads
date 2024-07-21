@@ -1,30 +1,28 @@
 
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { getDb } from "../ConnectDB/connectToDb.js";
 
 const protectRoute = async (req, res, next) => {
   try {
     const headers = req.headers.authorization;
 
     if (!headers || !headers.startsWith("Bearer ")) {
-      return res.status(401).json({ status:false, message: "Unauthorized" });
+      return res.status(400).json({ status:false, error: "Invalid Credentials" });
     }
     const token = headers.split("Bearer ")[1];
     if (!token) {
-      return res.status(401).json({ status:false, message: "Unauthorized" });
+      return res.status(400).json({ status:false, error: "Invalid Credentials" });
     }
     let decode;
     try{
-    decode = jwt.verify(token, process.env.JWT_SECRET);
+    decode = jwt.verify(token, process.env.ACCESS_JWT_SECRET);
     }
-    catch(errr){
-      return res.status(400).json({status:false, message:"Invalid Token"});
-    }
-    if (!decode || !decode.userId) {
-      return res.status(401).json({ status:false,  message: "Invalid token" });
+    catch(err){
+      return res.status(401).json({status:false, error:"Unauthorized"});
     }
 
-    const db=req.app.locals.db;
+    const db=getDb();
     const userId = String(decode.userId);
     const currentuser = await db.collection('Users').findOne(
       { _id:new  ObjectId(userId)},
@@ -32,7 +30,7 @@ const protectRoute = async (req, res, next) => {
     );
 
     if (!currentuser) {
-      return res.status(401).json({status:false, message: "User not found" });
+      return res.status(400).json({status:false, error: "User not found" });
     }
 
     req.user = currentuser; 

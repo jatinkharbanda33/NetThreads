@@ -24,6 +24,7 @@ import {  toast } from 'sonner'
 import axios from "axios";
 
 
+
 const LoginCard = () => {
   const dispatch = useDispatch();
   const [isError,setIsError]=useState(false);
@@ -36,11 +37,12 @@ const LoginCard = () => {
     try{
       const sendConfig = {
         method: "POST",
-        url: "/api/users/login",
+        url: `${import.meta.env.VITE_API_BASE_URL}/users/login`,
         headers: {
           "Content-Type": "application/json",
         },
         data: inputs,
+        withCredentials:true
       };
         const request=await axios(sendConfig)
         const response=await request.data;

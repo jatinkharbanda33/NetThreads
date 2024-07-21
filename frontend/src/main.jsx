@@ -9,27 +9,24 @@ import { ColorModeScript } from "@chakra-ui/react";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
 import { BrowserRouter } from "react-router-dom";
-import {useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider, } from "@tanstack/react-query";
-  const styles = {
-    global: (props) => ({
-      body: {
-        color: mode("gray.800", "whiteAlpha.900")(props),
-        bg: mode("gray.100", "#101010")(props),
-      },
-    }),
-    components: {
-      Divider: {
-        baseStyle: (props) => ({
-          color: mode('gray.500', 'black')(props),
-          bg: mode('gray.500', 'black')(props),
-        }),
-      },
+import { CookiesProvider } from "react-cookie";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const styles = {
+  global: (props) => ({
+    body: {
+      color: mode("gray.800", "whiteAlpha.900")(props),
+      bg: mode("gray.100", "#101010")(props),
     },
-  };
+  }),
+  components: {
+    Divider: {
+      baseStyle: (props) => ({
+        color: mode("gray.500", "black")(props),
+        bg: mode("gray.500", "black")(props),
+      }),
+    },
+  },
+};
 const config = {
   initialColorMode: "dark",
   useSystemColorMode: true,
@@ -45,15 +42,17 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ChakraProvider theme={theme}>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <QueryClientProvider client={queryClient}>
-          <App />
-          </QueryClientProvider>
-        </ChakraProvider>
-      </BrowserRouter>
-    </Provider>
+    <CookiesProvider>
+      <Provider store={store}>
+        <BrowserRouter>
+          <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+            <QueryClientProvider client={queryClient}>
+              <App />
+            </QueryClientProvider>
+          </ChakraProvider>
+        </BrowserRouter>
+      </Provider>
+    </CookiesProvider>
   </React.StrictMode>
 );

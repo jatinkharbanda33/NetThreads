@@ -6,13 +6,14 @@ import Post from "../components/Post";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NewPost from "../components/NewPost";
 import axios from 'axios'
-
+import { useNavigate } from "react-router-dom";
 const HomePage = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const posts = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const navigate=useNavigate();
 
   const getFeedPosts = async (isInitialLoad = false) => {
     if (loading ||!hasMore) return;
@@ -20,10 +21,10 @@ const HomePage = React.memo(() => {
     try {
 
       const reqBody = { lastFetchedPostId:posts.length>0?posts[posts.length-1]._id:null };
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem('authToken');
       const sendConfig={
         method:"POST",
-        url:"/api/posts/feedposts/previous",
+        url:`${import.meta.env.VITE_API_BASE_URL}/posts/feed/previous`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -31,6 +32,7 @@ const HomePage = React.memo(() => {
         data:reqBody
       }
       const request = await axios(sendConfig);
+      if(request.status==401) navigate("/");
       const response = request.data;
       console.log(response);
       if (response.error) {
