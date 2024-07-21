@@ -41,7 +41,7 @@ const NewPost = () => {
       const token = localStorage.getItem('authToken');
       const sendConfig = {
         method: "POST",
-        url: `${process.env.VITE_API_BASE_URL}/posts/create`,
+        url: `${import.meta.env.VITE_API_BASE_URL}/posts/create`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -77,7 +77,11 @@ const NewPost = () => {
   const currentuser = useSelector((state) => state.user);
   const fileInputRef = useRef(null);
   const userPath = `/user/${currentuser?._id}`;
+  const handleReset=()=>{
+    setThread("");
+    clearFile();
 
+  }
   const handleIconClick = () => {
     fileInputRef.current.value = "";
     fileInputRef.current.click();
@@ -144,7 +148,16 @@ const NewPost = () => {
           textColor={"gray"}
         >
           <Text>Anyone Can Reply</Text>
-
+          <HStack>
+          <Button
+            colorScheme="gray"
+            rounded={"full"}
+            w={"90px"}
+            isDisabled={thread.length === 0 && !file}
+            onClick={handleReset}
+          >
+            Reset
+          </Button>
           <Button
             colorScheme="gray"
             rounded={"full"}
@@ -154,6 +167,7 @@ const NewPost = () => {
           >
             Post
           </Button>
+          </HStack>
         </Flex>
       </Flex>
       <Divider

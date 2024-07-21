@@ -138,6 +138,7 @@ const createReply = async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err.message,err.stack);
     return res
       .status(500)
       .json({ error: "Internal Server Error", status: false });

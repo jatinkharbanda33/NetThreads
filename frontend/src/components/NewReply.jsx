@@ -43,7 +43,7 @@ const NewReply = (postId,nesting_level=0) => {
       const token = localStorage.getItem('authToken');
       const sendConfig = {
         method: "POST",
-        url: `${process.env.VITE_API_BASE_URL}/reply/create`,
+        url: `${import.meta.env.VITE_API_BASE_URL}/reply/create`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -75,6 +75,10 @@ const NewReply = (postId,nesting_level=0) => {
       console.log(err);
     }
   };
+  const handleReset=()=>{
+    setThread("");
+    clearFile();
+  }
 
   const currentuser = useSelector((state) => state.user);
   const fileInputRef = useRef(null);
@@ -147,6 +151,16 @@ const NewReply = (postId,nesting_level=0) => {
         >
           <Text>Anyone Can Reply</Text>
 
+          <HStack>
+          <Button
+            colorScheme="gray"
+            rounded={"full"}
+            w={"90px"}
+            isDisabled={thread.length === 0 && !file}
+            onClick={handleReset}
+          >
+            Reset
+          </Button>
           <Button
             colorScheme="gray"
             rounded={"full"}
@@ -156,6 +170,7 @@ const NewReply = (postId,nesting_level=0) => {
           >
             Reply
           </Button>
+          </HStack>
         </Flex>
       </Flex>
       <Divider
