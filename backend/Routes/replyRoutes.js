@@ -1,6 +1,6 @@
 import express from "express";
 import protectRoute from "../Middlewares/protectRoute.js";
-import { createReply, getReplies, getReply, likeReply } from "../Controllers/replyController.js";
+import { createReply, getReplies, getReply, isLiked, likeReply } from "../Controllers/replyController.js";
 const router=express.Router();
 
 router.post("/get/:id",protectRoute,getReply);

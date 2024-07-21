@@ -255,4 +255,4 @@ const isLiked=async(req,res)=>{
   }
 }
 
-export {getReply,createReply,likeReply,getReplies}
+export {getReply,createReply,likeReply,getReplies,isLiked}
