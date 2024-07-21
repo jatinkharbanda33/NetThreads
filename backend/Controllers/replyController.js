@@ -233,6 +233,7 @@ const getReplies = async (req, res) => {
       .toArray();
     return res.status(200).json({ status: true, data: replies });
   } catch (err) {
+    console.log(err.message,err.stack);
     return res
       .status(500)
       .json({ error: "Internal Server Error", status: false });

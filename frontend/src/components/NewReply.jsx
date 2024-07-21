@@ -1,30 +1,32 @@
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { ImCancelCircle } from "react-icons/im";
-import axios from "axios";
+import { Link as RouterLink } from "react-router-dom";
+import { Divider, useColorModeValue } from "@chakra-ui/react";
+import ImageModal from "../modals/ImageModal";
 import {
+  Box,
   Flex,
   Input,
   Button,
   Text,
   Avatar,
   Icon,
-  IconButton,
   HStack,
   Link,
 } from "@chakra-ui/react";
 import { MdAttachment } from "react-icons/md";
+import { toast } from "sonner";
+import axios from "axios";
+import useFileUpload from "../hooks/use-File-Upload";
+import { useNavigate } from "react-router-dom";
 
-const NewReply = ({ postId }) => {
-  const [thread, setThread] = useState("");
-  const [file, setFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
-  const [view, setView] = useState(false);
+const NewReply = (postId,nesting_level=0) => {
   const navigate=useNavigate();
+  const dividerColor = useColorModeValue("black", "gray.500");
+  const [thread, setThread] = useState("");
+  const { file, filePreview, handleFileChange, clearFile } = useFileUpload();
   const handleReply = async () => {
     try {
-      
       const requestBody = {};
       if (!thread && !file) {
         return;
@@ -33,13 +35,15 @@ const NewReply = ({ postId }) => {
         requestBody.text = thread;
       }
       if (file) {
-        requestBody.image_name = file.name;
-        requestBody.image_content_type = file.type;
+        requestBody.file_name = file.name;
+        requestBody.file_content_type = file.type;
+        requestBody.parent_reply_id=postId;
+        requestBody.nesting_level=nesting_level+1;
       }
       const token = localStorage.getItem('authToken');
       const sendConfig = {
         method: "POST",
-        url: `${import.meta.env.VITE_API_BASE_URL}/reply/create/${postId}`,
+        url: `${process.env.VITE_API_BASE_URL}/reply/create`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -49,12 +53,8 @@ const NewReply = ({ postId }) => {
       const request = await axios(sendConfig);
       if(request.status==401) navigate("/");
       const response = await request.data;
-      if (response.error) {
-        console.log(response.error);
-        return;
-      }
       if (!response.status) {
-        console.log("error :400");
+        toast.error("An Error Occurred");
         return;
       }
       if (response.url) {
@@ -66,11 +66,12 @@ const NewReply = ({ postId }) => {
           body: file,
         });
       }
-      setFile(null);
       setThread("");
-      setFilePreview(null);
-      setView(false);
+      // setFilePreview(null);
+      clearFile();
+      toast.success("Reply Added");
     } catch (err) {
+      toast.error("An Unexpected Error Occurred");
       console.log(err);
     }
   };
@@ -84,11 +85,6 @@ const NewReply = ({ postId }) => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    setFilePreview(URL.createObjectURL(selectedFile));
-  };
   return (
     <>
       <Flex
@@ -101,7 +97,11 @@ const NewReply = ({ postId }) => {
         }}
       >
         <Flex direction={"row"}>
-          <Avatar name={currentuser?.name} src={currentuser?.profilepicture} />
+          <Avatar
+            size="lg"
+            name={currentuser?.name}
+            src={currentuser?.profilepicture}
+          />
           <Flex direction={"column"}>
             <Link as={RouterLink} to={userPath}>
               <Text px={4} fontSize={"md"} fontWeight={"bold"}>
@@ -112,7 +112,7 @@ const NewReply = ({ postId }) => {
               type="text"
               variant="unstyled"
               p={3}
-              placeholder="Reply to this Post"
+              placeholder="Start a NetThread..."
               size="lg"
               focusBorderColor="grey"
               onChange={(e) => {
@@ -133,71 +133,8 @@ const NewReply = ({ postId }) => {
                   onClick={handleIconClick}
                   style={{ cursor: "pointer", border: "none", padding: 0 }}
                 />
-                {file && (
-                  <HStack padding={4}>
-                    {!view ? (
-                      <HStack>
-                        <Text>{file.name}</Text>
-                        <Button
-                          colorScheme="gray"
-                          style={{ width: "200px" }}
-                          onClick={() => {
-                            setView(true);
-                          }}
-                        >
-                          View Attachment
-                        </Button>
-                        <ImCancelCircle
-                          cursor={"pointer"}
-                          style={{ width: "25px", height: "25px" }}
-                          onClick={() => {
-                            setFile(null);
-                            setFilePreview(null);
-                            setView(false);
-                          }}
-                        />
-                      </HStack>
-                    ) : (
-                      <Flex
-                        position="fixed"
-                        top="50%"
-                        left="50%"
-                        transform="translate(-50%, -50%)"
-                        zIndex="9999"
-                      >
-                        <Flex
-                          gap={1}
-                          flexDirection={"column"}
-                          justifyContent={"center"}
-                          style={{
-                            width: "100vh",
-                            height: "100vh",
-                            backgroundColor: "rgba(0, 0, 0, 0.5)",
-                          }}
-                        >
-                          <ImCancelCircle
-                            cursor={"pointer"}
-                            style={{ width: "25px", height: "25px" }}
-                            onClick={() => {
-                              setFile(null);
-                              setFilePreview(null);
-                              setView(false);
-                            }}
-                          />
-                          <img
-                            src={filePreview}
-                            alt="Preview"
-                            style={{
-                              maxWidth: "100%",
-                              maxHeight: "100%",
-                              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        </Flex>
-                      </Flex>
-                    )}
-                  </HStack>
+                {file && file != null && (
+                  <ImageModal filePreview={filePreview} />
                 )}
               </HStack>
             </Flex>
@@ -208,7 +145,7 @@ const NewReply = ({ postId }) => {
           alignItems={"center"}
           textColor={"gray"}
         >
-          <Text>Visible to Everyone</Text>
+          <Text>Anyone Can Reply</Text>
 
           <Button
             colorScheme="gray"
@@ -221,7 +158,13 @@ const NewReply = ({ postId }) => {
           </Button>
         </Flex>
       </Flex>
-      <hr />
+      <Divider
+        orientation="horizontal"
+        borderColor={dividerColor}
+        borderWidth="1px"
+        mt={4}
+        mb={4}
+      />
     </>
   );
 };

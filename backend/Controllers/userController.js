@@ -219,9 +219,6 @@ const updateUserDetails = async (req, res) => {
 const refreshToken=async(req,res)=>{
   try{
     const refreshToken=req.cookies?.refreshToken;
-    console.log(req.cookies);
-    console.log(req.cookie);
-    console.log(refreshToken);
     if(!refreshToken) return res.status(401).json({status:false,error:"Unauthorized"});
     let decode;
     try{
