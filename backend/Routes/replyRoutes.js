@@ -1,6 +1,6 @@
 import express from "express";
 import protectRoute from "../Middlewares/protectRoute.js";
-import { createReply, getReplies, getReply, isLiked, likeReply } from "../Controllers/replyController.js";
+import { createReply, getReplies, getReply, isLiked, likeReply ,pk} from "../Controllers/replyController.js";
 const router=express.Router();
 
 router.post("/get/:id",protectRoute,getReply);
@@ -8,7 +8,5 @@ router.post("/create",protectRoute,createReply);
 router.post("/like/:id",protectRoute,likeReply);
 router.post("/get/replies",protectRoute,getReplies);
 router.get("/get/isLiked",protectRoute,isLiked);
-
-
-
+router.post("/random",protectRoute,pk)
 export default router;
