@@ -27,7 +27,7 @@ const Post = React.memo(
     }
     const dividerColor = useColorModeValue("black", "gray.500");
     let postpath = String(`/post/${post._id}`);
-    let likespath = String(`/likes/${post._id}`);
+    let likespath = String(`/post/likes/${post._id}`);
     const [isLiked, setLike] = useState(false);
     const [likesCount, setLikesCount] = useState(post.likesCount);
     const [repliesCount, setrepliesCount] = useState(post.repliesCount);
