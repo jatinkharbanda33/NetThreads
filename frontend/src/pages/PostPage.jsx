@@ -45,10 +45,14 @@ const PostPage = React.memo( () => {
         const token= localStorage.getItem('authToken');
         const sendConfig={
           method:"POST",
-          url:`${import.meta.env.VITE_API_BASE_URL}/posts/getreplies/${id}`,
+          url:`${import.meta.env.VITE_API_BASE_URL}/get/replies`,
           headers:{
             Authorization: `Bearer ${token}`,
              "Content-Type": "application/json",
+          },
+          data:{
+            parent_reply_id:id,
+            lastFetchedId:postReplies.length>0? postReplies[postReplies.length-1]:0
           }
         }
         const request=await axios(sendConfig)
