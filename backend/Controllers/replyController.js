@@ -238,4 +238,21 @@ const getReplies = async (req, res) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+const isLiked=async(req,res)=>{
+  try{
+    const id=req.params.id;
+     const currentUser = req.user._id;
+    const isLiked=db.collection('Likes').findOne({replyId:new ObjectId(id),userId:currentUser});
+    if(isLiked) return res.status(200).json({status:true,answer:true})
+      return res.status(200).json({status:true,answer:true})
+
+  }
+  catch(err){
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
+
+  }
+}
+
 export {getReply,createReply,likeReply,getReplies}

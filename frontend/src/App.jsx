@@ -18,6 +18,7 @@ const App = React.memo(() => {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate=useNavigate();
   let isUser = useSelector((state) => state.user);
+  const authToken=localStorage.getItem('authToken');
   const dispatch = useDispatch();
   useEffect(() => {
     const refreshToken = async () => {
@@ -44,8 +45,9 @@ const App = React.memo(() => {
     };
     const getUser = async () => {
       try {
-        if (localStorage.getItem("authToken") && !isUser) {
+        if (authToken && !isUser) {
           const token = localStorage.getItem("authToken");
+          console.log(token);
           const sendConfig = {
             method: "POST",
             url: "/api/users/getuser/token",
@@ -66,10 +68,11 @@ const App = React.memo(() => {
         localStorage.removeItem("authToken");
       }
     };
-    if (!isUser && localStorage.getItem("authToken")) {
+    if (!isUser && authToken ) {
+      console.log(authToken);
       getUser();
     }
-    if (!localStorage.getItem("authToken")) {
+    if (!authToken) {
       refreshToken();
     }
 
