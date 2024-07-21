@@ -20,7 +20,9 @@ import axios from "axios";
 import useFileUpload from "../hooks/use-File-Upload";
 import { useNavigate } from "react-router-dom";
 
-const NewReply = (postId,nesting_level=0) => {
+const NewReply = (params) => {
+  const postId=params.postId;
+  const nesting_level=params?.nesting_level?params?.nesting_level:0;
   const navigate=useNavigate();
   const dividerColor = useColorModeValue("black", "gray.500");
   const [thread, setThread] = useState("");
@@ -33,12 +35,13 @@ const NewReply = (postId,nesting_level=0) => {
       }
       if (thread) {
         requestBody.text = thread;
+        console.log(postId);
+        requestBody.parent_reply_id=String(postId);
+        requestBody.nesting_level=parseInt(nesting_level+1);
       }
       if (file) {
         requestBody.file_name = file.name;
         requestBody.file_content_type = file.type;
-        requestBody.parent_reply_id=postId;
-        requestBody.nesting_level=nesting_level+1;
       }
       const token = localStorage.getItem('authToken');
       const sendConfig = {
