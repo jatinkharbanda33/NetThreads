@@ -77,18 +77,14 @@ const createReply = async (req, res) => {
         await db.collection("Posts").findOneAndUpdate(
           { _id: parent_id },
           {
-            $set: {
               $inc: { repliesCount: 1 },
-            },
           }
         );
       } else {
         await db.collection("Replies").findOneAndUpdate(
           { _id: parent_id },
           {
-            $set: {
               $inc: { repliesCount: 1 },
-            },
           }
         );
       }
@@ -115,18 +111,15 @@ const createReply = async (req, res) => {
         await db.collection("Posts").findOneAndUpdate(
           { _id: parent_id },
           {
-            $set: {
               $inc: { repliesCount: 1 },
-            },
           }
         );
       } else {
         await db.collection("Replies").findOneAndUpdate(
           { _id: parent_id },
           {
-            $set: {
+         
               $inc: { repliesCount: 1 },
-            },
           }
         );
       }
@@ -157,7 +150,7 @@ const likeReply = async (req, res) => {
         .collection("Replies")
         .findOneAndUpdate(
           { _id: replyId },
-          { $set: { $inc: { likesCount: -1 } } }
+          { $inc: { likesCount: -1 }  }
         );
       await db.collection("Likes").deleteOne({ _id: alreadyLiked._id });
       return res.status(201).json({ status: true, message: "Like removed" });
@@ -166,7 +159,7 @@ const likeReply = async (req, res) => {
         .collection("Replies")
         .findOneAndUpdate(
           { _id: replyId },
-          { $set: { $inc: { likesCount: 1 } } }
+          { $inc: { likesCount: 1 } }
         );
       await db
         .collection("Likes")

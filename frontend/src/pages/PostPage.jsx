@@ -80,7 +80,7 @@ const PostPage = React.memo( () => {
             <Spinner size="xl"></Spinner>
           </Flex>
         )}
-        {!loading && post &&<> <Post post={post} key={`/post/${post._id}`} />  <NewReply key={id} postId={id} /> </>}
+        {!loading && post &&<> <Post post={post} key={`/post/${post._id}`} />  <NewReply key={id} postId={post._id} /> </>}
        
      {!loading && postReplies.map((reply)=>(<Reply key = {reply._id} reply={reply}/>))}
     
