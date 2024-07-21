@@ -176,6 +176,7 @@ const likeReply = async (req, res) => {
 };
 const getReplies = async (req, res) => {
   try {
+    console.log("Req Received");
     let { parent_reply_id, lastFetchedId } = req.body;
     if (!lastFetchedId) {
       lastFetchedId = 0;
