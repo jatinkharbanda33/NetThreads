@@ -16,13 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 const Reply = React.memo(
-  ({ reply, replyname, profilepic }) => {
+  ({ reply}) => {
     const navigate = useNavigate();
-    let dispatch = useDispatch();
-    if (replyname) {
-      reply.profilepicture = profilepic;
-      reply.username = replyname;
-    }
     const dividerColor = useColorModeValue("black", "gray.500");
     let replypath = String(`/reply/${reply._id}`);
     let likespath = String(`/likes/${reply._id}`);
@@ -95,8 +90,8 @@ const Reply = React.memo(
         try {
           const token = localStorage.getItem("authToken");
           const sendConfig = {
-            method: "POST",
-            url: `${import.meta.env.VITE_API_BASE_URL}/reply/isliked/${
+            method: "GET",
+            url: `${import.meta.env.VITE_API_BASE_URL}/reply/get/isLiked/${
               reply._id
             }`,
             headers: {
