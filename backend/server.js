@@ -11,7 +11,7 @@ import searchRoutes from "./Routes/searchRoutes.js"
 import replyRoutes from "./Routes/replyRoutes.js"
 const app = express();
 const port = process.env.PORT || 5000;
-const allowedOrigins = ['http://localhost:3000', 'https://your-deployed-frontend.com'];
+const allowedOrigins = ['https://main.d2sjkiisee3hy9.amplifyapp.com'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
