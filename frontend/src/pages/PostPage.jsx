@@ -45,7 +45,7 @@ const PostPage = React.memo( () => {
         const token= localStorage.getItem('authToken');
         const sendConfig={
           method:"POST",
-          url:`${import.meta.env.VITE_API_BASE_URL}/get/replies`,
+          url:`${import.meta.env.VITE_API_BASE_URL}/reply/get/replies`,
           headers:{
             Authorization: `Bearer ${token}`,
              "Content-Type": "application/json",

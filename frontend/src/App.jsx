@@ -25,7 +25,7 @@ const App = React.memo(() => {
       try {
         const sendConfig = {
           method: "GET",
-          url: "/api/users/refresh/token",
+          url: `${import.meta.env.VITE_API_BASE_URL}/users/refresh/token`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -50,7 +50,7 @@ const App = React.memo(() => {
           console.log(token);
           const sendConfig = {
             method: "POST",
-            url: "/api/users/getuser/token",
+            url:  `${import.meta.env.VITE_API_BASE_URL}/users/getuser/token`,
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -65,16 +65,15 @@ const App = React.memo(() => {
           isUser = response;
         }
       } catch (err) {
-        localStorage.removeItem("authToken");
+        console.error(err);
       }
     };
-    if (!isUser && authToken ) {
-      console.log(authToken);
-      getUser();
-    }
-    if (!authToken) {
-      refreshToken();
-    }
+   if(!isUser && localStorage.getItem('authToken')){
+    getUser();
+   }
+   else{
+    refreshToken();
+   }
 
     setLoading(false);
   }, []);

@@ -219,23 +219,22 @@ const updateUserDetails = async (req, res) => {
 const refreshToken=async(req,res)=>{
   try{
     const refreshToken=req.cookies?.refreshToken;
+    console.log(req.cookies);
+    console.log(refreshToken);
     if(!refreshToken) return res.status(401).json({status:false,error:"Unauthorized"});
     let decode;
     try{
     decode = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
     }
     catch(err){
-      res.clearCookie('refreshToken',{
-        httpOnly:true,
-        secure:false,
-        maxAge:15*24*60*60*1000,
-      })
+     console.error(err.message,err.stack);
       return res.status(400).json({status:false, error:"Invalid Token"});
     }
     const accessToken=generateAccessToken(decode.userId);
     return res.status(200).json({status:true,authToken:accessToken});
   }
   catch(err){
+    console.error(err.message,err.stack);
     return res.status(500).json({status:false, error: 'Internal Server Error' });
   }
 }

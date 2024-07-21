@@ -55,11 +55,12 @@ const UserPage = React.memo(() => {
       setLoading(true);
       const sendConfig = {
         method: "POST",
-        url: `${import.meta.env.VITE_API_BASE_URL}/posts/getuserposts/${id}`,
+        url: `${import.meta.env.VITE_API_BASE_URL}/posts/get/userposts/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        data:reqbody
       };
       const request = await axios(sendConfig);
       if(request.status==401) navigate("/");
