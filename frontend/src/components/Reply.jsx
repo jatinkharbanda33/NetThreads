@@ -155,7 +155,16 @@ const Reply = ({ reply }) => {
           {!isLiked && <FaRegHeart onClick={toggleLike} size={18} />}
         </HStack>
         {/* <Link as={RouterLink} to={likespath}> */}
-        <Text>{likesCount} likes</Text>
+        <HStack gap={2}>
+              {likesCount > 0 ? (
+                <Link as={RouterLink} to={likespath}>
+                  <Text color="#777777">{reply.likesCount} likes</Text>
+                </Link>
+              ) : (
+                <Text color="#777777">{reply.likesCount} likes</Text>
+              )}
+              <Text color="#777777">{reply.repliesCount} replies</Text>
+            </HStack>
         <hr />
       </Flex>
     </Flex>
