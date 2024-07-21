@@ -186,8 +186,9 @@ const getReplies = async (req, res) => {
     const pipeline = [
       {
         $match: {
-          parent_reply_id: parent_reply_id,
           _id: { $gt: lastFetchedId },
+          parent_reply_id: parent_reply_id
+         
         },
       },
       {
@@ -232,7 +233,7 @@ const getReplies = async (req, res) => {
     console.log(err.message,err.stack);
     return res
       .status(500)
-      .json({ error: "Internal Server Error", status: false });
+      .json({ error: err.message, status: false });
   }
 };
 const isLiked=async(req,res)=>{
