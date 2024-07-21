@@ -240,6 +240,7 @@ const isLiked=async(req,res)=>{
   try{
     const id=req.params.id;
      const currentUser = req.user._id;
+     const db=getDb();
     const isLiked=db.collection('Likes').findOne({replyId:new ObjectId(id),userId:currentUser});
     if(isLiked) return res.status(200).json({status:true,answer:true})
       return res.status(200).json({status:true,answer:true})
@@ -254,7 +255,6 @@ const isLiked=async(req,res)=>{
 }
 const getAllReplies=async(req,res)=>{
   try {
-    console.log("Hey we have received a req");
     let { parent_reply_id, lastFetchedId } = req.body;
     const db = getDb();
     const pipeline = [];
