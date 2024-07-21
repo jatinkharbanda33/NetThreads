@@ -176,61 +176,66 @@ const likeReply = async (req, res) => {
 };
 const getReplies = async (req, res) => {
   try {
+    console.log("Hey we have received a req");
     let { parent_reply_id, lastFetchedId } = req.body;
-    let matchFields={};
-    if (lastFetchedId != null) {
-      matchFields.$match._id = { $gt: new ObjectId(lastFetchedId) };
-    } 
-    let parent_id = new ObjectId(parent_reply_id);
-    matchFields.$match.parent_reply_id=parent_id;
     const db = getDb();
-    const pipeline = [
-      matchFields,
-      {
-        $sort: {
-          _id: 1,
-        },
+    const pipeline = [];
+    const matchStage = { $match: {} };
+    if (lastFetchedId != null) {
+      matchStage.$match._id = { $gt: new ObjectId(lastFetchedId) };
+    }
+    if (parent_reply_id) {
+      matchStage.$match.parent_reply_id = new ObjectId(parent_reply_id);
+    }
+
+    pipeline.push(matchStage);
+
+    pipeline.push({
+      $sort: {
+        _id: 1,
       },
-      { $limit: 12 },
-      {
-        $lookup: {
-          from: "Users",
-          localField: "postedBy",
-          foreignField: "_id",
-          as: "result",
-        },
+    });
+
+    pipeline.push({ $limit: 12 });
+
+    pipeline.push({
+      $lookup: {
+        from: "Users",
+        localField: "postedBy",
+        foreignField: "_id",
+        as: "result",
       },
-      {
-        $unwind: {
-          path: "$result",
-        },
+    });
+
+    pipeline.push({
+      $unwind: {
+        path: "$result",
       },
-      {
-        $project: {
-          __id: 1,
-          username: "$result.username",
-          profile_picture: "$result.profilepicture",
-          name: "result.name",
-          text: 1,
-          image: 1,
-          inserted_at: 1,
-          likesCount: 1,
-          repliesCount: 1,
-        },
+    });
+
+    pipeline.push({
+      $project: {
+        __id: 1,
+        username: "$result.username",
+        profile_picture: "$result.profilepicture",
+        name: "$result.name",
+        text: 1,
+        image: 1,
+        inserted_at: 1,
+        likesCount: 1,
+        repliesCount: 1,
       },
-    ];
-    const replies = await db
-      .collection("Replies")
-      .aggregate(pipeline)
-      .toArray();
+    });
+
+    const replies = await db.collection("Replies").aggregate(pipeline).toArray();
     return res.status(200).json({ status: true, data: replies });
   } catch (err) {
-    console.log(err.message,err.stack);
-    return res
-      .status(500)
-      .json({ error: err.message, status: false });
+    console.log("Oops an error occured",err.message,err.stack);
+    console.error("Error in getReplies:", err.message, err.stack);
+    return res.status(500).json({ error: err.message, status: false });
   }
 };
+
 const isLiked=async(req,res)=>{
   try{
     const id=req.params.id;
