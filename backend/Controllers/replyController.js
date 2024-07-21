@@ -176,22 +176,16 @@ const likeReply = async (req, res) => {
 };
 const getReplies = async (req, res) => {
   try {
-    console.log("Req Received");
     let { parent_reply_id, lastFetchedId } = req.body;
-    if (!lastFetchedId) {
-      lastFetchedId = 0;
-    }
-    parent_reply_id = new ObjectId(parent_reply_id);
-    lastFetchedId = new ObjectId(lastFetchedId);
+    let matchFields={};
+    if (lastFetchedId != null) {
+      matchFields.$match._id = { $gt: new ObjectId(lastFetchedId) };
+    } 
+    let parent_id = new ObjectId(parent_reply_id);
+    matchFields.$match.parent_reply_id=parent_id;
     const db = getDb();
     const pipeline = [
-      {
-        $match: {
-          _id: { $gt: lastFetchedId },
-          parent_reply_id: parent_reply_id
-         
-        },
-      },
+      matchFields,
       {
         $sort: {
           _id: 1,
