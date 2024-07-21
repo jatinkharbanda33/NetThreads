@@ -35,6 +35,7 @@ const getReply = async (req, res) => {
           inserted_at: 1,
           likesCount: 1,
           repliesCount: 1,
+          postedBy:"$postedByUser._id",
           name: "$postedByUser.name",
           username: "$postedByUser.username",
           profilepicture: "$postedByUser.profilepicture",
@@ -295,7 +296,8 @@ const getAllReplies=async(req,res)=>{
       $project: {
         _id: 1,
         username: "$result.username",
-        profile_picture: "$result.profilepicture",
+        postedBy:"$result._id",
+        profilepicture: "$result.profilepicture",
         name: "$result.name",
         text: 1,
         image: 1,
