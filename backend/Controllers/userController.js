@@ -65,6 +65,7 @@ const loginUser = async (req, res) => {
       token: authtoken
     });
   } catch (err) {
+    console.log(err.message,err.stack);
     res.status(500).json({status:false, error: 'Internal Server Error' });
   }
 };
