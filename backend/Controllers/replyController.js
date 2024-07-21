@@ -71,7 +71,7 @@ const createReply = async (req, res) => {
         likesCount: 0,
         inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         repliesCount: 0,
-        parent_reply_id: parent_reply_id,
+        parent_reply_id: parent_id,
       });
       if (nesting_level == 1) {
         await db.collection("Posts").findOneAndUpdate(
@@ -106,6 +106,8 @@ const createReply = async (req, res) => {
         likesCount: 0,
         inserted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         repliesCount: 0,
+        parent_reply_id: parent_id,
+        
       });
       if (nesting_level == 1) {
         await db.collection("Posts").findOneAndUpdate(
