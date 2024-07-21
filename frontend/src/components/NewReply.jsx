@@ -105,7 +105,7 @@ const NewReply = (params) => {
       >
         <Flex direction={"row"}>
           <Avatar
-            size="lg"
+            size="md"
             name={currentuser?.name}
             src={currentuser?.profilepicture}
           />
