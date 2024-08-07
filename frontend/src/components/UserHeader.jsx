@@ -109,7 +109,7 @@ const UserHeader = ({ user }) => {
         const token = localStorage.getItem('authToken');
         const sendConfig={
           method:"GET",
-          url:`${process.env.VITE_API_BASE_URL}/users/profile/${user}`,
+          url:`${import.meta.env.VITE_API_BASE_URL}/users/profile/${user}`,
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
