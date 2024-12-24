@@ -3,7 +3,7 @@
 
 A content-sharing platform that allowed users to view and engage in public discussions
 
-**Website URL:** https://main.d2sjkiisee3hy9.amplifyapp.com/
+**Website URL:** https://main.d1xssg2i2irl98.amplifyapp.com/
 
 ![Logo](https://d19arwbdzmrgqz.cloudfront.net/dark_n_new.png)
 
