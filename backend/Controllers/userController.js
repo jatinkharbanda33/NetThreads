@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 const signupUser = async (req, res) => {
   try {
     const db=getDb();
-    const { name, username, password } = req.body;
+    const { name,username, password } = req.body;
     const user = await db.collection('Users').findOne({
        username: username 
     });
@@ -21,7 +21,8 @@ const signupUser = async (req, res) => {
       username: username,
       password: hashedpassword,
       profilepicture: null,
-      bio: null
+      bio: null,
+      verified:false
     });
     if (newUser) {
       res.status(201).json({
