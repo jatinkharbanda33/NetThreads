@@ -12,4 +12,6 @@ router.post("/getuser/token",protectRoute,getUserByToken);
 router.post("/update/profilepicture",protectRoute,updateProfilePicture);
 router.post("/update/userDetails",protectRoute,updateUserDetails);
 router.get("/refresh/token",refreshToken);
+
+
 export default router;

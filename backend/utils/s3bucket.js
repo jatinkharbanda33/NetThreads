@@ -19,9 +19,6 @@ const putObjectinS3=async(filename,username,contentType,type)=>{
         if(contentType.startsWith("image/")){
             keyy=`${username}/${type}/images/${filename}` 
         }
-       /*  else if(contentType.startsWith("video/")){
-            keyy=`${username}/${type}/videos/${filename}_${datetime}` 
-        } */
         else{
             return {status:false,error:"invalid content-type"};
         }
