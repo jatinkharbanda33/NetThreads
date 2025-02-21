@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 const mailSender = async (receiverMail,subject,body) => {
   try {
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465, 
       secure: true,
