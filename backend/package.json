@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node --experimental-loader=newrelic/esm-loader.mjs server.js"
   },
   "type": "module",
   "author": "",
@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
     "mongodb": "^6.3.0",
+    "newrelic": "^12.15.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.0",
