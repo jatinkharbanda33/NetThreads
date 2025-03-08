@@ -1,12 +1,9 @@
-
-import dotenv from "dotenv";
-dotenv.config();
+import config from "./Config/config.js";
 import 'newrelic';
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectToMongo } from "./ConnectDB/connectToDb.js";
-dotenv.config();
 import userRoutes from "./Routes/userRoutes.js";
 import postRoutes from "./Routes/postRoutes.js";
 import searchRoutes from "./Routes/searchRoutes.js";
@@ -19,7 +16,7 @@ const initServer=async()=>{
 }
 const runServer = async () => {
   const app = express();
-  const port = process.env.PORT || 5000;
+  const port = config.PORT;
   const allowedOrigins = ["https://main.d1xssg2i2irl98.amplifyapp.com", "*"];
   const corsOptions = {
     origin: function (origin, callback) {

@@ -1,3 +1,4 @@
+import config from '../Config/config.js';
 import nodemailer from "nodemailer";
 const mailSender = async (receiverMail,subject,body) => {
   try {
@@ -6,12 +7,12 @@ const mailSender = async (receiverMail,subject,body) => {
       port: 465, 
       secure: true,
       auth: {
-        user: process.env.GMAIL_ADDRESS,
-        pass: process.env.GMAIL_PASS,
+        user: config.GMAIL_ADDRESS,
+        pass: config.GMAIL_PASS,
       },
     });
     const info = await transporter.sendMail({
-      from: process.env.GMAIL_ADDRESS,
+      from: config.GMAIL_ADDRESS,
       to: receiverMail, 
       subject: subject, 
       html:body 
