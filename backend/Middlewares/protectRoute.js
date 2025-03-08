@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { getDb } from "../ConnectDB/connectToDb.js";
-
+import config from "../Config/config.js"
 const protectRoute = async (req, res, next) => {
   try {
     const headers = req.headers.authorization;
@@ -16,7 +16,7 @@ const protectRoute = async (req, res, next) => {
     }
     let decode;
     try{
-    decode = jwt.verify(token, process.env.ACCESS_JWT_SECRET);
+    decode = jwt.verify(token, config.ACCESS_JWT_SECRET);
     }
     catch(err){
       return res.status(401).json({status:false, error:"Unauthorized"});

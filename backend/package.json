@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --experimental-loader=newrelic/esm-loader.mjs server.js"
+    "start:prod": "node --experimental-loader=newrelic/esm-loader.mjs server.js",
+    "start": "set NODE_ENV=development && nodemon -r dotenv/config server.js dotenv_config_path=./Config/.env.development"
   },
   "type": "module",
   "author": "",

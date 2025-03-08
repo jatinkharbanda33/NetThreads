@@ -1,7 +1,6 @@
-import { MongoClient, ReadPreference } from "mongodb";
-import dotenv from "dotenv";
-dotenv.config();
-const uri = process.env.MONGO_DB_URI;
+import { MongoClient } from "mongodb";
+import config from "../Config/config.js"
+const uri = config.MONGO_DB_URI;
 let _db;
 
 const connectToMongo = async function () {

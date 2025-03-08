@@ -1,3 +1,4 @@
+import config from '../Config/config.js';
 import bcrypt from "bcryptjs";
 import {generateAccessToken,generateRefreshToken} from "../utils/generateToken.js";
 import { ObjectId } from "mongodb";
@@ -223,7 +224,7 @@ const refreshToken=async(req,res)=>{
     if(!refreshToken) return res.status(401).json({status:false,error:"Unauthorized"});
     let decode;
     try{
-    decode = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
+    decode = jwt.verify(refreshToken, config.REFRESH_JWT_SECRET);
     }
     catch(err){
      console.error(err.message,err.stack);
