@@ -16,7 +16,6 @@ const verifyEmail = async (req, res) => {
       return res
         .status(400)
         .json({ error: "User already verified", status: false });
-    console.log(email);
     if (!email || !validator.isEmail(email))
       return res
         .status(400)
@@ -54,9 +53,9 @@ const verifyEmail = async (req, res) => {
       await db
         .collection("verifyEmailOtp")
         .deleteOne({ _id: anyPendingOtp._id });
-    let mailBody =
+    let mailSubject =
       "NetThreads - One Time Password(OTP) for email verification request";
-    let mailSubject = emailVerificationOtpMailBody(newOtpToSend);
+    let mailBody = emailVerificationOtpMailBody(newOtpToSend);
     ("NetThreads- Your One-Time Password (OTP) for Email Verification");
     let { mailStatus } = await mailSender(email, mailSubject, mailBody);
     if (mailStatus == true) {

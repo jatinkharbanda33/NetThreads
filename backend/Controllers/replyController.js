@@ -39,6 +39,7 @@ const getReply = async (req, res) => {
           name: "$postedByUser.name",
           username: "$postedByUser.username",
           profilepicture: "$postedByUser.profilepicture",
+          postedByVerifiedUser: "$postedByUser.verified",
         },
       },
     ];
@@ -304,14 +305,14 @@ const getAllReplies=async(req,res)=>{
         inserted_at: 1,
         likesCount: 1,
         repliesCount: 1,
+        postedByVerifiedUser: "$result.verified"
       },
     });
 
     const replies = await db.collection("Replies").aggregate(pipeline).toArray();
     return res.status(200).json({ status: true, data: replies });
   } catch (err) {
-    console.log("Oops an error occured",err.message,err.stack);
-    console.error("Error in getReplies:", err.message, err.stack);
+    
     return res.status(500).json({ error: err.message, status: false });
   }
 

@@ -52,6 +52,7 @@ const getPost = async (req, res) => {
           name: "$postedByUser.name",
           username: "$postedByUser.username",
           profilepicture: "$postedByUser.profilepicture",
+          postedByVerifiedUser: "$postedByUser.verified",
         },
       },
     ];
@@ -105,6 +106,8 @@ const getRecentPosts = async (req, res) => {
           postedBy: 1,
           username: "$result.username",
           profilepicture: "$result.profilepicture",
+          postedByVerifiedUser: "$result.verified",
+          
         },
       },
     ];
@@ -163,6 +166,7 @@ const getPreviousPosts = async (req, res) => {
           postedBy: 1,
           username: "$result.username",
           profilepicture: "$result.profilepicture",
+          verified: "$result.verified",
         },
       },
     ];
@@ -171,6 +175,7 @@ const getPreviousPosts = async (req, res) => {
       .collection("Posts")
       .aggregate(pipeline)
       .toArray();
+     
     res.status(200).json(feedPosts);
   } catch (err) {
     res.status(500).json({ status:false, error: 'Internal Server Error' });
@@ -469,6 +474,7 @@ const getReplies = async (req, res) => {
           inserted_at: 1,
           likesCount: 1,
           repliesCount: 1,
+          postedByVerifiedUser: "$result.verified",
         },
       },
     ];

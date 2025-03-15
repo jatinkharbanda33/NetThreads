@@ -2,8 +2,6 @@ import dotenv from "dotenv";
 const env = process.env.NODE_ENV || 'development'; 
 const envPath = `./Config/.env.${env}`;
 dotenv.config({ path: envPath });
-
-
 const config = {
     PORT: process.env.PORT,
     MONGO_DB_URI: process.env.MONGO_DB_URI,
