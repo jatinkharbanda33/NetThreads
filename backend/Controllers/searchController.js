@@ -27,7 +27,7 @@ const searchByUsername = async (req, res) => {
       {
         $project: {
           username: 1,
-          name: 1,
+          name:1,
           profilepicture: 1,
         },
       },
@@ -96,6 +96,7 @@ const atlasSearchByUsername = async (req, res) => {
           _id: 1,
           username: 1,
           profilepicture:1,
+          name:1,
           score: { $meta: "searchScore" }
         }
       }
