@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { putObjectinS3 } from "../utils/s3bucket.js";
 import moment from "moment";
 import { getDb } from "../ConnectDB/connectToDb.js";
+import logger from "../utils/logger.js";
 
 const getReply = async (req, res) => {
   try {
@@ -135,7 +136,8 @@ const createReply = async (req, res) => {
       });
     }
   } catch (err) {
-    console.log(err.message,err.stack);
+    console.log("replyController.js: " + err.message);
+    logger.error("replyController.js: " + err.message);
     return res
       .status(500)
       .json({ error: "Internal Server Error", status: false });

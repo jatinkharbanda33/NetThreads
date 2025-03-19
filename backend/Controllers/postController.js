@@ -2,6 +2,8 @@ import { ObjectId } from "mongodb";
 import { putObjectinS3 } from "../utils/s3bucket.js";
 import moment from "moment";
 import { getDb } from "../ConnectDB/connectToDb.js";
+import logger from "../utils/logger.js";
+
 const getPost = async (req, res) => {
   try {
     const db = getDb();
@@ -61,6 +63,8 @@ const getPost = async (req, res) => {
       return res.status(400).json({ status: false, error: "Invalid Id" });
     return res.status(200).json({ status: true, result: result[0] });
   } catch (err) {
+    console.log("postController.js: " + err.message);
+    logger.error("postController.js: " + err.message);
     res.status(500).json({ status: false, error: 'Internal Server Error' });
   }
 };
@@ -118,6 +122,8 @@ const getRecentPosts = async (req, res) => {
       .toArray();
     res.status(200).json(feedPosts);
   } catch (err) {
+    console.log("postController.js: " + err.message);
+    logger.error("postController.js: " + err.message);
     res.status(500).json({status:false, error: 'Internal Server Error' });
   }
 };
@@ -178,6 +184,8 @@ const getPreviousPosts = async (req, res) => {
      
     res.status(200).json(feedPosts);
   } catch (err) {
+    console.log("postController.js: " + err.message);
+    logger.error("postController.js: " + err.message);
     res.status(500).json({ status:false, error: 'Internal Server Error' });
   }
 };
@@ -232,6 +240,8 @@ const createPost = async (req, res) => {
         });
     }
   } catch (err) {
+    console.log("postController.js: " + err.message);
+    logger.error("postController.js: " + err.message);
     return res.status(500).json({ error: 'Internal Server Error', status: false });
   }
 };

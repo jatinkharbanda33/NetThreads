@@ -1,6 +1,7 @@
 import config from '../Config/config.js';
 import {  S3Client ,PutObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import logger from "./logger.js";
 const getUrlinS3=(keyy)=>{
         const newurl=String(config.AWS_CLOUDFRONT_DOMAIN_NAME)+String(keyy);
         return newurl;
@@ -32,6 +33,7 @@ const putObjectinS3=async(filename,username,contentType,type)=>{
 
     }
     catch(err){
+        logger.error(err.message);
         return {status:false,error:err.message};
     }
 

@@ -1,5 +1,6 @@
 import config from '../Config/config.js';
 import nodemailer from "nodemailer";
+import logger from "./logger.js";
 const mailSender = async (receiverMail,subject,body) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -20,7 +21,8 @@ const mailSender = async (receiverMail,subject,body) => {
     if(info?.accepted?.length>0) return {mailStatus:true};
     return {mailStatus:false};
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
+    return {mailStatus:false};
   }
 };
 

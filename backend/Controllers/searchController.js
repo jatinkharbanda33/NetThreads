@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../ConnectDB/connectToDb.js";
+import logger from "../utils/logger.js";
+
 const searchByUsername = async (req, res) => {
   try {
     const db = getDb();
@@ -109,7 +111,8 @@ const atlasSearchByUsername = async (req, res) => {
       message: "Fetched Results Successfully"
     });
   } catch (err) {
-    console.error(err);
+    console.error("searchController.js: " + err.message);
+    logger.error("searchController.js: " + err.message);
     return res.status(500).json({ status: false, error: "Oops, an error occurred" });
   }
 };
