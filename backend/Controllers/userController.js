@@ -5,6 +5,8 @@ import { ObjectId } from "mongodb";
 import { putObjectinS3 } from "../utils/s3bucket.js";
 import { getDb } from "../ConnectDB/connectToDb.js";
 import jwt from "jsonwebtoken";
+import logger from "../utils/logger.js";
+
 const signupUser = async (req, res) => {
   try {
     const db=getDb();
@@ -67,7 +69,8 @@ const loginUser = async (req, res) => {
       token: authtoken
     });
   } catch (err) {
-    console.log(err.message,err.stack);
+    console.log("userController.js: " + err.message);
+    logger.error("userController.js: " + err.message);
     res.status(500).json({status:false, error: 'Internal Server Error' });
   }
 };
@@ -227,14 +230,16 @@ const refreshToken=async(req,res)=>{
     decode = jwt.verify(refreshToken, config.REFRESH_JWT_SECRET);
     }
     catch(err){
-     console.error(err.message,err.stack);
+     console.error("userController.js: " + err.message);
+     logger.error("userController.js: " + err.message);
       return res.status(400).json({status:false, error:"Invalid Token"});
     }
     const accessToken=generateAccessToken(decode.userId);
     return res.status(200).json({status:true,authToken:accessToken});
   }
   catch(err){
-    console.error(err.message,err.stack);
+    console.error("userController.js: " + err.message);
+    logger.error("userController.js: " + err.message);
     return res.status(500).json({status:false, error: 'Internal Server Error' });
   }
 }

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { getDb } from "../ConnectDB/connectToDb.js";
 import config from "../Config/config.js"
+import logger from "../utils/logger.js";
 const protectRoute = async (req, res, next) => {
   try {
     const headers = req.headers.authorization;
@@ -36,7 +37,7 @@ const protectRoute = async (req, res, next) => {
     req.user = currentuser; 
     next();
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ status:false, error: "Internal Server Error" });
   }
 };

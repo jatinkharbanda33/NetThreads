@@ -18,5 +18,4 @@ router.post("/delete/reply",protectRoute,deleteReply);
 router.post("/like/reply",protectRoute,LikeReply);
 router.post("/isliked/reply/:id",protectRoute,isLikedReply);
 
-
 export default router;

@@ -1,5 +1,6 @@
 import config from "./Config/config.js";
 import 'newrelic';
+import logger from "./utils/logger.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -43,13 +44,17 @@ const runServer = async () => {
     try {
       return res.status(200).json({ status: true, message: "Server Started" });
     } catch (err) {
-      console.error(err.message);
+      console.log("server.js: " + err.message);
+      logger.error("server.js: " + err.message);
       return res
         .status(500)
         .json({ status: false, message: "Internal Server Error" });
     }
   });
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+  app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+    logger.info(`server.js: Server listening on port ${port}`);
+  });
 };
 initServer();
 

@@ -9,6 +9,6 @@ cron.schedule("*/5 * * * *", async () => {
      db.collection("verifyResetPasswordOtp").deleteMany({ expirationTime: { $lte: currTime } });
     console.log("Cron job successfull");
   } catch (err) {
-    console.error(err);
+    logger.error("otpDeleteJob:"+err.message);
   }
 });
