@@ -66,7 +66,8 @@ const loginUser = async (req, res) => {
       username: user.username,
       profilepicture: user.profilepicture,
       bio: user.bio,
-      token: authtoken
+      token: authtoken,
+      verified: user?.verified || false
     });
   } catch (err) {
     console.log("userController.js: " + err.message);
