@@ -34,6 +34,7 @@ const runServer = async () => {
   app.use(cors(corsOptions));
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ extended: true }));
+  app.disable('x-powered-by');
   app.use("/api/users", userRoutes);
   app.use("/api/posts", postRoutes);
   app.use("/api/search", searchRoutes);
