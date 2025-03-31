@@ -3,12 +3,15 @@
 **A Modern Social Media Platform for Thoughtful Conversations**  
 *Where Threads Unravel Meaningful Interactions*
 
+**Deployed URL -> https://netthreads.crabdance.com**
+
+
 ---
 
 ## 🚀 Overview
 NetThreads is a high-performance social media application designed for users to share content publicly with an emphasis on structured, nested conversations. Built with cutting-edge technologies and deployed on AWS infrastructure, this project demonstrates scalable full-stack development practices with enterprise-grade optimizations.
 
-![NetThreads Homepage](./screenshots/homepage.png)  
+![NetThreads Homepage](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/1.png)  
 *Homepage featuring trending threads and engagement metrics*
 
 ---
@@ -39,28 +42,26 @@ NetThreads is a high-performance social media application designed for users to 
 - Secure HTTP-only cookies for token storage.
 - Automatic token rotation mechanism.
 
-![Authentication Flow](./screenshots/jwt_flow.png)
-
 ### 🧬 Nested Conversation Threads
 - Infinite comment nesting with collapsible UI.
 - Context-preserving thread navigation.
 - Real-time depth indicators.
 
-![Nested Replies](./screenshots/nested_replies.png)
+![Nested Replies](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/InfinitePost.png)
 
 ### 🔍 Atlas-Powered Fuzzy Search
 - MongoDB Atlas Search integration.
 - Autocomplete suggestions.
 - Typo-tolerant query parsing.
 
-![Search Feature](./screenshots/search_feature.png)
+![Search Feature](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/search.png)
 
 ### 📧 OTP Email Verification
 - NodeMailer integration with SMTP pooling.
 - Cron-based OTP expiration (Node Schedule).
 - Secure OTP hashing with bcrypt.
 
-![Email Verification](./screenshots/email_verification.png)
+![Email Verification](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/Email.png)
 
 ---
 
@@ -79,21 +80,28 @@ graph TD
 ---
 
 ## 📦 AWS Free Tier Services Utilization
+![AWS Free Tier](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/AwsFreeTier.png)
 
 ## ⚡ Performance Optimizations
+- Connection pooling for concurrent connections.
+  ![Connection pooling](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/MongoDB.png)
 
 ## 🗂️ Database Excellence
 - Indexing on frequently queried fields.
-- Connection pooling with 100+ concurrent connections.
 - Atlas Search indexes for text queries.
+ ![Indexing](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/Indexing.png)
 
 ## 🕒 Cron Job Automation
 - Daily expired OTP cleanup.
+- ![Cron Job](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/Cronjob.png)
+  
 
 ## 🚦 Production Monitoring
 - PM2 process management with clustering.
 - NGINX reverse proxy configuration.
 - Connection rate limiting.
+- ![PM2](https://d3u7ks28fgo7ns.cloudfront.net/github/readme/pm2.png)
+
 
 ## 🖼️ Media Management
 - User Upload → S3 Bucket → CloudFront Distribution → CDN Caching.
