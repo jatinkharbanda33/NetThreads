@@ -1,94 +1,76 @@
+# NetThreads 🌐🧵
 
-# NetThreads
+**A Modern Social Media Platform for Thoughtful Conversations**  
+*Where Threads Unravel Meaningful Interactions*
 
-A content-sharing platform that allowed users to view and engage in public discussions
+---
 
-**Website URL:** https://netthreads.crabdance.com/
+## 🚀 Overview
+NetThreads is a high-performance social media application designed for users to share content publicly with an emphasis on structured, nested conversations. Built with cutting-edge technologies and deployed on AWS infrastructure, this project demonstrates scalable full-stack development practices with enterprise-grade optimizations.
 
-![Logo](https://d19arwbdzmrgqz.cloudfront.net/dark_n_new.png)
+![NetThreads Homepage](./screenshots/homepage.png)  
+*Homepage featuring trending threads and engagement metrics*
 
+---
 
-## Appendix
+## 🛠️ Tech Stack Symphony
 
-• Implemented secure user authentication mechanisms using JSON Web Tokens (JWT) to safeguard user data
+### Frontend
+![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![AWS CloudFront](https://img.shields.io/badge/CloudFront-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
-• Utilized Redux Toolkit for state management, efficiently handling user information and feed updates
+### Backend
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB Atlas](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 
-• Managed AWS services, including S3 for storage, CloudFront for CDN, EC2 for server hosting, and Nginx for
-reverse proxy, to optimize performance and scalability
+### Infrastructure
+![AWS EC2](https://img.shields.io/badge/EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)
+![S3](https://img.shields.io/badge/S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+![NGINX](https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
+---
 
-## Tech Stack
+## 🔑 Key Features
 
-**Client:** React, Redux, Chakra UI
+### 🔐 JWT Authentication System
+- Dual token strategy with access/refresh tokens
+- Secure HTTP-only cookies for token storage
+- Automatic token rotation mechanism
 
-**Server:** Node, Express
+![Authentication Flow](./screenshots/jwt_flow.png)
 
-**Databases:** MongoDB, AWS S3
+### 🧬 Nested Conversation Threads
+- Infinite comment nesting with collapsible UI
+- Context-preserving thread navigation
+- Real-time depth indicators
 
-**Deployment:** AWS EC2, Nginx, PM2, Certbot
+![Nested Replies](./screenshots/nested_replies.png)
 
-## Features
+### 🔍 Atlas-Powered Fuzzy Search
+- MongoDB Atlas Search integration
+- Autocomplete suggestions
+- Typo-tolerant query parsing
 
-Post your first NetThread
-![App Screenshot](https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20160009.png)
+![Search Feature](./screenshots/search_feature.png)
 
+### 📧 OTP Email Verification
+- NodeMailer integration with SMTP pooling
+- Cron-based OTP expiration (Node Schedule)
+- Secure OTP hashing with bcrypt
 
-Update your Information
-![App Screenshot](https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20160050.png
-)
+![Email Verification](./screenshots/email_verification.png)
 
-About Page
-![App Screenshot](https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20160133.png
-)
+---
 
+## �️ Deployment Architecture
 
-
-See who liked you NetThread
-![App Screenshot](
-https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20160237.png
-)
-
-
-
-JWT Authentication with Access and Refresh Token
-![Logo](
-https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20160321.png
-)
-
-
-
-Developed a Master Slave Architecture
-![Logo](
-https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20161017.png
-)
-
-
-Managed S3 Bucket for storing static Images
-![Logo](
-https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20162435.png
-)
-
-
-
-
-
-## Deployment
-
-Deployed the backend server on AWS EC2 with Nginx as Web Server and CertBot for SSL and Frontend Application on AWS Amplify
-
-![App Screenshot](
-https://d19arwbdzmrgqz.cloudfront.net/Screenshot%202024-07-28%20161112.png
-)
-
-
-
-
-Used PM2 for Node Application Monitoring
-
-![App Screenshot](
-https://d19arwbdzmrgqz.cloudfront.net/pm2.png
-)
-
-
-
+```mermaid
+graph TD
+    A[Client] -->|HTTPS| B[CloudFront CDN]
+    B --> C[S3 Static Assets]
+    B --> D[NGINX Load Balancer]
+    D --> E[EC2 Instances]
+    E --> F[Node.js API]
+    F --> G[MongoDB Atlas]
