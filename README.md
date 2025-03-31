@@ -35,40 +35,40 @@ NetThreads is a high-performance social media application designed for users to 
 ## 🔑 Key Features
 
 ### 🔐 JWT Authentication System
-- Dual token strategy with access/refresh tokens
-- Secure HTTP-only cookies for token storage
-- Automatic token rotation mechanism
+- Dual token strategy with access/refresh tokens.
+- Secure HTTP-only cookies for token storage.
+- Automatic token rotation mechanism.
 
 ![Authentication Flow](./screenshots/jwt_flow.png)
 
 ### 🧬 Nested Conversation Threads
-- Infinite comment nesting with collapsible UI
-- Context-preserving thread navigation
-- Real-time depth indicators
+- Infinite comment nesting with collapsible UI.
+- Context-preserving thread navigation.
+- Real-time depth indicators.
 
 ![Nested Replies](./screenshots/nested_replies.png)
 
 ### 🔍 Atlas-Powered Fuzzy Search
-- MongoDB Atlas Search integration
-- Autocomplete suggestions
-- Typo-tolerant query parsing
+- MongoDB Atlas Search integration.
+- Autocomplete suggestions.
+- Typo-tolerant query parsing.
 
 ![Search Feature](./screenshots/search_feature.png)
 
 ### 📧 OTP Email Verification
-- NodeMailer integration with SMTP pooling
-- Cron-based OTP expiration (Node Schedule)
-- Secure OTP hashing with bcrypt
+- NodeMailer integration with SMTP pooling.
+- Cron-based OTP expiration (Node Schedule).
+- Secure OTP hashing with bcrypt.
 
 ![Email Verification](./screenshots/email_verification.png)
 
 ---
 
-## �️ Deployment Architecture
+## 🏗️ Deployment Architecture
 
 ```mermaid
 graph TD
-    A[Client] -->B[CloudFront CDN]
+    A[Client] --> B[CloudFront CDN]
     A --> C[NGINX]
     B --> D[S3 Static Assets]
     C --> E[EC2 Instances]
@@ -76,100 +76,67 @@ graph TD
     F --> G[MongoDB Atlas]
 ```
 
-AWS Infrastructure
-AWS Free Tier Services Utilization
+---
 
-⚡ Performance Optimizations
-🗂️ Database Excellence
-Compound indexing on frequently queried fields
+## 📦 AWS Free Tier Services Utilization
 
-Connection pooling with 100+ concurrent connections
+## ⚡ Performance Optimizations
 
-Atlas Search indexes for text queries
+## 🗂️ Database Excellence
+- Indexing on frequently queried fields.
+- Connection pooling with 100+ concurrent connections.
+- Atlas Search indexes for text queries.
 
-MongoDB Indexing
+## 🕒 Cron Job Automation
+- Daily expired OTP cleanup.
 
-🕒 Cron Job Automation
-Daily expired OTP cleanup
+## 🚦 Production Monitoring
+- PM2 process management with clustering.
+- NGINX reverse proxy configuration.
+- Connection rate limiting.
 
-Weekly database optimization tasks
+## 🖼️ Media Management
+- User Upload → S3 Bucket → CloudFront Distribution → CDN Caching.
+- Signed URL generation for secure uploads.
 
-Monthly usage statistics generation
+---
 
-Cron Jobs
+## 🛠️ Installation Guide
 
-🚦 Production Monitoring
-PM2 process management with clustering
-
-NGINX reverse proxy configuration
-
-Connection rate limiting
-
-PM2 Monitoring
-
-🖼️ Media Management
-bash
-Copy
-User Upload -> S3 Bucket -> CloudFront Distribution -> CDN Caching
-Signed URL generation for secure uploads
-
-Image compression pipeline
-
-EXIF data stripping for privacy
-
-🛠️ Installation Guide
-Backend Setup
-bash
-Copy
+### Backend Setup
+```sh
 git clone https://github.com/jatinkharbanda33/NetThreads.git
-cd server
+cd backend
 npm install
+```
 
-# Configure environment
-cp .env.example .env
-nano .env
-
-# Start production server
+### Start Production Server
+```sh
 pm2 start server.js -i max
-Frontend Setup
-bash
-Copy
+```
+
+### Frontend Setup
+```sh
 cd client
 npm install
 npm run build
+```
 
-# Deploy built files to S3
-aws s3 sync dist/ s3://your-bucket-name
-🔒 Environment Variables
-Variable	Description	Example
-ATLAS_URI	MongoDB connection string	mongodb+srv://user:pass@cluster
-JWT_SECRET	JWT signing key	super_secret_key_123
-AWS_ACCESS_KEY	S3 access credentials	AKIAXXXXXXXXXXXXXXXX
-SMTP_CONFIG	Email service config	smtps://user:pass@smtp.example.com
-📈 Future Roadmap
-Real-time chat implementation
+---
 
-User analytics dashboard
+## 📈 Future Roadmap
+- Real-time chat implementation.
+- User analytics dashboard.
+- Cross-platform mobile app.
+- AI-powered content recommendations.
+- WebSocket-based notifications.
 
-Cross-platform mobile app
+---
 
-AI-powered content recommendations
+## 🤝 Contributors
+**Jatin Kharbanda** - Full Stack Architect
 
-WebSocket-based notifications
+---
 
-🤝 Contributors
-Jatin Kharbanda - Full Stack Architect
-
-License: MIT
-Documentation: Project Wiki
-
-Copy
-
-To use this README:
-1. Create `screenshots` directory in your repo
-2. Add your images with the specified filenames
-3. Replace image paths if using different structure
-4. Update contributors section as needed
-5. Modify environment variables table to match your actual .env config
-
-The combination of technical depth, visual elements, and clear structure demonstrates professional-grade project documentation while maintaining readability.
+## 📜 License
+MIT
