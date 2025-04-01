@@ -393,5 +393,52 @@ const getAllReplies = async (req, res) => {
     return res.status(500).json({ error: err.message, status: false });
   }
 };
+const getLikes = async (req, res) => {
+  try {
+    const db = getDb();
+    const replyId = new ObjectId(String(req.params.id));
+    const page_count = req.body.page_count ? req.body.page_count : 0;
+    const limit = 30;
+    const skip = page_count * limit;
+    const pipeline = [
+      {
+        $match: {
+          replyId: replyId,
+        },
+      },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "Users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "result",
+        },
+      },
+      {
+        $unwind: {
+          path: "$result",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          username: "$result.username",
+          profile_picture: "$result.profilepicture",
+          name: "$result.name",
+          user_id: "$result._id",
+        },
+      },
+    ];
+    const replyLikes = await db
+      .collection("Likes")
+      .aggregate(pipeline)
+      .toArray();
+    return res.status(200).json(replyLikes);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
-export { getReply, createReply, likeReply, getReplies, isLiked, getAllReplies };
+export { getReply, createReply, likeReply, getReplies, isLiked, getAllReplies,getLikes };

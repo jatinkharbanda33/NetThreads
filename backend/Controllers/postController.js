@@ -51,6 +51,7 @@ const getPost = async (req, res) => {
           inserted_at: 1,
           likesCount: 1,
           repliesCount: 1,
+          postedBy:1,
           name: "$postedByUser.name",
           username: "$postedByUser.username",
           profilepicture: "$postedByUser.profilepicture",
@@ -485,6 +486,7 @@ const getReplies = async (req, res) => {
           likesCount: 1,
           repliesCount: 1,
           postedByVerifiedUser: "$result.verified",
+          postedBy:1
         },
       },
     ];
