@@ -23,12 +23,13 @@ const putObjectinS3=async(filename,username,contentType,type)=>{
             return {status:false,error:"invalid content-type"};
         }
         const object=new PutObjectCommand({
-            Bucket:"netthreads",
+            Bucket:"netthreads1",
             Key:keyy,
             ContentType:contentType
             
         });
         let url=await getSignedUrl(client,object);
+        console.log(config.AWS_CLOUDFRONT_DOMAIN_NAME+keyy);
         return {status:true,url:url,key:config.AWS_CLOUDFRONT_DOMAIN_NAME+keyy};
 
     }
