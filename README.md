@@ -73,7 +73,7 @@ graph TD
     A --> C[NGINX]
     B --> D[S3 Static Assets]
     C --> E[EC2 Instances]
-    E --> F[Node.js API]
+    E --> F[Nodejs Backend]
     F --> G[MongoDB Atlas]
 ```
 
