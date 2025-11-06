@@ -93,7 +93,7 @@ graph TD
 
 ## 🕒 Cron Job Automation
 - Daily expired OTP cleanup.
-- ![Cron Job](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/Cronjob.png)
+- ![Cron Job](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/Cron%20Job.png)
   
 
 ## 🚦 Production Monitoring
