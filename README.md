@@ -11,7 +11,7 @@
 ## 🚀 Overview
 NetThreads is a high-performance social media application designed for users to share content publicly with an emphasis on structured, nested conversations. Built with cutting-edge technologies and deployed on AWS infrastructure, this project demonstrates scalable full-stack development practices with enterprise-grade optimizations.
 
-![NetThreads Homepage](https://ddq6ld55a9pdc.cloudfront.net/github/readme/1.png)  
+![NetThreads Homepage](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/1.png)  
 *Homepage featuring trending threads and engagement metrics*
 
 ---
@@ -47,21 +47,21 @@ NetThreads is a high-performance social media application designed for users to 
 - Context-preserving thread navigation.
 - Real-time depth indicators.
 
-![Nested Replies](https://ddq6ld55a9pdc.cloudfront.net/github/readme/InfinitePost.png)
+![Nested Replies](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/InfinitePost.png)
 
 ### 🔍 Atlas-Powered Fuzzy Search
 - MongoDB Atlas Search integration.
 - Autocomplete suggestions.
 - Typo-tolerant query parsing.
 
-![Search Feature](https://ddq6ld55a9pdc.cloudfront.net/github/readme/search.png)
+![Search Feature](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/search.png)
 
 ### 📧 OTP Email Verification
 - NodeMailer integration with SMTP pooling.
 - Cron-based OTP expiration (Node Schedule).
 - Secure OTP hashing with bcrypt.
 
-![Email Verification](https://ddq6ld55a9pdc.cloudfront.net/github/readme/Email.png)
+![Email Verification](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/Email.png)
 
 ---
 
@@ -80,27 +80,27 @@ graph TD
 ---
 
 ## 📦 AWS Free Tier Services Utilization
-![AWS Free Tier](https://ddq6ld55a9pdc.cloudfront.net/github/readme/AwsFreeTier.png)
+![AWS Free Tier](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/AwsFreeTier.png)
 
 ## ⚡ Performance Optimizations
 - Connection pooling for concurrent connections.
-  ![Connection pooling](https://ddq6ld55a9pdc.cloudfront.net/github/readme/MongoDB.png)
+  ![Connection pooling](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/MongoDB.png)
 
 ## 🗂️ Database Excellence
 - Indexing on frequently queried fields.
 - Atlas Search indexes for text queries.
- ![Indexing](https://ddq6ld55a9pdc.cloudfront.net/github/readme/Indexing.png)
+ ![Indexing](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/Indexing.png)
 
 ## 🕒 Cron Job Automation
 - Daily expired OTP cleanup.
-- ![Cron Job](https://ddq6ld55a9pdc.cloudfront.net/github/readme/Cronjob.png)
+- ![Cron Job](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/Cronjob.png)
   
 
 ## 🚦 Production Monitoring
 - PM2 process management with clustering.
 - NGINX reverse proxy configuration.
 - Connection rate limiting.
-- ![PM2](https://ddq6ld55a9pdc.cloudfront.net/github/readme/pm2.png)
+- ![PM2](https://ddq6ld55a9pdc.cloudfront.net/githubFiles/readme/pm2.png)
 
 
 ## 🖼️ Media Management
